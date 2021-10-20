@@ -1,0 +1,17 @@
+﻿# .gitignore
+out/
+logs/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Maven
+log/
+target/
