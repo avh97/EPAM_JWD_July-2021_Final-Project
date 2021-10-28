@@ -3,8 +3,12 @@ package by.khaletski.project.demo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectionDemo {
+    static final Logger LOGGER = LogManager.getLogger(ConnectionDemo.class);
+
     public static void main(String[] args) {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -17,6 +21,6 @@ public class ConnectionDemo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Connection established");
+        LOGGER.info("Connection established");
     }
 }
