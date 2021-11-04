@@ -7,20 +7,18 @@ package by.khaletski.project.exception;
  */
 
 public class DaoException extends Exception {
-
     public DaoException() {
     }
 
-    public DaoException(String message) {
+    public DaoException(final String message) {
         super(message);
     }
 
-    public DaoException(String message, Throwable cause) {
+    public DaoException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public DaoException(Throwable cause) {
+    public DaoException(final Throwable cause) {
         super(cause);
-
     }
 }

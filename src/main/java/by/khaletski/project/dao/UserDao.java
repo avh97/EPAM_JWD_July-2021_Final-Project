@@ -6,13 +6,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Dao class "UserDao"
@@ -46,29 +44,17 @@ public class UserDao {
             = "UPDATE users SET name=?, surname=?, phone=? WHERE id=?";
 
     public List<User> findAll() throws DaoException {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        String url = "jdbc:mysql://localhost:3306/platform_db";
-        Properties properties = new Properties();
-        properties.put("user", "platform_app");
-        properties.put("password", "platform_password");
-        properties.put("autoReconnect", "true");
-        properties.put("characterEncoding", "UTF-8");
-        properties.put("useUnicode", "true");
-        List<User> users = new ArrayList<>();
-        try (Connection connection = DriverManager.getConnection(url, properties);
+        List<User> userList = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(SQL_FIND_ALL_USERS)) {
             while (resultSet.next()) {
-                users.add(createUser(resultSet));
+                userList.add(createUser(resultSet));
             }
         } catch (SQLException e) {
             throw new DaoException("Dao exception", e);
         }
-        return users;
+        return userList;
     }
 
     private User createUser(ResultSet resultSet) throws SQLException {
