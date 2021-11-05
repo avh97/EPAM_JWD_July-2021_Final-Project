@@ -1,0 +1,136 @@
+package by.khaletski.project.dao;
+
+import by.khaletski.project.entity.Topic;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Dao class "TopicDao"
+ *
+ * @author Anton Khaletski
+ */
+
+public class TopicDao {
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final String SQL_FIND_ALL_TOPICS
+            = "SELECT id, name, image_name, description FROM topics";
+    private static final String SQL_FIND_TOPIC_BY_NAME
+            = "SELECT id, name, image_name, description FROM topics WHERE name=?";
+    private static final String SQL_ADD_TOPIC
+            = "INSERT INTO procedures (name, image_name, description) values(?,?,?)";
+    private static final String SQL_REMOVE_TOPIC
+            = "DELETE FROM topics WHERE name=?";
+    private static final String SQL_CHANGE_TOPIC
+            = "UPDATE procedures SET name=?, image_name=?, description=? WHERE id=?";
+
+    public List<Topic> findAll() {
+        List<Topic> topicList = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_TOPICS)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                topicList.add(getTopic(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return topicList;
+    }
+
+    public List<Topic> findTopicsByName(String name) {
+        List<Topic> topicList = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_NAME)) {
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                topicList.add(getTopic(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return topicList;
+    }
+
+    public boolean addTopic(Topic topic) {
+        LOGGER.info("Attempt to add topic to the database");
+        boolean isAdded = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_ADD_TOPIC)) {
+            statement.setString(1, topic.getName());
+            statement.setString(2, topic.getImageName());
+            statement.setString(3, topic.getDescription());
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 0) {
+                isAdded = true;
+                LOGGER.info("Topic has been added");
+            } else {
+                LOGGER.error("Topic has not been added");
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return isAdded;
+    }
+
+    public boolean removeTopic(Topic topic) {
+        LOGGER.info("Attempt to remove topic from the database");
+        boolean ifRemoved = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC)) {
+            statement.setString(1, topic.getName());
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 0) {
+                ifRemoved = true;
+                LOGGER.info("Topic has been removed");
+            } else {
+                LOGGER.info("Topic has not been removed");
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return ifRemoved;
+    }
+
+    public boolean changeTopic(Topic topic) {
+        LOGGER.info("Attempt to change topic in the database");
+        boolean isChanged = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_TOPIC)) {
+            statement.setString(1, topic.getName());
+            statement.setString(2, topic.getImageName());
+            statement.setString(3, topic.getDescription());
+            statement.setInt(4, topic.getId());
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 0) {
+                isChanged = true;
+                LOGGER.info("Topic has been changed");
+            } else {
+                LOGGER.error("Topic has not been changed");
+            }
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return isChanged;
+    }
+
+    private Topic getTopic(ResultSet resultSet) throws SQLException {
+        int procedureId = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        String imageName = resultSet.getString("image_name");
+        String description = resultSet.getString("description");
+        return new Topic.Builder()
+                .setId(procedureId)
+                .setName(name)
+                .setImageName(imageName)
+                .setDescription(description)
+                .build();
+    }
+}
