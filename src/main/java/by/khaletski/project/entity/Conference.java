@@ -132,6 +132,16 @@ public class Conference {
             return this;
         }
 
+        public Builder setDate(Date date) {
+            newConference.date = date;
+            return this;
+        }
+
+        public Builder setStatus(Status status) {
+            newConference.status = status;
+            return this;
+        }
+
         public Conference build() {
             return newConference;
         }
