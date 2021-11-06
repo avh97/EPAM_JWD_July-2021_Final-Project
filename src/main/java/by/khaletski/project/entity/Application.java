@@ -9,7 +9,7 @@ package by.khaletski.project.entity;
 public class Application {
     private int id;
     private User user;
-    private int conferenceId;
+    private Conference conference;
     private String description;
     private Status status;
 
@@ -36,12 +36,12 @@ public class Application {
         this.user = user;
     }
 
-    public int getConferenceId() {
-        return conferenceId;
+    public Conference getConference() {
+        return conference;
     }
 
-    public void setConferenceId(int conferenceId) {
-        this.conferenceId = conferenceId;
+    public void setConference(Conference conference) {
+        this.conference = conference;
     }
 
     public String getDescription() {
@@ -68,8 +68,8 @@ public class Application {
         Application that = (Application) o;
 
         if (id != that.id) return false;
-        if (conferenceId != that.conferenceId) return false;
         if (!user.equals(that.user)) return false;
+        if (!conference.equals(that.conference)) return false;
         if (!description.equals(that.description)) return false;
         return status == that.status;
     }
@@ -78,7 +78,7 @@ public class Application {
     public int hashCode() {
         int result = id;
         result = 31 * result + user.hashCode();
-        result = 31 * result + conferenceId;
+        result = 31 * result + conference.hashCode();
         result = 31 * result + description.hashCode();
         result = 31 * result + status.hashCode();
         return result;
@@ -89,7 +89,7 @@ public class Application {
         final StringBuilder sb = new StringBuilder("Application{");
         sb.append("id=").append(id);
         sb.append(", user=").append(user);
-        sb.append(", conferenceId=").append(conferenceId);
+        sb.append(", conference=").append(conference);
         sb.append(", description='").append(description).append('\'');
         sb.append(", status=").append(status);
         sb.append('}');
@@ -113,8 +113,8 @@ public class Application {
             return this;
         }
 
-        public Builder setConferenceId(int conferenceId) {
-            newApplication.conferenceId = conferenceId;
+        public Builder setConferenceId(Conference conference) {
+            newApplication.conference = conference;
             return this;
         }
 
