@@ -8,7 +8,7 @@ package by.khaletski.project.entity;
 
 public class Application {
     private int id;
-    private int userId;
+    private User user;
     private int conferenceId;
     private String description;
     private Status status;
@@ -28,12 +28,12 @@ public class Application {
         this.id = id;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getConferenceId() {
@@ -68,8 +68,8 @@ public class Application {
         Application that = (Application) o;
 
         if (id != that.id) return false;
-        if (userId != that.userId) return false;
         if (conferenceId != that.conferenceId) return false;
+        if (!user.equals(that.user)) return false;
         if (!description.equals(that.description)) return false;
         return status == that.status;
     }
@@ -77,23 +77,23 @@ public class Application {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + userId;
+        result = 31 * result + user.hashCode();
         result = 31 * result + conferenceId;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + description.hashCode();
+        result = 31 * result + status.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
-        final StringBuilder stringBuilder = new StringBuilder("Application{");
-        stringBuilder.append("id=").append(id);
-        stringBuilder.append(", userId=").append(userId);
-        stringBuilder.append(", conferenceId=").append(conferenceId);
-        stringBuilder.append(", description='").append(description).append('\'');
-        stringBuilder.append(", status=").append(status);
-        stringBuilder.append('}');
-        return stringBuilder.toString();
+        final StringBuilder sb = new StringBuilder("Application{");
+        sb.append("id=").append(id);
+        sb.append(", user=").append(user);
+        sb.append(", conferenceId=").append(conferenceId);
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", status=").append(status);
+        sb.append('}');
+        return sb.toString();
     }
 
     public static class Builder {
@@ -108,8 +108,8 @@ public class Application {
             return this;
         }
 
-        public Builder setUserId(int userId) {
-            newApplication.userId = userId;
+        public Builder setUser(User user) {
+            newApplication.user = user;
             return this;
         }
 
