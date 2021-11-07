@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Dao class "UserDao"
@@ -34,6 +35,9 @@ public class UserDao {
             = "UPDATE users SET role=? WHERE id=?";
     private static final String SQL_EDIT_USER_INFO_BY_ID
             = "UPDATE users SET email=?, name=?, patronymic=?, surname=?, role=? WHERE id=?";
+    private static final String SQL_FIND_PASSWORD_BY_EMAIL = "SELECT password FROM users WHERE email=?";
+    private static final String SQL_FIND_USER_BY_EMAIL =
+            "SELECT id, email, name, patronymic, surname, role FROM users WHERE email=?";
 
     public List<User> findAllUsers() {
         LOGGER.info("Attempt to find all users in the database");
@@ -165,6 +169,48 @@ public class UserDao {
             LOGGER.error("SQL exception");
         }
         return isChanged;
+    }
+
+    public Optional<String> findPasswordByEmail(String email) {
+        LOGGER.info("Attempt to find password by email");
+        Optional<String> optionalPassword = Optional.empty();
+        String password;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_PASSWORD_BY_EMAIL)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                password = resultSet.getString("password");
+                optionalPassword = Optional.of(password);
+            } else {
+                optionalPassword = Optional.empty();
+            }
+        } catch (SQLException e) {
+            LOGGER.error("SQL exception");
+        }
+        return optionalPassword;
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        LOGGER.info("Attempt to find password in the database by email");
+        Optional<User> optionalUser = Optional.empty();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_USER_BY_EMAIL)) {
+            LOGGER.debug("in try block, login");
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                User user = getUser(resultSet);
+                optionalUser = Optional.of(user);
+                LOGGER.info("User has been found");
+            } else {
+                LOGGER.info("User has not been found");
+                optionalUser = Optional.empty();
+            }
+        } catch (SQLException e) {
+            LOGGER.error("SQL exception");
+        }
+        return optionalUser;
     }
 
     private User getUser(ResultSet resultSet) throws SQLException {
