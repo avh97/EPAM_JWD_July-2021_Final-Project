@@ -1,4 +1,4 @@
-package by.khaletski.project.dao;
+package by.khaletski.project.dao.pool;
 
 import java.sql.Array;
 import java.sql.Blob;

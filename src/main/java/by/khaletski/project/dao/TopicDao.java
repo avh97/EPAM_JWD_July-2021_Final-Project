@@ -1,5 +1,6 @@
 package by.khaletski.project.dao;
 
+import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Topic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +26,13 @@ public class TopicDao {
             = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE name=?";
     private static final String SQL_ADD_TOPIC
             = "INSERT INTO procedures (topic_name, image_name, topic_description) values(?,?,?)";
-    private static final String SQL_REMOVE_TOPIC
-            = "DELETE FROM topics WHERE topic_name=?";
-    private static final String SQL_CHANGE_TOPIC
+    private static final String SQL_REMOVE_TOPIC_BY_ID
+            = "DELETE FROM topics WHERE id=?";
+    private static final String SQL_EDIT_TOPIC_BY_ID
             = "UPDATE procedures SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
 
-    public List<Topic> findAll() {
+    public List<Topic> findAllTopics() {
+        LOGGER.info("Attempt to find all topics in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_TOPICS)) {
@@ -39,12 +41,13 @@ public class TopicDao {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQLException");
         }
         return topicList;
     }
 
     public List<Topic> findTopicsByName(String name) {
+        LOGGER.info("Attempt to find all topics by name in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_NAME)) {
@@ -54,7 +57,7 @@ public class TopicDao {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQLException");
         }
         return topicList;
     }
@@ -75,17 +78,17 @@ public class TopicDao {
                 LOGGER.error("Topic has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQLException");
         }
         return isAdded;
     }
 
-    public boolean removeTopic(Topic topic) {
+    public boolean removeTopic(int id) {
         LOGGER.info("Attempt to remove topic from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC)) {
-            statement.setString(1, topic.getTopicName());
+             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC_BY_ID)) {
+            statement.setInt(1, id);
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -94,16 +97,16 @@ public class TopicDao {
                 LOGGER.info("Topic has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQLException");
         }
         return ifRemoved;
     }
 
-    public boolean changeTopic(Topic topic) {
+    public boolean editTopic(Topic topic) {
         LOGGER.info("Attempt to change topic in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_TOPIC)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_EDIT_TOPIC_BY_ID)) {
             statement.setString(1, topic.getTopicName());
             statement.setString(2, topic.getImage());
             statement.setString(3, topic.getTopicDescription());
@@ -116,7 +119,7 @@ public class TopicDao {
                 LOGGER.error("Topic has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQLException");
         }
         return isChanged;
     }

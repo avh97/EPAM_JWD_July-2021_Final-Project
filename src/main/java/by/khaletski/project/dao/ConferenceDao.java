@@ -1,5 +1,6 @@
 package by.khaletski.project.dao;
 
+import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Conference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +37,8 @@ public class ConferenceDao {
     private static final String SQL_CHANGE_CONFERENCE_STATUS
             = "UPDATE conferences SET conference_status=? WHERE id=?";
 
-    public List<Conference> findAll() {
+    public List<Conference> findAllConferences() {
+        LOGGER.info("Attempt to find all conferences in the database");
         List<Conference> conferenceList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_CONFERENCES)) {
@@ -45,12 +47,13 @@ public class ConferenceDao {
                 conferenceList.add(getConference(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return conferenceList;
     }
 
     public List<Conference> findConferencesByName(String name) {
+        LOGGER.info("Attempt to find conferences in the database by name");
         List<Conference> conferenceList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CONFERENCE_BY_NAME)) {
@@ -60,7 +63,7 @@ public class ConferenceDao {
                 conferenceList.add(getConference(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return conferenceList;
     }
@@ -83,7 +86,7 @@ public class ConferenceDao {
                 LOGGER.error("Conference has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isAdded;
     }
@@ -102,7 +105,7 @@ public class ConferenceDao {
                 LOGGER.info("Conference has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return ifRemoved;
     }
@@ -125,13 +128,13 @@ public class ConferenceDao {
                 LOGGER.error("Conference has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isChanged;
     }
 
     public boolean changeConferenceStatus(int id, Conference.Status status) {
-        LOGGER.info("Attempt to change conference status");
+        LOGGER.info("Attempt to change conference status in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_CONFERENCE_STATUS)) {
@@ -145,7 +148,7 @@ public class ConferenceDao {
                 LOGGER.info("Conference status has been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isChanged;
     }

@@ -1,5 +1,6 @@
 package by.khaletski.project.dao;
 
+import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,24 +22,21 @@ public class UserDao {
     static final Logger LOGGER = LogManager.getLogger(UserDao.class);
     private static final String SQL_FIND_ALL_USERS
             = "SELECT id, email, name, surname, patronymic, role FROM users";
-    private static final String SQL_FIND_USERS_BY_NAME
-            = "SELECT id, email, name, patronymic, surname, role FROM users WHERE name=?";
-    private static final String SQL_FIND_USERS_BY_PATRONYMIC
-            = "SELECT id, email, name, patronymic, surname, role FROM users WHERE patronymic=?";
     private static final String SQL_FIND_USERS_BY_SURNAME
             = "SELECT id, email, name, patronymic, surname, role FROM users WHERE surname=?";
     private static final String SQL_FIND_USERS_BY_ROLE
             = "SELECT id, email, name, patronymic, surname, role FROM users WHERE role=?";
     private static final String SQL_ADD_USER
             = "INSERT INTO users (id, email, name, patronymic, surname, role) values(?,?,?,?,?,?)";
-    private static final String SQL_REMOVE_USER
-            = "DELETE FROM users WHERE email=?";
-    private static final String SQL_CHANGE_USER_ROLE
-            = "UPDATE users SET role=? WHERE user_id=?";
-    private static final String SQL_CHANGE_USER_INFO
+    private static final String SQL_REMOVE_USER_BY_ID
+            = "DELETE FROM users WHERE id=?";
+    private static final String SQL_CHANGE_USER_ROLE_BY_ID
+            = "UPDATE users SET role=? WHERE id=?";
+    private static final String SQL_EDIT_USER_INFO_BY_ID
             = "UPDATE users SET email=?, name=?, patronymic=?, surname=?, role=? WHERE id=?";
 
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
+        LOGGER.info("Attempt to find all users in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_USERS)) {
@@ -47,42 +45,13 @@ public class UserDao {
                 userList.add(getUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return userList;
-    }
-
-    public List<User> findUsersByName(String name) {
-        List<User> userList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_NAME)) {
-            statement.setString(1, name);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                userList.add(getUser(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return userList;
-    }
-
-    public List<User> findUsersByPatronymic(String patronymic) {
-        List<User> userList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_PATRONYMIC)) {
-            statement.setString(1, patronymic);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                userList.add(getUser(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return userList;
     }
 
     public List<User> findUsersBySurname(String surname) {
+        LOGGER.info("Attempt to find all users by surname in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_SURNAME)) {
@@ -92,12 +61,13 @@ public class UserDao {
                 userList.add(getUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return userList;
     }
 
     public List<User> findUsersByRole(User.Role role) {
+        LOGGER.info("Attempt to find all users by role in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_ROLE)) {
@@ -107,7 +77,7 @@ public class UserDao {
                 userList.add(getUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return userList;
     }
@@ -130,17 +100,17 @@ public class UserDao {
                 LOGGER.info("User has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return ifAdded;
     }
 
-    public boolean removeUser(User user) {
+    public boolean removeUser(int id) {
         LOGGER.info("Attempt to remove user from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_USER)) {
-            statement.setString(1, user.getEmail());
+             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_USER_BY_ID)) {
+            statement.setInt(1, id);
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -149,17 +119,36 @@ public class UserDao {
                 LOGGER.info("User has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return ifRemoved;
     }
 
-
-    public boolean changePersonalInfo(User user) {
-        LOGGER.info("Attempt to change user personal info");
+    public boolean changeUserRole(User.Role role, int id) {
+        LOGGER.info("Attempt to change user role in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_USER_INFO)) {
+             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_USER_ROLE_BY_ID)) {
+            statement.setString(1, role.name());
+            statement.setLong(2, id);
+            int rowCount = statement.executeUpdate();
+            if (rowCount != 0) {
+                isChanged = true;
+                LOGGER.info("User role has been changed");
+            } else {
+                LOGGER.info("User role has been changed");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("SQL exception");
+        }
+        return isChanged;
+    }
+
+    public boolean editUserInfo(User user) {
+        LOGGER.info("Attempt to change user personal info in the database");
+        boolean isChanged = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_EDIT_USER_INFO_BY_ID)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPatronymic());
             statement.setString(3, user.getSurname());
@@ -173,27 +162,7 @@ public class UserDao {
                 LOGGER.info("User personal information has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
-        }
-        return isChanged;
-    }
-
-    public boolean changeUserRole(int id, User.Role role) {
-        LOGGER.info("Attempt to change user role");
-        boolean isChanged = false;
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_USER_ROLE)) {
-            statement.setString(1, role.name());
-            statement.setLong(2, id);
-            int rowCount = statement.executeUpdate();
-            if (rowCount != 0) {
-                isChanged = true;
-                LOGGER.info("User role has been changed");
-            } else {
-                LOGGER.info("User role has been changed");
-            }
-        } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isChanged;
     }
