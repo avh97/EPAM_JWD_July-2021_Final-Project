@@ -1,5 +1,6 @@
 package by.khaletski.project.dao;
 
+import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Application;
 import by.khaletski.project.entity.Conference;
 import by.khaletski.project.entity.User;
@@ -70,7 +71,7 @@ public class ApplicationDao {
                 LOGGER.error("Application has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isAdded;
     }
@@ -93,7 +94,7 @@ public class ApplicationDao {
                 LOGGER.error("Application has not been edited");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isEdited;
     }
@@ -113,7 +114,7 @@ public class ApplicationDao {
                 LOGGER.error("Application status has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error("SQL exception");
         }
         return isChanged;
     }
@@ -145,14 +146,14 @@ public class ApplicationDao {
                 applications.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         LOGGER.info("Applications have been found");
         return applications;
     }
 
     public List<Application> findApplicationsByStatus(Application.Status status) {
-        LOGGER.info("Attempt to find all applications by date");
+        LOGGER.info("Attempt to find all applications by status");
         List<Application> applications = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection
@@ -163,7 +164,7 @@ public class ApplicationDao {
                 applications.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         LOGGER.info("Applications have been found");
         return applications;
@@ -181,7 +182,7 @@ public class ApplicationDao {
                 applications.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         LOGGER.info("Applications have been found");
         return applications;
