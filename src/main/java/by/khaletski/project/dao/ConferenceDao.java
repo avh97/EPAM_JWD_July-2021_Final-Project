@@ -21,17 +21,20 @@ import java.util.List;
 public class ConferenceDao {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_CONFERENCES
-            = "SELECT id, topic_id, name, description, date, status FROM conferences";
+            = "SELECT id, topic_id, conference_name, conference_description, date, conference_status FROM conferences";
     private static final String SQL_FIND_CONFERENCE_BY_NAME
-            = "SELECT id, topic_id, name, description, date, status FROM conferences WHERE name=?";
+            = "SELECT id, topic_id, conference_name, conference_description, date, conference_status "
+            + "FROM conferences WHERE conference_name=?";
     private static final String SQL_ADD_CONFERENCE
-            = "INSERT INTO conferences (topic_id, name, description, date, status) values(?,?,?,?,?)";
+            = "INSERT INTO conferences"
+            + " (topic_id, conference_name, conference_description, date, conference_status) values(?,?,?,?,?)";
     private static final String SQL_REMOVE_CONFERENCE
             = "DELETE FROM conferences WHERE id=?";
     private static final String SQL_EDIT_CONFERENCE
-            = "UPDATE conferences SET name=?, description=?, date=?, status=? WHERE id=?";
+            = "UPDATE conferences "
+            + "SET conference_name=?, conference_description=?, date=?, conference_status=? WHERE id=?";
     private static final String SQL_CHANGE_CONFERENCE_STATUS
-            = "UPDATE conferences SET status=? WHERE id=?";
+            = "UPDATE conferences SET conference_status=? WHERE id=?";
 
     public List<Conference> findAll() {
         List<Conference> conferenceList = new ArrayList<>();
@@ -68,10 +71,10 @@ public class ConferenceDao {
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_CONFERENCE)) {
             preparedStatement.setInt(1, conference.getTopic().getId());
-            preparedStatement.setString(2, conference.getName());
-            preparedStatement.setString(3, conference.getDescription());
+            preparedStatement.setString(2, conference.getConferenceName());
+            preparedStatement.setString(3, conference.getConferenceDescription());
             preparedStatement.setDate(4, conference.getDate());
-            preparedStatement.setString(5, conference.getStatus().name());
+            preparedStatement.setString(5, conference.getConferenceStatus().name());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
@@ -90,7 +93,7 @@ public class ConferenceDao {
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_REMOVE_CONFERENCE)) {
-            preparedStatement.setString(1, conference.getName());
+            preparedStatement.setString(1, conference.getConferenceName());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -109,10 +112,10 @@ public class ConferenceDao {
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_EDIT_CONFERENCE)) {
-            preparedStatement.setString(1, conference.getName());
-            preparedStatement.setString(2, conference.getDescription());
+            preparedStatement.setString(1, conference.getConferenceName());
+            preparedStatement.setString(2, conference.getConferenceDescription());
             preparedStatement.setDate(3, conference.getDate());
-            preparedStatement.setString(4, conference.getStatus().name());
+            preparedStatement.setString(4, conference.getConferenceStatus().name());
             preparedStatement.setInt(5, conference.getId());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
@@ -148,10 +151,11 @@ public class ConferenceDao {
     }
     private Conference getConference(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
-        String name = resultSet.getString("name");
-        String description = resultSet.getString("description");
+        String name = resultSet.getString("conference_name");
+        String description = resultSet.getString("conference_description");
         Date date = resultSet.getDate("date");
-        Conference.Status status = Conference.Status.valueOf(resultSet.getString("status").toUpperCase());
+        Conference.Status status = Conference
+                .Status.valueOf(resultSet.getString("conference_status").toUpperCase());
         return new Conference.Builder()
                 .setId(id)
                 .setName(name)

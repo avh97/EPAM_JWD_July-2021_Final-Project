@@ -20,15 +20,15 @@ import java.util.List;
 public class TopicDao {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_TOPICS
-            = "SELECT id, name, image_name, description FROM topics";
+            = "SELECT id, topic_name, image_name, topic_description FROM topics";
     private static final String SQL_FIND_TOPIC_BY_NAME
-            = "SELECT id, name, image_name, description FROM topics WHERE name=?";
+            = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE name=?";
     private static final String SQL_ADD_TOPIC
-            = "INSERT INTO procedures (name, image_name, description) values(?,?,?)";
+            = "INSERT INTO procedures (topic_name, image_name, topic_description) values(?,?,?)";
     private static final String SQL_REMOVE_TOPIC
-            = "DELETE FROM topics WHERE name=?";
+            = "DELETE FROM topics WHERE topic_name=?";
     private static final String SQL_CHANGE_TOPIC
-            = "UPDATE procedures SET name=?, image_name=?, description=? WHERE id=?";
+            = "UPDATE procedures SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
 
     public List<Topic> findAll() {
         List<Topic> topicList = new ArrayList<>();
@@ -64,9 +64,9 @@ public class TopicDao {
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_ADD_TOPIC)) {
-            statement.setString(1, topic.getName());
-            statement.setString(2, topic.getImageName());
-            statement.setString(3, topic.getDescription());
+            statement.setString(1, topic.getTopicName());
+            statement.setString(2, topic.getImage());
+            statement.setString(3, topic.getTopicDescription());
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
@@ -85,7 +85,7 @@ public class TopicDao {
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC)) {
-            statement.setString(1, topic.getName());
+            statement.setString(1, topic.getTopicName());
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -104,9 +104,9 @@ public class TopicDao {
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_TOPIC)) {
-            statement.setString(1, topic.getName());
-            statement.setString(2, topic.getImageName());
-            statement.setString(3, topic.getDescription());
+            statement.setString(1, topic.getTopicName());
+            statement.setString(2, topic.getImage());
+            statement.setString(3, topic.getTopicDescription());
             statement.setInt(4, topic.getId());
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
@@ -123,9 +123,9 @@ public class TopicDao {
 
     private Topic getTopic(ResultSet resultSet) throws SQLException {
         int procedureId = resultSet.getInt("id");
-        String name = resultSet.getString("name");
+        String name = resultSet.getString("topic_name");
         String imageName = resultSet.getString("image_name");
-        String description = resultSet.getString("description");
+        String description = resultSet.getString("topic_description");
         return new Topic.Builder()
                 .setId(procedureId)
                 .setName(name)

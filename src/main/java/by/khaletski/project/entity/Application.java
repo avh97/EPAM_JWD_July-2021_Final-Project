@@ -10,8 +10,8 @@ public class Application {
     private int id;
     private User user;
     private Conference conference;
-    private String description;
-    private Status status;
+    private String applicationDescription;
+    private Status applicationStatus;
 
     public enum Status {
         CLAIMED, CONFIRMED, CANCELED, ENDED
@@ -44,20 +44,20 @@ public class Application {
         this.conference = conference;
     }
 
-    public String getDescription() {
-        return description;
+    public String getApplicationDescription() {
+        return applicationDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setApplicationDescription(String applicationDescription) {
+        this.applicationDescription = applicationDescription;
     }
 
-    public Status getStatus() {
-        return status;
+    public Status getApplicationStatus() {
+        return applicationStatus;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setApplicationStatus(Status applicationStatus) {
+        this.applicationStatus = applicationStatus;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class Application {
         if (id != that.id) return false;
         if (!user.equals(that.user)) return false;
         if (!conference.equals(that.conference)) return false;
-        if (!description.equals(that.description)) return false;
-        return status == that.status;
+        if (!applicationDescription.equals(that.applicationDescription)) return false;
+        return applicationStatus == that.applicationStatus;
     }
 
     @Override
@@ -79,8 +79,8 @@ public class Application {
         int result = id;
         result = 31 * result + user.hashCode();
         result = 31 * result + conference.hashCode();
-        result = 31 * result + description.hashCode();
-        result = 31 * result + status.hashCode();
+        result = 31 * result + applicationDescription.hashCode();
+        result = 31 * result + applicationStatus.hashCode();
         return result;
     }
 
@@ -90,8 +90,8 @@ public class Application {
         sb.append("id=").append(id);
         sb.append(", user=").append(user);
         sb.append(", conference=").append(conference);
-        sb.append(", description='").append(description).append('\'');
-        sb.append(", status=").append(status);
+        sb.append(", applicationDescription='").append(applicationDescription).append('\'');
+        sb.append(", applicationStatus=").append(applicationStatus);
         sb.append('}');
         return sb.toString();
     }
@@ -118,13 +118,13 @@ public class Application {
             return this;
         }
 
-        public Builder setDescription(String description) {
-            newApplication.description = description;
+        public Builder setDescription(String applicationDescription) {
+            newApplication.applicationDescription = applicationDescription;
             return this;
         }
 
-        public Builder setStatus(Status status) {
-            newApplication.status = status;
+        public Builder setStatus(Status applicationStatus) {
+            newApplication.applicationStatus = applicationStatus;
             return this;
         }
 

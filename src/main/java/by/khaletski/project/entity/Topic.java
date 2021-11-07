@@ -8,9 +8,9 @@ package by.khaletski.project.entity;
 
 public class Topic {
     private int id;
-    private String name;
-    private String imageName;
-    private String description;
+    private String topicName;
+    private String image;
+    private String topicDescription;
 
     public Topic() {
     }
@@ -23,28 +23,28 @@ public class Topic {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTopicName() {
+        return topicName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
     }
 
-    public String getImageName() {
-        return imageName;
+    public String getImage() {
+        return image;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTopicDescription() {
+        return topicDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTopicDescription(String topicDescription) {
+        this.topicDescription = topicDescription;
     }
 
     @Override
@@ -55,17 +55,17 @@ public class Topic {
         Topic topic = (Topic) o;
 
         if (id != topic.id) return false;
-        if (!name.equals(topic.name)) return false;
-        if (!imageName.equals(topic.imageName)) return false;
-        return description.equals(topic.description);
+        if (!topicName.equals(topic.topicName)) return false;
+        if (!image.equals(topic.image)) return false;
+        return topicDescription.equals(topic.topicDescription);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + imageName.hashCode();
-        result = 31 * result + description.hashCode();
+        result = 31 * result + topicName.hashCode();
+        result = 31 * result + image.hashCode();
+        result = 31 * result + topicDescription.hashCode();
         return result;
     }
 
@@ -73,9 +73,9 @@ public class Topic {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder("Topic{");
         stringBuilder.append("id=").append(id);
-        stringBuilder.append(", name='").append(name).append('\'');
-        stringBuilder.append(", imageName='").append(imageName).append('\'');
-        stringBuilder.append(", description='").append(description).append('\'');
+        stringBuilder.append(", topicName='").append(topicName).append('\'');
+        stringBuilder.append(", image='").append(image).append('\'');
+        stringBuilder.append(", topicDescription='").append(topicDescription).append('\'');
         stringBuilder.append('}');
         return stringBuilder.toString();
     }
@@ -92,18 +92,18 @@ public class Topic {
             return this;
         }
 
-        public Builder setName(String name) {
-            newTopic.name = name;
+        public Builder setName(String topicName) {
+            newTopic.topicName = topicName;
             return this;
         }
 
-        public Builder setImageName(String imageName) {
-            newTopic.imageName = imageName;
+        public Builder setImageName(String image) {
+            newTopic.image = image;
             return this;
         }
 
-        public Builder setDescription(String description) {
-            newTopic.description = description;
+        public Builder setDescription(String topicDescription) {
+            newTopic.topicDescription = topicDescription;
             return this;
         }
 
