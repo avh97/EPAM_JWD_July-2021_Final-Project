@@ -43,24 +43,24 @@ public class TopicDaoImpl implements TopicDao {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         return topicList;
     }
 
     @Override
-    public List<Topic> findTopicsByName(String name) {
-        LOGGER.info("Attempt to find all topics by name in the database");
+    public List<Topic> findTopicsByName(String topicName) {
+        LOGGER.info("Attempt to find all topics by topicName in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_NAME)) {
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, topicName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         return topicList;
     }
@@ -82,18 +82,18 @@ public class TopicDaoImpl implements TopicDao {
                 LOGGER.error("Topic has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         return isAdded;
     }
 
     @Override
-    public boolean removeTopic(int id) {
+    public boolean removeTopic(int topicId) {
         LOGGER.info("Attempt to remove topic from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC_BY_ID)) {
-            statement.setInt(1, id);
+            statement.setInt(1, topicId);
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -102,7 +102,7 @@ public class TopicDaoImpl implements TopicDao {
                 LOGGER.info("Topic has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         return ifRemoved;
     }
@@ -125,7 +125,7 @@ public class TopicDaoImpl implements TopicDao {
                 LOGGER.error("Topic has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         return isChanged;
     }

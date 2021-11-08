@@ -3,11 +3,14 @@ package by.khaletski.project.dao.impl;
 import by.khaletski.project.dao.ConferenceDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Conference;
-import by.khaletski.project.entity.Topic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,12 +55,12 @@ public class ConferenceDaoImpl implements ConferenceDao {
     }
 
     @Override
-    public List<Conference> findConferencesByName(String name) {
-        LOGGER.info("Attempt to find conferences in the database by name");
+    public List<Conference> findConferencesByName(String conferenceName) {
+        LOGGER.info("Attempt to find conferences in the database by conferenceName");
         List<Conference> conferenceList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CONFERENCE_BY_NAME)) {
-            preparedStatement.setString(1, name);
+            preparedStatement.setString(1, conferenceName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 conferenceList.add(getConference(resultSet));
@@ -93,12 +96,12 @@ public class ConferenceDaoImpl implements ConferenceDao {
     }
 
     @Override
-    public boolean removeConference(Conference conference) {
+    public boolean removeConference(int conferenceId) {
         LOGGER.info("Attempt to remove conference from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_REMOVE_CONFERENCE_BY_ID)) {
-            preparedStatement.setString(1, conference.getConferenceName());
+            preparedStatement.setInt(1, conferenceId);
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -137,13 +140,13 @@ public class ConferenceDaoImpl implements ConferenceDao {
     }
 
     @Override
-    public boolean changeConferenceStatus(int id, Conference.Status status) {
+    public boolean changeConferenceStatus(int conferenceId, Conference.Status status) {
         LOGGER.info("Attempt to change conference status in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_CONFERENCE_STATUS_BY_ID)) {
             preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, id);
+            preparedStatement.setInt(2, conferenceId);
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;

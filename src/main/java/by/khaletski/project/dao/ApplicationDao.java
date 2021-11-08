@@ -14,13 +14,13 @@ public interface ApplicationDao {
 
     boolean editApplication(Application application);
 
-    boolean changeApplicationStatus(int id, Application.Status status);
+    boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus);
 
     List<Application> findAllApplications();
 
     List<Application> findApplicationsByUserId(int userId);
 
-    List<Application> findApplicationsByStatus(Application.Status status);
+    List<Application> findApplicationsByStatus(Application.Status applicationStatus);
 
-    List<Application> findApplicationsByDate(Date date);
+    List<Application> findApplicationsByDate(Date conferenceDate);
 }

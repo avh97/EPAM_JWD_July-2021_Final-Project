@@ -57,12 +57,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findUsersBySurname(String surname) {
-        LOGGER.info("Attempt to find all users by surname in the database");
+    public List<User> findUsersBySurname(String userSurname) {
+        LOGGER.info("Attempt to find all users by userSurname in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_SURNAME)) {
-            statement.setString(1, surname);
+            statement.setString(1, userSurname);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 userList.add(getUser(resultSet));
@@ -74,12 +74,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findUsersByRole(User.Role role) {
-        LOGGER.info("Attempt to find all users by role in the database");
+    public List<User> findUsersByRole(User.Role userRole) {
+        LOGGER.info("Attempt to find all users by userRole in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_ROLE)) {
-            statement.setString(1, role.name());
+            statement.setString(1, userRole.name());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 userList.add(getUser(resultSet));
@@ -91,13 +91,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean addUser(User user, String password) {
+    public boolean addUser(User user, String userPassword) {
         LOGGER.info("Attempt to add user to the database");
         boolean ifAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_ADD_USER)) {
             statement.setString(1, user.getEmail());
-            statement.setString(2, password);
+            statement.setString(2, userPassword);
             statement.setString(3, user.getName());
             statement.setString(4, user.getPatronymic());
             statement.setString(5, user.getSurname());
@@ -115,12 +115,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean removeUser(int id) {
+    public boolean removeUser(int userId) {
         LOGGER.info("Attempt to remove user from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_USER_BY_ID)) {
-            statement.setInt(1, id);
+            statement.setInt(1, userId);
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
@@ -135,19 +135,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean changeUserRole(User.Role role, int id) {
-        LOGGER.info("Attempt to change user role in the database");
+    public boolean changeUserRole(int userId, User.Role userRole) {
+        LOGGER.info("Attempt to change user userRole in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_USER_ROLE_BY_ID)) {
-            statement.setString(1, role.name());
-            statement.setLong(2, id);
+            statement.setString(1, userRole.name());
+            statement.setLong(2, userId);
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("User role has been changed");
+                LOGGER.info("User userRole has been changed");
             } else {
-                LOGGER.info("User role has been changed");
+                LOGGER.info("User userRole has been changed");
             }
         } catch (SQLException e) {
             LOGGER.error("SQL exception");
@@ -180,13 +180,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<String> findPasswordByEmail(String email) {
-        LOGGER.info("Attempt to find password by email");
+    public Optional<String> findPasswordByEmail(String userEmail) {
+        LOGGER.info("Attempt to find password by userEmail");
         Optional<String> optionalPassword = Optional.empty();
         String password;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_PASSWORD_BY_EMAIL)) {
-            statement.setString(1, email);
+            statement.setString(1, userEmail);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 password = resultSet.getString("password");
@@ -201,13 +201,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) {
-        LOGGER.info("Attempt to find password in the database by email");
+    public Optional<User> findUserByEmail(String userEmail) {
+        LOGGER.info("Attempt to find password in the database by userEmail");
         Optional<User> optionalUser = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USER_BY_EMAIL)) {
             LOGGER.debug("in try block, login");
-            statement.setString(1, email);
+            statement.setString(1, userEmail);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = getUser(resultSet);

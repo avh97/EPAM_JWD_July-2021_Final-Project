@@ -103,19 +103,19 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public boolean changeApplicationStatus(int id, Application.Status status) {
-        LOGGER.info("Attempt to change application status");
+    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) {
+        LOGGER.info("Attempt to change application applicationStatus");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
-            preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, id);
+            preparedStatement.setString(1, applicationStatus.name());
+            preparedStatement.setInt(2, applicationId);
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("Application status has been changed");
+                LOGGER.info("Application applicationStatus has been changed");
             } else {
-                LOGGER.error("Application status has not been changed");
+                LOGGER.error("Application applicationStatus has not been changed");
             }
         } catch (SQLException e) {
             LOGGER.error("SQL exception");
@@ -134,7 +134,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
                 applications.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQLException");
+            LOGGER.error("SQL exception");
         }
         LOGGER.info("Applications have been found");
         return applications;
@@ -159,13 +159,13 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> findApplicationsByStatus(Application.Status status) {
-        LOGGER.info("Attempt to find all applications by status");
+    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) {
+        LOGGER.info("Attempt to find all applications by applicationStatus");
         List<Application> applications = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection
                      .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_STATUS)) {
-            preparedStatement.setString(1, status.name());
+            preparedStatement.setString(1, applicationStatus.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 applications.add(getApplication(resultSet));
@@ -178,13 +178,13 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> findApplicationsByDate(Date date) {
-        LOGGER.info("Attempt to find all applications by date");
+    public List<Application> findApplicationsByDate(Date conferenceDate) {
+        LOGGER.info("Attempt to find all applications by conferenceDate");
         List<Application> applications = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection
                      .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_DATE)) {
-            preparedStatement.setDate(1, date);
+            preparedStatement.setDate(1, conferenceDate);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 applications.add(getApplication(resultSet));
@@ -199,30 +199,30 @@ public class ApplicationDaoImpl implements ApplicationDao {
     private Application getApplication(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         int userId = resultSet.getInt("user_id");
-        String email = resultSet.getString("email");
-        String name = resultSet.getString("name");
-        String patronymic = resultSet.getString("patronymic");
-        String surname = resultSet.getString("surname");
-        User.Role role = User.Role.valueOf(resultSet.getString("role").toUpperCase());
+        String userEmail = resultSet.getString("email");
+        String userName = resultSet.getString("name");
+        String userPatronymic = resultSet.getString("patronymic");
+        String userSurname = resultSet.getString("surname");
+        User.Role userRole = User.Role.valueOf(resultSet.getString("role").toUpperCase());
         User user = new User.Builder()
                 .setUserId(userId)
-                .setEmail(email)
-                .setName(name)
-                .setPatronymic(patronymic)
-                .setSurname(surname)
-                .setRole(role)
+                .setEmail(userEmail)
+                .setName(userName)
+                .setPatronymic(userPatronymic)
+                .setSurname(userSurname)
+                .setRole(userRole)
                 .build();
         int conferenceId = resultSet.getInt("conference_id");
         String conferenceName = resultSet.getString("conference_name");
-        String description = resultSet.getString("conference_description");
-        Date date = resultSet.getDate("date");
+        String conferenceDescription = resultSet.getString("conference_description");
+        Date conferenceDate = resultSet.getDate("date");
         Conference.Status conferenceStatus = Conference
                 .Status.valueOf(resultSet.getString("conference_status").toUpperCase());
         Conference conference = new Conference.Builder()
-                .setId(id)
-                .setName(name)
-                .setDescription(description)
-                .setDate(date)
+                .setId(conferenceId)
+                .setName(conferenceName)
+                .setDescription(conferenceDescription)
+                .setDate(conferenceDate)
                 .setStatus(conferenceStatus)
                 .build();
         Application.Status applicationStatus = Application

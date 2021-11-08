@@ -9,11 +9,11 @@ import java.util.List;
 public interface TopicDao {
     List<Topic> findAllTopics();
 
-    List<Topic> findTopicsByName(String name);
+    List<Topic> findTopicsByName(String topicName);
 
     boolean addTopic(Topic topic);
 
-    boolean removeTopic(int id);
+    boolean removeTopic(int topicId);
 
     boolean editTopic(Topic topic);
 }

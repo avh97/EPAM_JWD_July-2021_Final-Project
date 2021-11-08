@@ -8,19 +8,19 @@ import java.util.Optional;
 public interface UserDao {
     List<User> findAllUsers();
 
-    List<User> findUsersBySurname(String surname);
+    List<User> findUsersBySurname(String userSurname);
 
-    List<User> findUsersByRole(User.Role role);
+    List<User> findUsersByRole(User.Role userRole);
 
-    boolean addUser(User user, String password);
+    boolean addUser(User user, String userPassword);
 
-    boolean removeUser(int id);
+    boolean removeUser(int userId);
 
-    boolean changeUserRole(User.Role role, int id);
+    boolean changeUserRole(int userId, User.Role userRole);
 
     boolean editUserInfo(User user);
 
-    Optional<String> findPasswordByEmail(String email);
+    Optional<String> findPasswordByEmail(String userEmail);
 
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findUserByEmail(String userEmail);
 }
