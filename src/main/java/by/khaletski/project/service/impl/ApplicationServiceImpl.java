@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.Date;
 import java.util.List;
 
-public class ApplicationServiceImpl {
+public class ApplicationServiceImpl implements by.khaletski.project.service.ApplicationService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final ApplicationDao applicationDao;
 
@@ -18,6 +18,7 @@ public class ApplicationServiceImpl {
         this.applicationDao = applicationDao;
     }
 
+    @Override
     public boolean addApplication(Application application) throws ServiceException {
         boolean isAdded;
         try {
@@ -28,6 +29,7 @@ public class ApplicationServiceImpl {
         return isAdded;
     }
 
+    @Override
     public boolean editApplication(Application application) throws ServiceException {
         boolean isEdited;
         try {
@@ -38,6 +40,7 @@ public class ApplicationServiceImpl {
         return isEdited;
     }
 
+    @Override
     public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws ServiceException {
         boolean isChanged;
         try {
@@ -48,6 +51,7 @@ public class ApplicationServiceImpl {
         return isChanged;
     }
 
+    @Override
     public List<Application> findAllApplications() throws ServiceException {
         List<Application> applicationList;
         try {
@@ -58,6 +62,7 @@ public class ApplicationServiceImpl {
         return applicationList;
     }
 
+    @Override
     public List<Application> findApplicationsByUserId(int userId) throws ServiceException {
         List<Application> applicationList;
         try {
@@ -68,6 +73,7 @@ public class ApplicationServiceImpl {
         return applicationList;
     }
 
+    @Override
     public List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws ServiceException {
         List<Application> applicationList;
         try {
@@ -78,6 +84,7 @@ public class ApplicationServiceImpl {
         return applicationList;
     }
 
+    @Override
     public List<Application> findApplicationsByDate(Date conferenceDate) throws ServiceException {
         List<Application> applicationList;
         try {

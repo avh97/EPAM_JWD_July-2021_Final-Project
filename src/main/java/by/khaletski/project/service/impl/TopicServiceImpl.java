@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopicServiceImpl {
+public class TopicServiceImpl implements by.khaletski.project.service.TopicService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final TopicDao topicDao;
 
@@ -19,7 +19,8 @@ public class TopicServiceImpl {
         this.topicDao = topicDao;
     }
 
-    List<Topic> findAllTopics() throws ServiceException {
+    @Override
+    public List<Topic> findAllTopics() throws ServiceException {
         List<Topic> topicList;
         try {
             topicList = topicDao.findAllTopics();
@@ -29,6 +30,7 @@ public class TopicServiceImpl {
         return topicList;
     }
 
+    @Override
     public List<Topic> findTopicsByName(String topicName) throws ServiceException {
         List<Topic> topicList = new ArrayList<>();
         if (Validator.isValidName(topicName)) {
@@ -41,7 +43,8 @@ public class TopicServiceImpl {
         return topicList;
     }
 
-    boolean addTopic(Topic topic) throws ServiceException {
+    @Override
+    public boolean addTopic(Topic topic) throws ServiceException {
         boolean isAdded;
         try {
             isAdded = topicDao.addTopic(topic);
@@ -51,7 +54,8 @@ public class TopicServiceImpl {
         return isAdded;
     }
 
-    boolean removeTopic(int topicId) throws ServiceException {
+    @Override
+    public boolean removeTopic(int topicId) throws ServiceException {
         boolean isRemoved;
         try {
             isRemoved = topicDao.removeTopic(topicId);
@@ -61,7 +65,8 @@ public class TopicServiceImpl {
         return isRemoved;
     }
 
-    boolean editTopic(Topic topic) throws ServiceException {
+    @Override
+    public boolean editTopic(Topic topic) throws ServiceException {
         boolean isEdited;
         try {
             isEdited = topicDao.editTopic(topic);

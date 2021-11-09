@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserServiceImpl {
+public class UserServiceImpl implements by.khaletski.project.service.UserService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final UserDao userDao;
 
@@ -21,6 +21,7 @@ public class UserServiceImpl {
         this.userDao = userDao;
     }
 
+    @Override
     public List<User> findAllUsers() throws ServiceException {
         List<User> userList;
         try {
@@ -31,6 +32,7 @@ public class UserServiceImpl {
         return userList;
     }
 
+    @Override
     public List<User> findUsersBySurname(String userSurname) throws ServiceException {
         List<User> userList = new ArrayList<>();
         if (Validator.isValidName(userSurname)) {
@@ -43,6 +45,7 @@ public class UserServiceImpl {
         return userList;
     }
 
+    @Override
     public List<User> findUsersByRole(User.Role userRole) throws ServiceException {
         List<User> userList;
         try {
@@ -53,6 +56,7 @@ public class UserServiceImpl {
         return userList;
     }
 
+    @Override
     public boolean addUser(User user, String userPassword) throws ServiceException {
         boolean isAdded;
         try {
@@ -63,6 +67,7 @@ public class UserServiceImpl {
         return isAdded;
     }
 
+    @Override
     public boolean removeUser(int id) throws ServiceException {
         boolean isRemoved;
         try {
@@ -73,6 +78,7 @@ public class UserServiceImpl {
         return isRemoved;
     }
 
+    @Override
     public boolean changeUserRole(int userId, User.Role userRole) throws ServiceException {
         boolean isChanged;
         try {
@@ -83,6 +89,7 @@ public class UserServiceImpl {
         return isChanged;
     }
 
+    @Override
     public boolean editUserInfo(User user) throws ServiceException {
         boolean isEdited;
         try {
@@ -93,6 +100,7 @@ public class UserServiceImpl {
         return isEdited;
     }
 
+    @Override
     public Optional<User> findUserByEmailAndPassword(String email, String password) throws ServiceException {
         LOGGER.debug("Attempt to authorize");
         Optional<User> optionalUser;

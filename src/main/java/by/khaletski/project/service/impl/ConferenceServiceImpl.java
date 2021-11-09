@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConferenceServiceImpl {
+public class ConferenceServiceImpl implements by.khaletski.project.service.ConferenceService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final ConferenceDao conferenceDao;
 
@@ -19,6 +19,7 @@ public class ConferenceServiceImpl {
         this.conferenceDao = conferenceDao;
     }
 
+    @Override
     public List<Conference> findAllConferences() throws ServiceException {
         List<Conference> conferenceList;
         try {
@@ -29,6 +30,7 @@ public class ConferenceServiceImpl {
         return conferenceList;
     }
 
+    @Override
     public List<Conference> findConferencesByName(String conferenceName) throws ServiceException {
         List<Conference> conferenceList = new ArrayList<>();
         if (Validator.isValidName(conferenceName)) {
@@ -41,6 +43,7 @@ public class ConferenceServiceImpl {
         return conferenceList;
     }
 
+    @Override
     public boolean addConference(Conference conference) throws ServiceException {
         boolean isAdded;
         try {
@@ -51,6 +54,7 @@ public class ConferenceServiceImpl {
         return isAdded;
     }
 
+    @Override
     public boolean removeConference(int id) throws ServiceException {
         boolean isRemoved;
         try {
@@ -61,6 +65,7 @@ public class ConferenceServiceImpl {
         return isRemoved;
     }
 
+    @Override
     public boolean editConference(Conference conference) throws ServiceException {
         boolean isEdited;
         try {
@@ -71,6 +76,7 @@ public class ConferenceServiceImpl {
         return isEdited;
     }
 
+    @Override
     public boolean changeConferenceStatus(int id, Conference.Status status) throws ServiceException {
         boolean isChanged;
         try {
