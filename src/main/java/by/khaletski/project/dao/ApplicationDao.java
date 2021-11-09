@@ -1,26 +1,23 @@
 package by.khaletski.project.dao;
 
 import by.khaletski.project.entity.Application;
-import by.khaletski.project.entity.Conference;
-import by.khaletski.project.entity.User;
+import by.khaletski.project.dao.exception.DaoException;
 
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ApplicationDao {
-    boolean addApplication(Application application);
+    boolean addApplication(Application application) throws DaoException;
 
-    boolean editApplication(Application application);
+    boolean editApplication(Application application) throws DaoException;
 
-    boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus);
+    boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws DaoException;
 
-    List<Application> findAllApplications();
+    List<Application> findAllApplications() throws DaoException;
 
-    List<Application> findApplicationsByUserId(int userId);
+    List<Application> findApplicationsByUserId(int userId) throws DaoException;
 
-    List<Application> findApplicationsByStatus(Application.Status applicationStatus);
+    List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws DaoException;
 
-    List<Application> findApplicationsByDate(Date conferenceDate);
+    List<Application> findApplicationsByDate(Date conferenceDate) throws DaoException;
 }

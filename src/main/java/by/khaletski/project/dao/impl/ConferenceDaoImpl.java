@@ -3,6 +3,7 @@ package by.khaletski.project.dao.impl;
 import by.khaletski.project.dao.ConferenceDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Conference;
+import by.khaletski.project.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,7 +40,7 @@ public class ConferenceDaoImpl implements ConferenceDao {
             = "UPDATE conferences SET conference_status=? WHERE id=?";
 
     @Override
-    public List<Conference> findAllConferences() {
+    public List<Conference> findAllConferences() throws DaoException {
         LOGGER.info("Attempt to find all conferences in the database");
         List<Conference> conferenceList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -49,14 +50,15 @@ public class ConferenceDaoImpl implements ConferenceDao {
                 conferenceList.add(getConference(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt find all conferences in the database");
+            throw new DaoException(e);
         }
         return conferenceList;
     }
 
     @Override
-    public List<Conference> findConferencesByName(String conferenceName) {
-        LOGGER.info("Attempt to find conferences in the database by conferenceName");
+    public List<Conference> findConferencesByName(String conferenceName) throws DaoException {
+        LOGGER.info("Attempt to find conferences by conference name in the database");
         List<Conference> conferenceList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CONFERENCE_BY_NAME)) {
@@ -66,14 +68,15 @@ public class ConferenceDaoImpl implements ConferenceDao {
                 conferenceList.add(getConference(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all conferences by conference name in the database");
+            throw new DaoException(e);
         }
         return conferenceList;
     }
 
     @Override
-    public boolean addConference(Conference conference) {
-        LOGGER.info("Attempt to add conference to the database");
+    public boolean addConference(Conference conference) throws DaoException {
+        LOGGER.info("Attempt to add new conference to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_CONFERENCE)) {
@@ -85,18 +88,19 @@ public class ConferenceDaoImpl implements ConferenceDao {
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
-                LOGGER.info("Conference has been added");
+                LOGGER.info("New conference has been added");
             } else {
-                LOGGER.error("Conference has not been added");
+                LOGGER.error("New conference has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to add new conference to the database");
+            throw new DaoException(e);
         }
         return isAdded;
     }
 
     @Override
-    public boolean removeConference(int conferenceId) {
+    public boolean removeConference(int conferenceId) throws DaoException {
         LOGGER.info("Attempt to remove conference from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -110,14 +114,15 @@ public class ConferenceDaoImpl implements ConferenceDao {
                 LOGGER.info("Conference has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to remove conference from the database");
+            throw new DaoException(e);
         }
         return ifRemoved;
     }
 
     @Override
-    public boolean editConference(Conference conference) {
-        LOGGER.info("Attempt to change conference in the database");
+    public boolean editConference(Conference conference) throws DaoException {
+        LOGGER.info("Attempt to edit conference in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_EDIT_CONFERENCE_BY_ID)) {
@@ -129,18 +134,19 @@ public class ConferenceDaoImpl implements ConferenceDao {
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("Conference has been changed");
+                LOGGER.info("Conference has been edited");
             } else {
-                LOGGER.error("Conference has not been changed");
+                LOGGER.error("Conference has not been edited");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to edit conference from the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }
 
     @Override
-    public boolean changeConferenceStatus(int conferenceId, Conference.Status status) {
+    public boolean changeConferenceStatus(int conferenceId, Conference.Status status) throws DaoException {
         LOGGER.info("Attempt to change conference status in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -152,10 +158,11 @@ public class ConferenceDaoImpl implements ConferenceDao {
                 isChanged = true;
                 LOGGER.info("Conference status has been changed");
             } else {
-                LOGGER.info("Conference status has been changed");
+                LOGGER.info("Conference status has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to change conference status in the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }

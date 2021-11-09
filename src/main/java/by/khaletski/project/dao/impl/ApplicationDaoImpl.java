@@ -5,6 +5,7 @@ import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Application;
 import by.khaletski.project.entity.Conference;
 import by.khaletski.project.entity.User;
+import by.khaletski.project.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,8 +57,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
             + "INNER JOIN users ON applications.user_id = users.id WHERE conferences.date=?";
 
     @Override
-    public boolean addApplication(Application application) {
-        LOGGER.info("Try to add application to the database");
+    public boolean addApplication(Application application) throws DaoException {
+        LOGGER.info("Attempt to add new application to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_APPLICATION)) {
@@ -68,18 +69,19 @@ public class ApplicationDaoImpl implements ApplicationDao {
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
-                LOGGER.info("Application has been added:");
+                LOGGER.info("New application has been added:");
             } else {
-                LOGGER.error("Application has not been added");
+                LOGGER.error("New application has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to add new application to the database");
+            throw new DaoException(e);
         }
         return isAdded;
     }
 
     @Override
-    public boolean editApplication(Application application) {
+    public boolean editApplication(Application application) throws DaoException {
         LOGGER.info("Attempt to edit application in the database");
         boolean isEdited = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -97,14 +99,16 @@ public class ApplicationDaoImpl implements ApplicationDao {
                 LOGGER.error("Application has not been edited");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to edit application in the database");
+            throw new DaoException(e);
         }
         return isEdited;
     }
 
     @Override
-    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) {
-        LOGGER.info("Attempt to change application applicationStatus");
+    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus)
+            throws DaoException {
+        LOGGER.info("Attempt to change application status in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
@@ -113,87 +117,88 @@ public class ApplicationDaoImpl implements ApplicationDao {
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("Application applicationStatus has been changed");
+                LOGGER.info("Application status has been changed");
             } else {
-                LOGGER.error("Application applicationStatus has not been changed");
+                LOGGER.error("Application status has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to change application status in the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }
 
     @Override
-    public List<Application> findAllApplications() {
-        LOGGER.info("Attempt to find all applications");
-        List<Application> applications = new ArrayList<>();
+    public List<Application> findAllApplications() throws DaoException {
+        LOGGER.info("Attempt to find all applicationList in the database");
+        List<Application> applicationList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applications.add(getApplication(resultSet));
+                applicationList.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all applications in the database");
+            throw new DaoException(e);
         }
-        LOGGER.info("Applications have been found");
-        return applications;
+        return applicationList;
     }
 
     @Override
-    public List<Application> findApplicationsByUserId(int userId) {
-        LOGGER.info("Attempt to find applications by user id");
-        List<Application> applications = new ArrayList<>();
+    public List<Application> findApplicationsByUserId(int userId) throws DaoException {
+        LOGGER.info("Attempt to find applicationList by user id in the database");
+        List<Application> applicationList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_USER_ID)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applications.add(getApplication(resultSet));
+                applicationList.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all applications by user id in the database");
+            throw new DaoException(e);
         }
-        LOGGER.info("Applications have been found");
-        return applications;
+        return applicationList;
     }
 
     @Override
-    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) {
-        LOGGER.info("Attempt to find all applications by applicationStatus");
-        List<Application> applications = new ArrayList<>();
+    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws DaoException {
+        LOGGER.info("Attempt to find applicationList by application status id in the database");
+        List<Application> applicationList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection
                      .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_STATUS)) {
             preparedStatement.setString(1, applicationStatus.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applications.add(getApplication(resultSet));
+                applicationList.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all applications by application status in the database");
+            throw new DaoException(e);
         }
-        LOGGER.info("Applications have been found");
-        return applications;
+        return applicationList;
     }
 
     @Override
-    public List<Application> findApplicationsByDate(Date conferenceDate) {
-        LOGGER.info("Attempt to find all applications by conferenceDate");
-        List<Application> applications = new ArrayList<>();
+    public List<Application> findApplicationsByDate(Date conferenceDate) throws DaoException {
+        LOGGER.info("Attempt to find all applicationList by conferenceDate");
+        List<Application> applicationList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection
                      .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_DATE)) {
             preparedStatement.setDate(1, conferenceDate);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applications.add(getApplication(resultSet));
+                applicationList.add(getApplication(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all applications by conference date in the database");
+            throw new DaoException(e);
         }
-        LOGGER.info("Applications have been found");
-        return applications;
+        return applicationList;
     }
 
     private Application getApplication(ResultSet resultSet) throws SQLException {
@@ -227,12 +232,11 @@ public class ApplicationDaoImpl implements ApplicationDao {
                 .build();
         Application.Status applicationStatus = Application
                 .Status.valueOf(resultSet.getString("application_status"));
-        Application application = new Application.Builder()
+        return new Application.Builder()
                 .setId(id)
                 .setUser(user)
                 .setConferenceId(conference)
                 .setStatus(applicationStatus)
                 .build();
-        return application;
     }
 }

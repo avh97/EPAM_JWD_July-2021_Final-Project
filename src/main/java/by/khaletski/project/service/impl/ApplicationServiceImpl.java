@@ -2,6 +2,8 @@ package by.khaletski.project.service.impl;
 
 import by.khaletski.project.dao.ApplicationDao;
 import by.khaletski.project.entity.Application;
+import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.service.exception.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,45 +18,73 @@ public class ApplicationServiceImpl {
         this.applicationDao = applicationDao;
     }
 
-    public boolean addApplication(Application application) {
+    public boolean addApplication(Application application) throws ServiceException {
         boolean isAdded;
-        isAdded = applicationDao.addApplication(application);
+        try {
+            isAdded = applicationDao.addApplication(application);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isAdded;
     }
 
-    public boolean editApplication(Application application) {
+    public boolean editApplication(Application application) throws ServiceException {
         boolean isEdited;
-        isEdited = applicationDao.editApplication(application);
+        try {
+            isEdited = applicationDao.editApplication(application);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isEdited;
     }
 
-    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) {
+    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws ServiceException {
         boolean isChanged;
-        isChanged = applicationDao.changeApplicationStatus(applicationId, applicationStatus);
+        try {
+            isChanged = applicationDao.changeApplicationStatus(applicationId, applicationStatus);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isChanged;
     }
 
-    public List<Application> findAllApplications() {
+    public List<Application> findAllApplications() throws ServiceException {
         List<Application> applicationList;
-        applicationList = applicationDao.findAllApplications();
+        try {
+            applicationList = applicationDao.findAllApplications();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return applicationList;
     }
 
-    public List<Application> findApplicationsByUserId(int userId) {
+    public List<Application> findApplicationsByUserId(int userId) throws ServiceException {
         List<Application> applicationList;
-        applicationList = applicationDao.findApplicationsByUserId(userId);
+        try {
+            applicationList = applicationDao.findApplicationsByUserId(userId);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return applicationList;
     }
 
-    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) {
+    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws ServiceException {
         List<Application> applicationList;
-        applicationList = applicationDao.findApplicationsByStatus(applicationStatus);
+        try {
+            applicationList = applicationDao.findApplicationsByStatus(applicationStatus);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return applicationList;
     }
 
-    public List<Application> findApplicationsByDate(Date conferenceDate) {
+    public List<Application> findApplicationsByDate(Date conferenceDate) throws ServiceException {
         List<Application> applicationList;
-        applicationList = applicationDao.findApplicationsByDate(conferenceDate);
+        try {
+            applicationList = applicationDao.findApplicationsByDate(conferenceDate);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return applicationList;
     }
 }

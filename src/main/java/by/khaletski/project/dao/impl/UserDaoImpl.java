@@ -3,6 +3,7 @@ package by.khaletski.project.dao.impl;
 import by.khaletski.project.dao.UserDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.User;
+import by.khaletski.project.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,63 +37,67 @@ public class UserDaoImpl implements UserDao {
             = "UPDATE users SET role=? WHERE id=?";
     private static final String SQL_EDIT_USER_INFO_BY_ID
             = "UPDATE users SET email=?, name=?, patronymic=?, surname=?, role=? WHERE id=?";
-    private static final String SQL_FIND_PASSWORD_BY_EMAIL = "SELECT password FROM users WHERE email=?";
+    private static final String SQL_FIND_PASSWORD_BY_EMAIL
+            = "SELECT password FROM users WHERE email=?";
     private static final String SQL_FIND_USER_BY_EMAIL =
             "SELECT id, email, name, patronymic, surname, role FROM users WHERE email=?";
 
     @Override
-    public List<User> findAllUsers() {
+    public List<User> findAllUsers() throws DaoException {
         LOGGER.info("Attempt to find all users in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_USERS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                userList.add(getUser(resultSet));
+                userList.add(retrieveUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all users in the database");
+            throw new DaoException(e);
         }
         return userList;
     }
 
     @Override
-    public List<User> findUsersBySurname(String userSurname) {
-        LOGGER.info("Attempt to find all users by userSurname in the database");
+    public List<User> findUsersBySurname(String userSurname) throws DaoException {
+        LOGGER.info("Attempt to find all users by surname in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_SURNAME)) {
             statement.setString(1, userSurname);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                userList.add(getUser(resultSet));
+                userList.add(retrieveUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all users by surname in the database");
+            throw new DaoException(e);
         }
         return userList;
     }
 
     @Override
-    public List<User> findUsersByRole(User.Role userRole) {
-        LOGGER.info("Attempt to find all users by userRole in the database");
+    public List<User> findUsersByRole(User.Role userRole) throws DaoException {
+        LOGGER.info("Attempt to find all users by role in the database");
         List<User> userList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_ROLE)) {
             statement.setString(1, userRole.name());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                userList.add(getUser(resultSet));
+                userList.add(retrieveUser(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all users by role in the database");
+            throw new DaoException(e);
         }
         return userList;
     }
 
     @Override
-    public boolean addUser(User user, String userPassword) {
-        LOGGER.info("Attempt to add user to the database");
+    public boolean addUser(User user, String userPassword) throws DaoException {
+        LOGGER.info("Attempt to add new user to the database");
         boolean ifAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_ADD_USER)) {
@@ -104,18 +109,19 @@ public class UserDaoImpl implements UserDao {
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifAdded = true;
-                LOGGER.info("User has been added");
+                LOGGER.info("New user has been added");
             } else {
-                LOGGER.info("User has not been added");
+                LOGGER.info("New has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to add new user to the database");
+            throw new DaoException(e);
         }
         return ifAdded;
     }
 
     @Override
-    public boolean removeUser(int userId) {
+    public boolean removeUser(int userId) throws DaoException {
         LOGGER.info("Attempt to remove user from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -129,14 +135,15 @@ public class UserDaoImpl implements UserDao {
                 LOGGER.info("User has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to remove user from the database");
+            throw new DaoException(e);
         }
         return ifRemoved;
     }
 
     @Override
-    public boolean changeUserRole(int userId, User.Role userRole) {
-        LOGGER.info("Attempt to change user userRole in the database");
+    public boolean changeUserRole(int userId, User.Role userRole) throws DaoException {
+        LOGGER.info("Attempt to change user role in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_USER_ROLE_BY_ID)) {
@@ -145,19 +152,20 @@ public class UserDaoImpl implements UserDao {
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("User userRole has been changed");
+                LOGGER.info("User role has been changed");
             } else {
-                LOGGER.info("User userRole has been changed");
+                LOGGER.info("User role has been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to change user role in the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }
 
     @Override
-    public boolean editUserInfo(User user) {
-        LOGGER.info("Attempt to change user personal info in the database");
+    public boolean editUserInfo(User user) throws DaoException {
+        LOGGER.info("Attempt to change user info in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_EDIT_USER_INFO_BY_ID)) {
@@ -169,20 +177,21 @@ public class UserDaoImpl implements UserDao {
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
-                LOGGER.info("User personal information has been changed");
+                LOGGER.info("User info has been changed");
             } else {
-                LOGGER.info("User personal information has not been changed");
+                LOGGER.info("User info has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to change user info in the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }
 
     @Override
-    public Optional<String> findPasswordByEmail(String userEmail) {
-        LOGGER.info("Attempt to find password by userEmail");
-        Optional<String> optionalPassword = Optional.empty();
+    public Optional<String> findPasswordByEmail(String userEmail) throws DaoException {
+        LOGGER.info("Attempt to find user by password in the database");
+        Optional<String> optionalPassword;
         String password;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_PASSWORD_BY_EMAIL)) {
@@ -195,35 +204,34 @@ public class UserDaoImpl implements UserDao {
                 optionalPassword = Optional.empty();
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find user by password in the database");
+            throw new DaoException(e);
         }
         return optionalPassword;
     }
 
     @Override
-    public Optional<User> findUserByEmail(String userEmail) {
-        LOGGER.info("Attempt to find password in the database by userEmail");
-        Optional<User> optionalUser = Optional.empty();
+    public Optional<User> findUserByEmail(String userEmail) throws DaoException {
+        LOGGER.info("Attempt to find user by email in the database");
+        Optional<User> optionalUser;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_USER_BY_EMAIL)) {
-            LOGGER.debug("in try block, login");
             statement.setString(1, userEmail);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                User user = getUser(resultSet);
+                User user = retrieveUser(resultSet);
                 optionalUser = Optional.of(user);
-                LOGGER.info("User has been found");
             } else {
-                LOGGER.info("User has not been found");
                 optionalUser = Optional.empty();
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find user by email in the database");
+            throw new DaoException(e);
         }
         return optionalUser;
     }
 
-    private User getUser(ResultSet resultSet) throws SQLException {
+    private User retrieveUser(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String email = resultSet.getString("email");
         String name = resultSet.getString("name");

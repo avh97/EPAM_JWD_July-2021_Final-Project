@@ -3,6 +3,7 @@ package by.khaletski.project.dao.impl;
 import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Topic;
+import by.khaletski.project.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,7 @@ public class TopicDaoImpl implements TopicDao {
             = "UPDATE procedures SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
 
     @Override
-    public List<Topic> findAllTopics() {
+    public List<Topic> findAllTopics() throws DaoException {
         LOGGER.info("Attempt to find all topics in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -43,14 +44,15 @@ public class TopicDaoImpl implements TopicDao {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all topics in the database");
+            throw new DaoException(e);
         }
         return topicList;
     }
 
     @Override
-    public List<Topic> findTopicsByName(String topicName) {
-        LOGGER.info("Attempt to find all topics by topicName in the database");
+    public List<Topic> findTopicsByName(String topicName) throws DaoException {
+        LOGGER.info("Attempt to find all topics by topic name in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_NAME)) {
@@ -60,14 +62,15 @@ public class TopicDaoImpl implements TopicDao {
                 topicList.add(getTopic(resultSet));
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to find all topics by topic name in the database");
+            throw new DaoException(e);
         }
         return topicList;
     }
 
     @Override
-    public boolean addTopic(Topic topic) {
-        LOGGER.info("Attempt to add topic to the database");
+    public boolean addTopic(Topic topic) throws DaoException {
+        LOGGER.info("Attempt to add new topic to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_ADD_TOPIC)) {
@@ -77,18 +80,19 @@ public class TopicDaoImpl implements TopicDao {
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
-                LOGGER.info("Topic has been added");
+                LOGGER.info("New topic has been added");
             } else {
-                LOGGER.error("Topic has not been added");
+                LOGGER.error("New topic has not been added");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to add topic to the database");
+            throw new DaoException(e);
         }
         return isAdded;
     }
 
     @Override
-    public boolean removeTopic(int topicId) {
+    public boolean removeTopic(int topicId) throws DaoException {
         LOGGER.info("Attempt to remove topic from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -102,13 +106,14 @@ public class TopicDaoImpl implements TopicDao {
                 LOGGER.info("Topic has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to remove topic from the database");
+            throw new DaoException(e);
         }
         return ifRemoved;
     }
 
     @Override
-    public boolean editTopic(Topic topic) {
+    public boolean editTopic(Topic topic) throws DaoException {
         LOGGER.info("Attempt to change topic in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -125,7 +130,8 @@ public class TopicDaoImpl implements TopicDao {
                 LOGGER.error("Topic has not been changed");
             }
         } catch (SQLException e) {
-            LOGGER.error("SQL exception");
+            LOGGER.error("Failed attempt to change topic in the database");
+            throw new DaoException(e);
         }
         return isChanged;
     }

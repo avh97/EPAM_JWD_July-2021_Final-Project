@@ -2,6 +2,8 @@ package by.khaletski.project.service.impl;
 
 import by.khaletski.project.dao.ConferenceDao;
 import by.khaletski.project.entity.Conference;
+import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,41 +19,65 @@ public class ConferenceServiceImpl {
         this.conferenceDao = conferenceDao;
     }
 
-    public List<Conference> findAllConferences() {
+    public List<Conference> findAllConferences() throws ServiceException {
         List<Conference> conferenceList;
-        conferenceList = conferenceDao.findAllConferences();
-        return conferenceList;
-    }
-
-    public List<Conference> findConferencesByName(String conferenceName){
-        List<Conference> conferenceList = new ArrayList<>();
-        if (Validator.isValidName(conferenceName)) {
-            conferenceList = conferenceDao.findConferencesByName(conferenceName);
+        try {
+            conferenceList = conferenceDao.findAllConferences();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
         }
         return conferenceList;
     }
 
-    public boolean addConference(Conference conference){
+    public List<Conference> findConferencesByName(String conferenceName) throws ServiceException {
+        List<Conference> conferenceList = new ArrayList<>();
+        if (Validator.isValidName(conferenceName)) {
+            try {
+                conferenceList = conferenceDao.findConferencesByName(conferenceName);
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
+        }
+        return conferenceList;
+    }
+
+    public boolean addConference(Conference conference) throws ServiceException {
         boolean isAdded;
-        isAdded = conferenceDao.addConference(conference);
+        try {
+            isAdded = conferenceDao.addConference(conference);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isAdded;
     }
 
-    public boolean removeConference(int id){
+    public boolean removeConference(int id) throws ServiceException {
         boolean isRemoved;
-        isRemoved = conferenceDao.removeConference(id);
+        try {
+            isRemoved = conferenceDao.removeConference(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isRemoved;
     }
 
-    public boolean editConference(Conference conference){
+    public boolean editConference(Conference conference) throws ServiceException {
         boolean isEdited;
-        isEdited = conferenceDao.editConference(conference);
+        try {
+            isEdited = conferenceDao.editConference(conference);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isEdited;
     }
 
-    public boolean changeConferenceStatus(int id, Conference.Status status){
+    public boolean changeConferenceStatus(int id, Conference.Status status) throws ServiceException {
         boolean isChanged;
-        isChanged = conferenceDao.changeConferenceStatus(id, status);
+        try {
+            isChanged = conferenceDao.changeConferenceStatus(id, status);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isChanged;
     }
 }

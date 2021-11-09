@@ -1,19 +1,18 @@
 package by.khaletski.project.dao;
 
 import by.khaletski.project.entity.Topic;
+import by.khaletski.project.dao.exception.DaoException;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface TopicDao {
-    List<Topic> findAllTopics();
+    List<Topic> findAllTopics() throws DaoException;
 
-    List<Topic> findTopicsByName(String topicName);
+    List<Topic> findTopicsByName(String topicName) throws DaoException;
 
-    boolean addTopic(Topic topic);
+    boolean addTopic(Topic topic) throws DaoException;
 
-    boolean removeTopic(int topicId);
+    boolean removeTopic(int topicId) throws DaoException;
 
-    boolean editTopic(Topic topic);
+    boolean editTopic(Topic topic) throws DaoException;
 }

@@ -2,6 +2,8 @@ package by.khaletski.project.service.impl;
 
 import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.entity.Topic;
+import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,35 +19,55 @@ public class TopicServiceImpl {
         this.topicDao = topicDao;
     }
 
-    List<Topic> findAllTopics() {
+    List<Topic> findAllTopics() throws ServiceException {
         List<Topic> topicList;
-        topicList = topicDao.findAllTopics();
-        return topicList;
-    }
-
-    public List<Topic> findTopicsByName(String topicName) {
-        List<Topic> topicList = new ArrayList<>();
-        if (Validator.isValidName(topicName)) {
-            topicList = topicDao.findTopicsByName(topicName);
+        try {
+            topicList = topicDao.findAllTopics();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
         }
         return topicList;
     }
 
-    boolean addTopic(Topic topic) {
+    public List<Topic> findTopicsByName(String topicName) throws ServiceException {
+        List<Topic> topicList = new ArrayList<>();
+        if (Validator.isValidName(topicName)) {
+            try {
+                topicList = topicDao.findTopicsByName(topicName);
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
+        }
+        return topicList;
+    }
+
+    boolean addTopic(Topic topic) throws ServiceException {
         boolean isAdded;
-        isAdded = topicDao.addTopic(topic);
+        try {
+            isAdded = topicDao.addTopic(topic);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isAdded;
     }
 
-    boolean removeTopic(int topicId) {
+    boolean removeTopic(int topicId) throws ServiceException {
         boolean isRemoved;
-        isRemoved = topicDao.removeTopic(topicId);
+        try {
+            isRemoved = topicDao.removeTopic(topicId);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isRemoved;
     }
 
-    boolean editTopic(Topic topic) {
+    boolean editTopic(Topic topic) throws ServiceException {
         boolean isEdited;
-        isEdited = topicDao.editTopic(topic);
+        try {
+            isEdited = topicDao.editTopic(topic);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isEdited;
     }
 }

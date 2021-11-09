@@ -2,6 +2,8 @@ package by.khaletski.project.service.impl;
 
 import by.khaletski.project.dao.UserDao;
 import by.khaletski.project.entity.User;
+import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.PasswordEncoder;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
@@ -19,64 +21,98 @@ public class UserServiceImpl {
         this.userDao = userDao;
     }
 
-    public List<User> findAllUsers() {
+    public List<User> findAllUsers() throws ServiceException {
         List<User> userList;
-        userList = userDao.findAllUsers();
-        return userList;
-    }
-
-    public List<User> findUsersBySurname(String userSurname) {
-        List<User> userList = new ArrayList<>();
-        if (Validator.isValidName(userSurname)) {
-            userList = userDao.findUsersBySurname(userSurname);
+        try {
+            userList = userDao.findAllUsers();
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
         }
         return userList;
     }
 
-    public List<User> findUsersByRole(User.Role userRole) {
-        List<User> userList;
-        userList = userDao.findUsersByRole(userRole);
+    public List<User> findUsersBySurname(String userSurname) throws ServiceException {
+        List<User> userList = new ArrayList<>();
+        if (Validator.isValidName(userSurname)) {
+            try {
+                userList = userDao.findUsersBySurname(userSurname);
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
+            }
+        }
         return userList;
     }
 
-    public boolean addUser(User user, String userPassword) {
+    public List<User> findUsersByRole(User.Role userRole) throws ServiceException {
+        List<User> userList;
+        try {
+            userList = userDao.findUsersByRole(userRole);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
+        return userList;
+    }
+
+    public boolean addUser(User user, String userPassword) throws ServiceException {
         boolean isAdded;
-        isAdded = userDao.addUser(user, userPassword);
+        try {
+            isAdded = userDao.addUser(user, userPassword);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isAdded;
     }
 
-    public boolean removeUser(int id) {
+    public boolean removeUser(int id) throws ServiceException {
         boolean isRemoved;
-        isRemoved = userDao.removeUser(id);
+        try {
+            isRemoved = userDao.removeUser(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isRemoved;
     }
 
-    public boolean changeUserRole(User.Role role, int id) {
+    public boolean changeUserRole(int userId, User.Role userRole) throws ServiceException {
         boolean isChanged;
-        isChanged = userDao.changeUserRole(id, role);
+        try {
+            isChanged = userDao.changeUserRole(userId, userRole);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isChanged;
     }
 
-    public boolean editUserInfo(User user) {
+    public boolean editUserInfo(User user) throws ServiceException {
         boolean isEdited;
-        isEdited = userDao.editUserInfo(user);
+        try {
+            isEdited = userDao.editUserInfo(user);
+        } catch (DaoException e) {
+            throw new ServiceException(e.getMessage());
+        }
         return isEdited;
     }
 
-    public Optional<User> findUserByEmailAndPassword(String email, String password) {
-        Optional<User> optionalUser = Optional.empty();
+    public Optional<User> findUserByEmailAndPassword(String email, String password) throws ServiceException {
+        LOGGER.debug("Attempt to authorize");
+        Optional<User> optionalUser;
         if (Validator.isValidEmail(email)) {
             String encodedPassword = PasswordEncoder.encodePassword(password);
-            Optional<String> passwordFromDBOptional = userDao.findPasswordByEmail(email);
-            if (passwordFromDBOptional.isPresent()) {
-                String passwordFromDB = passwordFromDBOptional.get();
-                if (passwordFromDB.equals(encodedPassword)) {
-                    optionalUser = userDao.findUserByEmail(email);
+            try {
+                Optional<String> passwordFromDBOptional = userDao.findPasswordByEmail(email);
+                if (passwordFromDBOptional.isPresent()) {
+                    String passwordFromDB = passwordFromDBOptional.get();
+                    if (passwordFromDB.equals(encodedPassword)) {
+                        LOGGER.info("Authorization is successful");
+                        optionalUser = userDao.findUserByEmail(email);
+                    } else {
+                        optionalUser = Optional.empty();
+                    }
                 } else {
                     optionalUser = Optional.empty();
                 }
-            } else {
-                optionalUser = Optional.empty();
+            } catch (DaoException e) {
+                throw new ServiceException(e.getMessage());
             }
         } else {
             optionalUser = Optional.empty();
