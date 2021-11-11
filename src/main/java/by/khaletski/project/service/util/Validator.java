@@ -11,6 +11,8 @@ public class Validator {
     private static final String EMAIL_REGEX = "\\w+@\\p{Alpha}+\\.\\p{Alpha}{2,}";
     private static final String NAME_REGEX = "[\\p{Alpha}А-Яа-яA-Za-z\\s-]{1,255}";
     private static final String PASSWORD_REGEX = "[a-zA-Z\\d]{1,64}";
+    private static final String DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d";
+    private static final String IMAGE_NAME_REGEX = "[\\p{Alpha}A-Za-z]{1,255}\\.jpg";
 
     public static boolean isValidName(String name) {
         if (name == null || name.isBlank()) {
@@ -20,7 +22,7 @@ public class Validator {
     }
 
     public static boolean isValidEmail(String email) {
-        boolean isValid = true;
+        boolean isValid;
         if (!email.isBlank()) {
             Pattern pattern = Pattern.compile(EMAIL_REGEX);
             Matcher matcher = pattern.matcher(email);
@@ -36,5 +38,19 @@ public class Validator {
             return false;
         }
         return password.matches(PASSWORD_REGEX);
+    }
+
+    public static boolean isDateFormatValid(String dateAsString) {
+        if (dateAsString == null || dateAsString.isBlank()) {
+            return false;
+        }
+        return dateAsString.matches(DATE_REGEX);
+    }
+
+    public static boolean isValidImageName(String imageName) {
+        if (imageName == null || imageName.isBlank()) {
+            return false;
+        }
+        return imageName.matches(IMAGE_NAME_REGEX);
     }
 }
