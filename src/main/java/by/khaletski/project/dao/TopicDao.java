@@ -8,7 +8,9 @@ import java.util.List;
 public interface TopicDao {
     List<Topic> findAllTopics() throws DaoException;
 
-    List<Topic> findTopicsByName(String topicName) throws DaoException;
+    List<Topic> findTopicByName(String topicName) throws DaoException;
+
+    Topic findTopicById(int topicId) throws DaoException;
 
     boolean addTopic(Topic topic) throws DaoException;
 

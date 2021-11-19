@@ -113,7 +113,7 @@ public class Application {
             return this;
         }
 
-        public Builder setConferenceId(Conference conference) {
+        public Builder setConference(Conference conference) {
             newApplication.conference = conference;
             return this;
         }

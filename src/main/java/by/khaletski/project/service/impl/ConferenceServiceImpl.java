@@ -1,22 +1,27 @@
 package by.khaletski.project.service.impl;
 
 import by.khaletski.project.dao.ConferenceDao;
-import by.khaletski.project.entity.Conference;
+import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.entity.Conference;
+import by.khaletski.project.entity.Topic;
+import by.khaletski.project.entity.User;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class ConferenceServiceImpl implements by.khaletski.project.service.ConferenceService {
-    private static final Logger LOGGER = LogManager.getLogger();
     private final ConferenceDao conferenceDao;
+    private final TopicDao topicDao;
 
-    public ConferenceServiceImpl(ConferenceDao conferenceDao) {
+    public ConferenceServiceImpl(ConferenceDao conferenceDao, TopicDao topicDao) {
         this.conferenceDao = conferenceDao;
+        this.topicDao = topicDao;
     }
 
     @Override
@@ -25,7 +30,7 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
         try {
             conferenceList = conferenceDao.findAllConferences();
         } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
         return conferenceList;
     }
@@ -37,19 +42,41 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
             try {
                 conferenceList = conferenceDao.findConferencesByName(conferenceName);
             } catch (DaoException e) {
-                throw new ServiceException(e.getMessage());
+                throw new ServiceException(e);
             }
         }
         return conferenceList;
     }
 
     @Override
-    public boolean addConference(Conference conference) throws ServiceException {
+    public boolean addConference(Map<String, String> conferenceData) throws ServiceException {
         boolean isAdded;
-        try {
-            isAdded = conferenceDao.addConference(conference);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+        Topic topic = null;
+        if (Validator.isValidName(conferenceData.get("conference_name"))
+                && Validator.isValidName(conferenceData.get("conference_description"))
+                && Validator.isDateFormatValid(conferenceData.get("date"))) {
+            try {
+                topic = topicDao.findTopicById(Integer.parseInt("topic_id"));
+                if (topic == null) {
+                    return false;
+                }
+            } catch (DaoException e) {
+                throw new ServiceException(e);
+            }
+            Conference conference = new Conference.Builder()
+                    .setName(conferenceData.get("conference_name"))
+                    .setTopic(topic)
+                    .setDescription(conferenceData.get("conference_description"))
+                    .setDate(Date.valueOf(conferenceData.get(("date"))))
+                    .setStatus(Conference.Status.PENDING)
+                    .build();
+            try {
+                isAdded = conferenceDao.addConference(conference);
+            } catch (DaoException e) {
+                throw new ServiceException(e);
+            }
+        } else {
+            isAdded = false;
         }
         return isAdded;
     }
@@ -66,12 +93,33 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
     }
 
     @Override
-    public boolean editConference(Conference conference) throws ServiceException {
+    public boolean editConference(Conference conference, Map<String, String> conferenceData) throws ServiceException {
         boolean isEdited;
-        try {
-            isEdited = conferenceDao.editConference(conference);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+        if (Validator.isValidName(conferenceData.get("conference_name"))
+                && Validator.isValidName(conferenceData.get("conference_description"))
+                && Validator.isDateFormatValid(conferenceData.get("date"))) {
+            try {
+                Topic topic = topicDao.findTopicById(Integer.parseInt("topic_id"));
+                if (topic == null) {
+                    return false;
+                }
+                conference = new Conference.Builder()
+                        .setName(conferenceData.get("conference_name"))
+                        .setTopic(topic)
+                        .setDescription(conferenceData.get("conference_description"))
+                        .setDate(Date.valueOf(conferenceData.get(("date"))))
+                        .setStatus(Conference.Status.valueOf("conference_status"))
+                        .build();
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
+            try {
+                isEdited = conferenceDao.addConference(conference);
+            } catch (DaoException e) {
+                throw new ServiceException(e);
+            }
+        } else {
+            isEdited = false;
         }
         return isEdited;
     }

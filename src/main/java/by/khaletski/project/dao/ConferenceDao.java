@@ -10,6 +10,8 @@ public interface ConferenceDao {
 
     List<Conference> findConferencesByName(String conferenceName) throws DaoException;
 
+    Conference findConferenceById(int conferenceId) throws DaoException;
+
     boolean addConference(Conference conference) throws DaoException;
 
     boolean removeConference(int conferenceId) throws DaoException;

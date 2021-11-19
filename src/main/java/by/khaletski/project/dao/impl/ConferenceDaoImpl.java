@@ -28,6 +28,8 @@ public class ConferenceDaoImpl implements ConferenceDao {
     private static final String SQL_FIND_CONFERENCE_BY_NAME
             = "SELECT id, topic_id, conference_name, conference_description, date, conference_status "
             + "FROM conferences WHERE conference_name=?";
+    private static final String SQL_FIND_CONFERENCE_BY_ID
+            = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE id=?";
     private static final String SQL_ADD_CONFERENCE
             = "INSERT INTO conferences"
             + " (topic_id, conference_name, conference_description, date, conference_status) values(?,?,?,?,?)";
@@ -47,7 +49,7 @@ public class ConferenceDaoImpl implements ConferenceDao {
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_CONFERENCES)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                conferenceList.add(getConference(resultSet));
+                conferenceList.add(retrieveConference(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt find all conferences in the database");
@@ -65,13 +67,31 @@ public class ConferenceDaoImpl implements ConferenceDao {
             preparedStatement.setString(1, conferenceName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                conferenceList.add(getConference(resultSet));
+                conferenceList.add(retrieveConference(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all conferences by conference name in the database");
             throw new DaoException(e);
         }
         return conferenceList;
+    }
+
+    @Override
+    public Conference findConferenceById(int conferenceId) throws DaoException {
+        LOGGER.info("Attempt to find conference by conference id in the database");
+        Conference conference = null;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CONFERENCE_BY_ID)) {
+            preparedStatement.setInt(1, conferenceId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                conference = retrieveConference(resultSet);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find conference by conference id in the database");
+            throw new DaoException(e);
+        }
+        return conference;
     }
 
     @Override
@@ -167,7 +187,7 @@ public class ConferenceDaoImpl implements ConferenceDao {
         return isChanged;
     }
 
-    private Conference getConference(ResultSet resultSet) throws SQLException {
+    private Conference retrieveConference(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("conference_name");
         String description = resultSet.getString("conference_description");

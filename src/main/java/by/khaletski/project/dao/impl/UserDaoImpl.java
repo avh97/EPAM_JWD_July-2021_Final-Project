@@ -1,9 +1,10 @@
 package by.khaletski.project.dao.impl;
 
 import by.khaletski.project.dao.UserDao;
-import by.khaletski.project.dao.pool.ConnectionPool;
-import by.khaletski.project.entity.User;
 import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.dao.pool.ConnectionPool;
+import by.khaletski.project.entity.Topic;
+import by.khaletski.project.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,6 +30,8 @@ public class UserDaoImpl implements UserDao {
             = "SELECT id, email, name, patronymic, surname, role FROM users WHERE surname=?";
     private static final String SQL_FIND_USERS_BY_ROLE
             = "SELECT id, email, name, patronymic, surname, role FROM users WHERE role=?";
+    private static final String SQL_FIND_USER_BY_ID
+            = "SELECT id, email, name, patronymic, surname, role FROM users WHERE id=?";
     private static final String SQL_ADD_USER
             = "INSERT INTO users (id, email, name, patronymic, surname, role) values(?,?,?,?,?,?)";
     private static final String SQL_REMOVE_USER_BY_ID
@@ -93,6 +96,24 @@ public class UserDaoImpl implements UserDao {
             throw new DaoException(e);
         }
         return userList;
+    }
+
+    @Override
+    public User findUserById(int userId) throws DaoException {
+        LOGGER.info("Attempt to find user by user ID in the database");
+        User topic = null;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_BY_ID)) {
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                topic = retrieveUser(resultSet);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find user by user ID in the database");
+            throw new DaoException(e);
+        }
+        return topic;
     }
 
     @Override

@@ -122,6 +122,11 @@ public class Conference {
             return this;
         }
 
+        public Builder setTopic(Topic topic) {
+            newConference.topic = topic;
+            return this;
+        }
+
         public Builder setName(String conferenceName) {
             newConference.conferenceName = conferenceName;
             return this;

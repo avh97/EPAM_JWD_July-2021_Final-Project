@@ -26,6 +26,8 @@ public class TopicDaoImpl implements TopicDao {
             = "SELECT id, topic_name, image_name, topic_description FROM topics";
     private static final String SQL_FIND_TOPIC_BY_NAME
             = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE name=?";
+    private static final String SQL_FIND_TOPIC_BY_ID
+            = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE id=?";
     private static final String SQL_ADD_TOPIC
             = "INSERT INTO procedures (topic_name, image_name, topic_description) values(?,?,?)";
     private static final String SQL_REMOVE_TOPIC_BY_ID
@@ -41,7 +43,7 @@ public class TopicDaoImpl implements TopicDao {
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_TOPICS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                topicList.add(getTopic(resultSet));
+                topicList.add(retrieveTopic(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all topics in the database");
@@ -51,7 +53,7 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public List<Topic> findTopicsByName(String topicName) throws DaoException {
+    public List<Topic> findTopicByName(String topicName) throws DaoException {
         LOGGER.info("Attempt to find all topics by topic name in the database");
         List<Topic> topicList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
@@ -59,13 +61,31 @@ public class TopicDaoImpl implements TopicDao {
             preparedStatement.setString(1, topicName);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                topicList.add(getTopic(resultSet));
+                topicList.add(retrieveTopic(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all topics by topic name in the database");
             throw new DaoException(e);
         }
         return topicList;
+    }
+
+    @Override
+    public Topic findTopicById(int topicId) throws DaoException {
+        LOGGER.info("Attempt to find topic by topic id in the database");
+        Topic topic = null;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_ID)) {
+            preparedStatement.setInt(1, topicId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                topic = retrieveTopic(resultSet);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find topic by topic id in the database");
+            throw new DaoException(e);
+        }
+        return topic;
     }
 
     @Override
@@ -136,7 +156,7 @@ public class TopicDaoImpl implements TopicDao {
         return isChanged;
     }
 
-    private Topic getTopic(ResultSet resultSet) throws SQLException {
+    private Topic retrieveTopic(ResultSet resultSet) throws SQLException {
         int procedureId = resultSet.getInt("id");
         String name = resultSet.getString("topic_name");
         String imageName = resultSet.getString("image_name");

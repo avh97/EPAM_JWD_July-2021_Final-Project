@@ -1,14 +1,10 @@
 package by.khaletski.project.service.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Validator {
-    public static final Logger LOGGER = LogManager.getLogger();
-    private static final String EMAIL_REGEX = "\\w+@\\p{Alpha}+\\.\\p{Alpha}{2,}";
+public final class Validator {
+    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$";
     private static final String NAME_REGEX = "[\\p{Alpha}А-Яа-яA-Za-z\\s-]{1,255}";
     private static final String PASSWORD_REGEX = "[a-zA-Z\\d]{1,64}";
     private static final String DATE_REGEX = "\\d\\d\\d\\d-\\d\\d-\\d\\d";

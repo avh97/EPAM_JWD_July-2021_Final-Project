@@ -5,11 +5,12 @@ import by.khaletski.project.service.exception.ServiceException;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationService {
-    boolean addApplication(Application application) throws ServiceException;
+    boolean addApplication(Map<String, String> applicationData) throws ServiceException;
 
-    boolean editApplication(Application application) throws ServiceException;
+    boolean editApplication(Map<String, String> applicationData) throws ServiceException;
 
     boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws ServiceException;
 

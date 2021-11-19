@@ -136,7 +136,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applicationList.add(getApplication(resultSet));
+                applicationList.add(retrieveApplication(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all applications in the database");
@@ -154,7 +154,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applicationList.add(getApplication(resultSet));
+                applicationList.add(retrieveApplication(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all applications by user id in the database");
@@ -173,7 +173,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
             preparedStatement.setString(1, applicationStatus.name());
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applicationList.add(getApplication(resultSet));
+                applicationList.add(retrieveApplication(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all applications by application status in the database");
@@ -192,7 +192,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
             preparedStatement.setDate(1, conferenceDate);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                applicationList.add(getApplication(resultSet));
+                applicationList.add(retrieveApplication(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all applications by conference date in the database");
@@ -201,7 +201,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
         return applicationList;
     }
 
-    private Application getApplication(ResultSet resultSet) throws SQLException {
+    private Application retrieveApplication(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         int userId = resultSet.getInt("user_id");
         String userEmail = resultSet.getString("email");
@@ -235,7 +235,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
         return new Application.Builder()
                 .setId(id)
                 .setUser(user)
-                .setConferenceId(conference)
+                .setConference(conference)
                 .setStatus(applicationStatus)
                 .build();
     }
