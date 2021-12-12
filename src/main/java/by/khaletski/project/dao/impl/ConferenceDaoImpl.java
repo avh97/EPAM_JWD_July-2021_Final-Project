@@ -1,9 +1,11 @@
 package by.khaletski.project.dao.impl;
 
 import by.khaletski.project.dao.ConferenceDao;
+import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Conference;
 import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.entity.Topic;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Dao class "ConferenceDao"
@@ -22,11 +25,12 @@ import java.util.List;
  */
 
 public class ConferenceDaoImpl implements ConferenceDao {
+    TopicDao topicDao = new TopicDaoImpl();
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_CONFERENCES
             = "SELECT id, topic_id, conference_name, conference_description, date, conference_status FROM conferences";
     private static final String SQL_FIND_CONFERENCE_BY_NAME
-            = "SELECT id, topic_id, conference_name, conference_description, date, conference_status "
+            = "SELECT id, topic_id, conference_name, conference_description, date, conference_status"
             + "FROM conferences WHERE conference_name=?";
     private static final String SQL_FIND_CONFERENCE_BY_ID
             = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE id=?";
@@ -77,21 +81,22 @@ public class ConferenceDaoImpl implements ConferenceDao {
     }
 
     @Override
-    public Conference findConferenceById(int conferenceId) throws DaoException {
+    public Optional<Conference> findConferenceById(int conferenceId) throws DaoException {
         LOGGER.info("Attempt to find conference by conference id in the database");
-        Conference conference = null;
+        Optional<Conference> optionalConference = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CONFERENCE_BY_ID)) {
             preparedStatement.setInt(1, conferenceId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                conference = retrieveConference(resultSet);
+                Conference conference = retrieveConference(resultSet);
+                optionalConference = Optional.of(conference);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find conference by conference id in the database");
             throw new DaoException(e);
         }
-        return conference;
+        return optionalConference;
     }
 
     @Override
@@ -103,7 +108,7 @@ public class ConferenceDaoImpl implements ConferenceDao {
             preparedStatement.setInt(1, conference.getTopic().getId());
             preparedStatement.setString(2, conference.getConferenceName());
             preparedStatement.setString(3, conference.getConferenceDescription());
-            preparedStatement.setDate(4, conference.getDate());
+            preparedStatement.setDate(4, conference.getConferenceDate());
             preparedStatement.setString(5, conference.getConferenceStatus().name());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
@@ -148,7 +153,7 @@ public class ConferenceDaoImpl implements ConferenceDao {
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_EDIT_CONFERENCE_BY_ID)) {
             preparedStatement.setString(1, conference.getConferenceName());
             preparedStatement.setString(2, conference.getConferenceDescription());
-            preparedStatement.setDate(3, conference.getDate());
+            preparedStatement.setDate(3, conference.getConferenceDate());
             preparedStatement.setString(4, conference.getConferenceStatus().name());
             preparedStatement.setInt(5, conference.getId());
             int rowCount = preparedStatement.executeUpdate();
@@ -189,15 +194,27 @@ public class ConferenceDaoImpl implements ConferenceDao {
 
     private Conference retrieveConference(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
-        String name = resultSet.getString("conference_name");
-        String description = resultSet.getString("conference_description");
+        int topicId = resultSet.getInt("topic_id");
+        // FIXME: 12.12.2021 replace "findTopicById" with "JOIN"
+        Topic topic = new Topic();
+        try {
+            Optional<Topic> optionalTopic = topicDao.findTopicById(topicId);
+            if (optionalTopic.isPresent()) {
+                topic = optionalTopic.get();
+            }
+        } catch (DaoException e) {
+            LOGGER.error(e);
+        }
+        String conferenceName = resultSet.getString("conference_name");
+        String conferenceDescription = resultSet.getString("conference_description");
         Date date = resultSet.getDate("date");
         Conference.Status status = Conference
                 .Status.valueOf(resultSet.getString("conference_status").toUpperCase());
         return new Conference.Builder()
                 .setId(id)
-                .setName(name)
-                .setDescription(description)
+                .setTopic(topic)
+                .setName(conferenceName)
+                .setDescription(conferenceDescription)
                 .setDate(date)
                 .setStatus(status)
                 .build();

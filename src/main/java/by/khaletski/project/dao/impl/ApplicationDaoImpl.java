@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Dao class "ApplicationDao"
@@ -37,12 +38,12 @@ public class ApplicationDaoImpl implements ApplicationDao {
             + "users.name, users.patronymic, users.surname, users.role FROM conferences "
             + "INNER JOIN applications ON applications.conference_id = conferences.id "
             + "INNER JOIN users ON applications.user_id = users.id";
-    private static final String SQL_FIND_ALL_APPLICATIONS_BY_USER_ID
+    private static final String SQL_FIND_APPLICATION_BY_ID
             = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
             + "applications.application_description, applications.application_status, "
             + "users.name, users.patronymic, users.surname, users.role FROM conferences "
             + "INNER JOIN applications ON applications.conference_id = conferences.id "
-            + "INNER JOIN users ON applications.user_id = users.id WHERE users.id=?";
+            + "INNER JOIN users ON applications.user_id = users.id WHERE applications.id=?";
     private static final String SQL_FIND_ALL_APPLICATIONS_BY_STATUS
             = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
             + "applications.application_description, applications.application_status, "
@@ -146,21 +147,22 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public List<Application> findApplicationsByUserId(int userId) throws DaoException {
+    public Optional<Application> findApplicationById(int applicationId) throws DaoException {
         LOGGER.info("Attempt to find applicationList by user id in the database");
-        List<Application> applicationList = new ArrayList<>();
+        Optional<Application> optionalApplication = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_USER_ID)) {
-            preparedStatement.setInt(1, userId);
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
+            preparedStatement.setInt(1, applicationId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                applicationList.add(retrieveApplication(resultSet));
+            if (resultSet.next()) {
+                Application application = retrieveApplication(resultSet);
+                optionalApplication = Optional.of(application);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all applications by user id in the database");
             throw new DaoException(e);
         }
-        return applicationList;
+        return optionalApplication;
     }
 
     @Override

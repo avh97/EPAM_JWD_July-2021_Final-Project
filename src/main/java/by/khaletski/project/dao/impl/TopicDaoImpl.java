@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Dao class "TopicDao"
@@ -29,11 +30,11 @@ public class TopicDaoImpl implements TopicDao {
     private static final String SQL_FIND_TOPIC_BY_ID
             = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE id=?";
     private static final String SQL_ADD_TOPIC
-            = "INSERT INTO procedures (topic_name, image_name, topic_description) values(?,?,?)";
+            = "INSERT INTO topics (topic_name, image_name, topic_description) values(?,?,?)";
     private static final String SQL_REMOVE_TOPIC_BY_ID
             = "DELETE FROM topics WHERE id=?";
     private static final String SQL_EDIT_TOPIC_BY_ID
-            = "UPDATE procedures SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
+            = "UPDATE topics SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
 
     @Override
     public List<Topic> findAllTopics() throws DaoException {
@@ -71,21 +72,22 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public Topic findTopicById(int topicId) throws DaoException {
+    public Optional<Topic> findTopicById(int topicId) throws DaoException {
         LOGGER.info("Attempt to find topic by topic id in the database");
-        Topic topic = null;
+        Optional<Topic> optionalTopic = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_ID)) {
             preparedStatement.setInt(1, topicId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                topic = retrieveTopic(resultSet);
+                Topic topic = retrieveTopic(resultSet);
+                optionalTopic = Optional.of(topic);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find topic by topic id in the database");
             throw new DaoException(e);
         }
-        return topic;
+        return optionalTopic;
     }
 
     @Override
@@ -93,11 +95,11 @@ public class TopicDaoImpl implements TopicDao {
         LOGGER.info("Attempt to add new topic to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_ADD_TOPIC)) {
-            statement.setString(1, topic.getTopicName());
-            statement.setString(2, topic.getImage());
-            statement.setString(3, topic.getTopicDescription());
-            int rowCount = statement.executeUpdate();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_TOPIC)) {
+            preparedStatement.setString(1, topic.getTopicName());
+            preparedStatement.setString(2, topic.getImageName());
+            preparedStatement.setString(3, topic.getTopicDescription());
+            int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
                 LOGGER.info("New topic has been added");
@@ -139,7 +141,7 @@ public class TopicDaoImpl implements TopicDao {
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_EDIT_TOPIC_BY_ID)) {
             statement.setString(1, topic.getTopicName());
-            statement.setString(2, topic.getImage());
+            statement.setString(2, topic.getImageName());
             statement.setString(3, topic.getTopicDescription());
             statement.setInt(4, topic.getId());
             int rowCount = statement.executeUpdate();
@@ -157,12 +159,12 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     private Topic retrieveTopic(ResultSet resultSet) throws SQLException {
-        int procedureId = resultSet.getInt("id");
+        int topicId = resultSet.getInt("id");
         String name = resultSet.getString("topic_name");
         String imageName = resultSet.getString("image_name");
         String description = resultSet.getString("topic_description");
         return new Topic.Builder()
-                .setId(procedureId)
+                .setId(topicId)
                 .setName(name)
                 .setImageName(imageName)
                 .setDescription(description)

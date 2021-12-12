@@ -13,7 +13,7 @@ public interface UserDao {
 
     List<User> findUsersByRole(User.Role userRole) throws DaoException;
 
-    User findUserById(int userId) throws DaoException;
+    Optional<User> findUserById(int userId) throws DaoException;
 
     boolean addUser(User user, String userPassword) throws DaoException;
 

@@ -3,7 +3,6 @@ package by.khaletski.project.dao.impl;
 import by.khaletski.project.dao.UserDao;
 import by.khaletski.project.dao.exception.DaoException;
 import by.khaletski.project.dao.pool.ConnectionPool;
-import by.khaletski.project.entity.Topic;
 import by.khaletski.project.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,13 +32,13 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_FIND_USER_BY_ID
             = "SELECT id, email, name, patronymic, surname, role FROM users WHERE id=?";
     private static final String SQL_ADD_USER
-            = "INSERT INTO users (id, email, name, patronymic, surname, role) values(?,?,?,?,?,?)";
+            = "INSERT INTO users (email, password, name, patronymic, surname) values(?,?,?,?,?)";
     private static final String SQL_REMOVE_USER_BY_ID
             = "DELETE FROM users WHERE id=?";
     private static final String SQL_CHANGE_USER_ROLE_BY_ID
             = "UPDATE users SET role=? WHERE id=?";
     private static final String SQL_EDIT_USER_INFO_BY_ID
-            = "UPDATE users SET email=?, name=?, patronymic=?, surname=?, role=? WHERE id=?";
+            = "UPDATE users SET name=?, patronymic=?, surname=? WHERE id=?";
     private static final String SQL_FIND_PASSWORD_BY_EMAIL
             = "SELECT password FROM users WHERE email=?";
     private static final String SQL_FIND_USER_BY_EMAIL =
@@ -99,21 +98,22 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findUserById(int userId) throws DaoException {
+    public Optional<User> findUserById(int userId) throws DaoException {
         LOGGER.info("Attempt to find user by user ID in the database");
-        User topic = null;
+        Optional<User> optionalUser = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USER_BY_ID)) {
             preparedStatement.setInt(1, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                topic = retrieveUser(resultSet);
+                User user = retrieveUser(resultSet);
+                optionalUser = Optional.of(user);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find user by user ID in the database");
             throw new DaoException(e);
         }
-        return topic;
+        return optionalUser;
     }
 
     @Override
@@ -193,8 +193,7 @@ public class UserDaoImpl implements UserDao {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPatronymic());
             statement.setString(3, user.getSurname());
-            statement.setString(4, user.getRole().name());
-            statement.setInt(5, user.getId());
+            statement.setInt(4, user.getId());
             int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
