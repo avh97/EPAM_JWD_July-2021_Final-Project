@@ -7,17 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ConferenceDao {
-    List<Conference> findAllConferences() throws DaoException;
+    List<Conference> findAll() throws DaoException;
 
-    List<Conference> findConferencesByName(String conferenceName) throws DaoException;
+    Optional<Conference> find(int id) throws DaoException;
 
-    Optional<Conference> findConferenceById(int conferenceId) throws DaoException;
+    boolean add(Conference conference) throws DaoException;
 
-    boolean addConference(Conference conference) throws DaoException;
+    boolean changeStatus(int id, Conference.Status status) throws DaoException;
 
-    boolean removeConference(int conferenceId) throws DaoException;
+    boolean edit(Conference conference) throws DaoException;
 
-    boolean editConference(Conference conference) throws DaoException;
-
-    boolean changeConferenceStatus(int conferenceId, Conference.Status status) throws DaoException;
+    boolean remove(int id) throws DaoException;
 }

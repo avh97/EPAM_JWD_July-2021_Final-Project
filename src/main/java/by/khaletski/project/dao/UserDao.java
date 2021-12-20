@@ -7,23 +7,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    List<User> findAllUsers() throws DaoException;
+    List<User> findAll() throws DaoException;
 
-    List<User> findUsersBySurname(String userSurname) throws DaoException;
+    Optional<User> find(int id) throws DaoException;
 
-    List<User> findUsersByRole(User.Role userRole) throws DaoException;
+    boolean add(User user, String password) throws DaoException;
 
-    Optional<User> findUserById(int userId) throws DaoException;
+    boolean changeRole(int id, User.Role role) throws DaoException;
 
-    boolean addUser(User user, String userPassword) throws DaoException;
+    boolean edit(User user) throws DaoException;
 
-    boolean removeUser(int userId) throws DaoException;
+    boolean remove(int id) throws DaoException;
 
-    boolean changeUserRole(int userId, User.Role userRole) throws DaoException;
+    Optional<User> findUserByEmail(String email) throws DaoException;
 
-    boolean editUserInfo(User user) throws DaoException;
-
-    Optional<String> findPasswordByEmail(String userEmail) throws DaoException;
-
-    Optional<User> findUserByEmail(String userEmail) throws DaoException;
+    Optional<String> findPasswordByEmail(String email) throws DaoException;
 }

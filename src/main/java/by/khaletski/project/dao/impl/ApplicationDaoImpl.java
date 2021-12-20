@@ -4,13 +4,13 @@ import by.khaletski.project.dao.ApplicationDao;
 import by.khaletski.project.dao.pool.ConnectionPool;
 import by.khaletski.project.entity.Application;
 import by.khaletski.project.entity.Conference;
+import by.khaletski.project.entity.Topic;
 import by.khaletski.project.entity.User;
 import by.khaletski.project.dao.exception.DaoException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,47 +26,81 @@ import java.util.Optional;
 
 public class ApplicationDaoImpl implements ApplicationDao {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final String SQL_FIND_ALL_APPLICATIONS
+            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
+            "applications.application_description, applications.application_status, \n" +
+            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
+            "conferences.conference_status, conferences.date, \n" +
+            "topics.topic_name, topics.topic_description,\n" +
+            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
+            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            "INNER JOIN users ON applications.user_id = users.id";
+    private static final String SQL_FIND_APPLICATION_BY_ID
+            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
+            "applications.application_description, applications.application_status, \n" +
+            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
+            "conferences.conference_status, conferences.date, \n" +
+            "topics.topic_name, topics.topic_description,\n" +
+            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
+            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            "INNER JOIN users ON applications.user_id = users.id WHERE applications.id=?";
     private static final String SQL_ADD_APPLICATION
             = "INSERT INTO applications (user_id,conference_id,descripton,status) values(?,?,?,?)";
+    private static final String SQL_CHANGE_APPLICATION_STATUS
+            = "UPDATE applications set application_status=? WHERE id=?";
     private static final String SQL_EDIT_APPLICATION
             = "UPDATE applications SET user_id=?, conference_id=?, application_description=?, status=? WHERE id=?";
-    private static final String SQL_CHANGE_APPLICATION_STATUS
-            = "UPDATE applications set status=? WHERE id=?";
-    private static final String SQL_FIND_ALL_APPLICATIONS
-            = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
-            + "applications.application_description, applications.application_status, "
-            + "users.name, users.patronymic, users.surname, users.role FROM conferences "
-            + "INNER JOIN applications ON applications.conference_id = conferences.id "
-            + "INNER JOIN users ON applications.user_id = users.id";
-    private static final String SQL_FIND_APPLICATION_BY_ID
-            = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
-            + "applications.application_description, applications.application_status, "
-            + "users.name, users.patronymic, users.surname, users.role FROM conferences "
-            + "INNER JOIN applications ON applications.conference_id = conferences.id "
-            + "INNER JOIN users ON applications.user_id = users.id WHERE applications.id=?";
-    private static final String SQL_FIND_ALL_APPLICATIONS_BY_STATUS
-            = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
-            + "applications.application_description, applications.application_status, "
-            + "users.name, users.patronymic, users.surname, users.role FROM conferences "
-            + "INNER JOIN applications ON applications.conference_id = conferences.id "
-            + "INNER JOIN users ON applications.user_id = users.id WHERE applications.status=?";
-    private static final String SQL_FIND_ALL_APPLICATIONS_BY_DATE
-            = "SELECT conferences.conference_name, conferences.conference_status, conferences.date, "
-            + "applications.application_description, applications.application_status, "
-            + "users.name, users.patronymic, users.surname, users.role FROM conferences "
-            + "INNER JOIN applications ON applications.conference_id = conferences.id "
-            + "INNER JOIN users ON applications.user_id = users.id WHERE conferences.date=?";
+    private static final String SQL_REMOVE_APPLICATION_BY_ID
+            = "DELETE FROM applications WHERE id=?";
 
     @Override
-    public boolean addApplication(Application application) throws DaoException {
+    public List<Application> findAll() throws DaoException {
+        LOGGER.info("Attempt to find all applications in the database");
+        List<Application> applicationList = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                applicationList.add(retrieve(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find all applications in the database");
+            throw new DaoException(e);
+        }
+        return applicationList;
+    }
+
+    @Override
+    public Optional<Application> find(int id) throws DaoException {
+        LOGGER.info("Attempt to find applicationList by user id in the database");
+        Optional<Application> optionalApplication = Optional.empty();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                Application application = retrieve(resultSet);
+                optionalApplication = Optional.of(application);
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find all applications by user id in the database");
+            throw new DaoException(e);
+        }
+        return optionalApplication;
+    }
+
+    @Override
+    public boolean add(Application application) throws DaoException {
         LOGGER.info("Attempt to add new application to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_APPLICATION)) {
             preparedStatement.setInt(1, application.getUser().getId());
             preparedStatement.setInt(2, application.getConference().getId());
-            preparedStatement.setString(3, application.getApplicationDescription());
-            preparedStatement.setString(4, application.getApplicationStatus().name());
+            preparedStatement.setString(3, application.getDescription());
+            preparedStatement.setString(4, application.getStatus().name());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
@@ -82,15 +116,38 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public boolean editApplication(Application application) throws DaoException {
+    public boolean changeStatus(int id, Application.Status status)
+            throws DaoException {
+        LOGGER.info("Attempt to change application status in the database");
+        boolean isChanged = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
+            preparedStatement.setString(1, status.name());
+            preparedStatement.setInt(2, id);
+            int rowCount = preparedStatement.executeUpdate();
+            if (rowCount != 0) {
+                isChanged = true;
+                LOGGER.info("Application status has been changed");
+            } else {
+                LOGGER.error("Application status has not been changed");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to change application status in the database");
+            throw new DaoException(e);
+        }
+        return isChanged;
+    }
+
+    @Override
+    public boolean edit(Application application) throws DaoException {
         LOGGER.info("Attempt to edit application in the database");
         boolean isEdited = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_EDIT_APPLICATION)) {
             preparedStatement.setInt(1, application.getUser().getId());
             preparedStatement.setInt(2, application.getConference().getId());
-            preparedStatement.setString(3, application.getApplicationDescription());
-            preparedStatement.setString(4, application.getApplicationStatus().name());
+            preparedStatement.setString(3, application.getDescription());
+            preparedStatement.setString(4, application.getStatus().name());
             preparedStatement.setInt(5, application.getId());
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
@@ -107,138 +164,54 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     @Override
-    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus)
-            throws DaoException {
-        LOGGER.info("Attempt to change application status in the database");
-        boolean isChanged = false;
+    public boolean remove(int id) throws DaoException {
+        LOGGER.info("Attempt to remove application from the database");
+        boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
-            preparedStatement.setString(1, applicationStatus.name());
-            preparedStatement.setInt(2, applicationId);
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_REMOVE_APPLICATION_BY_ID)) {
+            preparedStatement.setInt(1, id);
             int rowCount = preparedStatement.executeUpdate();
             if (rowCount != 0) {
-                isChanged = true;
-                LOGGER.info("Application status has been changed");
+                ifRemoved = true;
+                LOGGER.info("Application has been removed");
             } else {
-                LOGGER.error("Application status has not been changed");
+                LOGGER.info("Application has not been removed");
             }
         } catch (SQLException e) {
-            LOGGER.error("Failed attempt to change application status in the database");
+            LOGGER.error("Failed attempt to remove application from the database");
             throw new DaoException(e);
         }
-        return isChanged;
+        return ifRemoved;
     }
 
-    @Override
-    public List<Application> findAllApplications() throws DaoException {
-        LOGGER.info("Attempt to find all applicationList in the database");
-        List<Application> applicationList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                applicationList.add(retrieveApplication(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to find all applications in the database");
-            throw new DaoException(e);
-        }
-        return applicationList;
-    }
-
-    @Override
-    public Optional<Application> findApplicationById(int applicationId) throws DaoException {
-        LOGGER.info("Attempt to find applicationList by user id in the database");
-        Optional<Application> optionalApplication = Optional.empty();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
-            preparedStatement.setInt(1, applicationId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                Application application = retrieveApplication(resultSet);
-                optionalApplication = Optional.of(application);
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to find all applications by user id in the database");
-            throw new DaoException(e);
-        }
-        return optionalApplication;
-    }
-
-    @Override
-    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws DaoException {
-        LOGGER.info("Attempt to find applicationList by application status id in the database");
-        List<Application> applicationList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection
-                     .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_STATUS)) {
-            preparedStatement.setString(1, applicationStatus.name());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                applicationList.add(retrieveApplication(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to find all applications by application status in the database");
-            throw new DaoException(e);
-        }
-        return applicationList;
-    }
-
-    @Override
-    public List<Application> findApplicationsByDate(Date conferenceDate) throws DaoException {
-        LOGGER.info("Attempt to find all applicationList by conferenceDate");
-        List<Application> applicationList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection
-                     .prepareStatement(SQL_FIND_ALL_APPLICATIONS_BY_DATE)) {
-            preparedStatement.setDate(1, conferenceDate);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                applicationList.add(retrieveApplication(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to find all applications by conference date in the database");
-            throw new DaoException(e);
-        }
-        return applicationList;
-    }
-
-    private Application retrieveApplication(ResultSet resultSet) throws SQLException {
-        int id = resultSet.getInt("id");
-        int userId = resultSet.getInt("user_id");
-        String userEmail = resultSet.getString("email");
-        String userName = resultSet.getString("name");
-        String userPatronymic = resultSet.getString("patronymic");
-        String userSurname = resultSet.getString("surname");
-        User.Role userRole = User.Role.valueOf(resultSet.getString("role").toUpperCase());
+    private Application retrieve(ResultSet resultSet) throws SQLException {
         User user = new User.Builder()
-                .setUserId(userId)
-                .setEmail(userEmail)
-                .setName(userName)
-                .setPatronymic(userPatronymic)
-                .setSurname(userSurname)
-                .setRole(userRole)
+                .setId(resultSet.getInt("user_id"))
+                .setEmail(resultSet.getString("email"))
+                .setName(resultSet.getString("name"))
+                .setPatronymic(resultSet.getString("patronymic"))
+                .setSurname(resultSet.getString("surname"))
+                .setRole(User.Role.valueOf(resultSet.getString("role")))
                 .build();
-        int conferenceId = resultSet.getInt("conference_id");
-        String conferenceName = resultSet.getString("conference_name");
-        String conferenceDescription = resultSet.getString("conference_description");
-        Date conferenceDate = resultSet.getDate("date");
-        Conference.Status conferenceStatus = Conference
-                .Status.valueOf(resultSet.getString("conference_status").toUpperCase());
+        Topic topic = new Topic.Builder()
+                .setId(resultSet.getInt("topic_id"))
+                .setName(resultSet.getString("topic_name"))
+                .setDescription(resultSet.getString("topic_description"))
+                .build();
         Conference conference = new Conference.Builder()
-                .setId(conferenceId)
-                .setName(conferenceName)
-                .setDescription(conferenceDescription)
-                .setDate(conferenceDate)
-                .setStatus(conferenceStatus)
+                .setId(resultSet.getInt("conference_id"))
+                .setTopic(topic)
+                .setName(resultSet.getString("conference_name"))
+                .setDescription(resultSet.getString("conference_description"))
+                .setDate(resultSet.getDate("date"))
+                .setStatus(Conference.Status.valueOf(resultSet.getString("conference_status")))
                 .build();
-        Application.Status applicationStatus = Application
-                .Status.valueOf(resultSet.getString("application_status"));
         return new Application.Builder()
-                .setId(id)
+                .setId(resultSet.getInt("id"))
                 .setUser(user)
                 .setConference(conference)
-                .setStatus(applicationStatus)
+                .setDescription(resultSet.getString("application_description"))
+                .setStatus(Application.Status.valueOf(resultSet.getString("application_status")))
                 .build();
     }
 }

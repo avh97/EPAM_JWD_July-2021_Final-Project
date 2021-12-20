@@ -3,22 +3,19 @@ package by.khaletski.project.dao;
 import by.khaletski.project.entity.Application;
 import by.khaletski.project.dao.exception.DaoException;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface ApplicationDao {
-    boolean addApplication(Application application) throws DaoException;
+    List<Application> findAll() throws DaoException;
 
-    boolean editApplication(Application application) throws DaoException;
+    Optional<Application> find(int id) throws DaoException;
 
-    boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws DaoException;
+    boolean add(Application application) throws DaoException;
 
-    List<Application> findAllApplications() throws DaoException;
+    boolean changeStatus(int id, Application.Status status) throws DaoException;
 
-    Optional<Application> findApplicationById(int applicationId) throws DaoException;
+    boolean edit(Application application) throws DaoException;
 
-    List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws DaoException;
-
-    List<Application> findApplicationsByDate(Date conferenceDate) throws DaoException;
+    boolean remove(int id) throws DaoException;
 }

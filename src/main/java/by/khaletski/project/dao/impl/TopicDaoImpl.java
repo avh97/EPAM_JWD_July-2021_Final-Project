@@ -24,83 +24,62 @@ import java.util.Optional;
 public class TopicDaoImpl implements TopicDao {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_TOPICS
-            = "SELECT id, topic_name, image_name, topic_description FROM topics";
-    private static final String SQL_FIND_TOPIC_BY_NAME
-            = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE name=?";
+            = "SELECT id, topic_name, topic_description FROM topics";
     private static final String SQL_FIND_TOPIC_BY_ID
-            = "SELECT id, topic_name, image_name, topic_description FROM topics WHERE id=?";
+            = "SELECT id, topic_name, topic_description FROM topics WHERE id=?";
     private static final String SQL_ADD_TOPIC
-            = "INSERT INTO topics (topic_name, image_name, topic_description) values(?,?,?)";
+            = "INSERT INTO topics (topic_name, topic_description) values(?,?)";
+    private static final String SQL_EDIT_TOPIC_BY_ID
+            = "UPDATE topics SET topic_name=?, topic_description=? WHERE id=?";
     private static final String SQL_REMOVE_TOPIC_BY_ID
             = "DELETE FROM topics WHERE id=?";
-    private static final String SQL_EDIT_TOPIC_BY_ID
-            = "UPDATE topics SET topic_name=?, image_name=?, topic_description=? WHERE id=?";
 
     @Override
-    public List<Topic> findAllTopics() throws DaoException {
+    public List<Topic> findAll() throws DaoException {
         LOGGER.info("Attempt to find all topics in the database");
-        List<Topic> topicList = new ArrayList<>();
+        List<Topic> topics = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_TOPICS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_TOPICS)) {
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                topicList.add(retrieveTopic(resultSet));
+                topics.add(retrieve(resultSet));
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find all topics in the database");
             throw new DaoException(e);
         }
-        return topicList;
+        return topics;
     }
 
     @Override
-    public List<Topic> findTopicByName(String topicName) throws DaoException {
-        LOGGER.info("Attempt to find all topics by topic name in the database");
-        List<Topic> topicList = new ArrayList<>();
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_NAME)) {
-            preparedStatement.setString(1, topicName);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                topicList.add(retrieveTopic(resultSet));
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to find all topics by topic name in the database");
-            throw new DaoException(e);
-        }
-        return topicList;
-    }
-
-    @Override
-    public Optional<Topic> findTopicById(int topicId) throws DaoException {
+    public Optional<Topic> find(int id) throws DaoException {
         LOGGER.info("Attempt to find topic by topic id in the database");
-        Optional<Topic> optionalTopic = Optional.empty();
+        Optional<Topic> optional = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_TOPIC_BY_ID)) {
-            preparedStatement.setInt(1, topicId);
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_TOPIC_BY_ID)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Topic topic = retrieveTopic(resultSet);
-                optionalTopic = Optional.of(topic);
+                Topic topic = retrieve(resultSet);
+                optional = Optional.of(topic);
             }
         } catch (SQLException e) {
             LOGGER.error("Failed attempt to find topic by topic id in the database");
             throw new DaoException(e);
         }
-        return optionalTopic;
+        return optional;
     }
 
     @Override
-    public boolean addTopic(Topic topic) throws DaoException {
+    public boolean add(Topic topic) throws DaoException {
         LOGGER.info("Attempt to add new topic to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_TOPIC)) {
-            preparedStatement.setString(1, topic.getTopicName());
-            preparedStatement.setString(2, topic.getImageName());
-            preparedStatement.setString(3, topic.getTopicDescription());
-            int rowCount = preparedStatement.executeUpdate();
-            if (rowCount != 0) {
+             PreparedStatement statement = connection.prepareStatement(SQL_ADD_TOPIC)) {
+            statement.setString(1, topic.getName());
+            statement.setString(2, topic.getDescription());
+            int counter = statement.executeUpdate();
+            if (counter != 0) {
                 isAdded = true;
                 LOGGER.info("New topic has been added");
             } else {
@@ -114,38 +93,16 @@ public class TopicDaoImpl implements TopicDao {
     }
 
     @Override
-    public boolean removeTopic(int topicId) throws DaoException {
-        LOGGER.info("Attempt to remove topic from the database");
-        boolean ifRemoved = false;
-        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC_BY_ID)) {
-            statement.setInt(1, topicId);
-            int rowCount = statement.executeUpdate();
-            if (rowCount != 0) {
-                ifRemoved = true;
-                LOGGER.info("Topic has been removed");
-            } else {
-                LOGGER.info("Topic has not been removed");
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Failed attempt to remove topic from the database");
-            throw new DaoException(e);
-        }
-        return ifRemoved;
-    }
-
-    @Override
-    public boolean editTopic(Topic topic) throws DaoException {
+    public boolean edit(Topic topic) throws DaoException {
         LOGGER.info("Attempt to change topic in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_EDIT_TOPIC_BY_ID)) {
-            statement.setString(1, topic.getTopicName());
-            statement.setString(2, topic.getImageName());
-            statement.setString(3, topic.getTopicDescription());
-            statement.setInt(4, topic.getId());
-            int rowCount = statement.executeUpdate();
-            if (rowCount != 0) {
+            statement.setString(1, topic.getName());
+            statement.setString(2, topic.getDescription());
+            statement.setInt(3, topic.getId());
+            int counter = statement.executeUpdate();
+            if (counter != 0) {
                 isChanged = true;
                 LOGGER.info("Topic has been changed");
             } else {
@@ -158,16 +115,32 @@ public class TopicDaoImpl implements TopicDao {
         return isChanged;
     }
 
-    private Topic retrieveTopic(ResultSet resultSet) throws SQLException {
-        int topicId = resultSet.getInt("id");
-        String name = resultSet.getString("topic_name");
-        String imageName = resultSet.getString("image_name");
-        String description = resultSet.getString("topic_description");
+    @Override
+    public boolean remove(int id) throws DaoException {
+        LOGGER.info("Attempt to remove topic from the database");
+        boolean isRemoved = false;
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_TOPIC_BY_ID)) {
+            statement.setInt(1, id);
+            int counter = statement.executeUpdate();
+            if (counter != 0) {
+                isRemoved = true;
+                LOGGER.info("Topic has been removed");
+            } else {
+                LOGGER.info("Topic has not been removed");
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to remove topic from the database");
+            throw new DaoException(e);
+        }
+        return isRemoved;
+    }
+
+    private Topic retrieve(ResultSet resultSet) throws SQLException {
         return new Topic.Builder()
-                .setId(topicId)
-                .setName(name)
-                .setImageName(imageName)
-                .setDescription(description)
+                .setId(resultSet.getInt("id"))
+                .setName(resultSet.getString("topic_name"))
+                .setDescription(resultSet.getString("topic_description"))
                 .build();
     }
 }

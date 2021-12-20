@@ -7,15 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TopicDao {
-    List<Topic> findAllTopics() throws DaoException;
+    List<Topic> findAll() throws DaoException;
 
-    List<Topic> findTopicByName(String topicName) throws DaoException;
+    Optional<Topic> find(int id) throws DaoException;
 
-    Optional<Topic> findTopicById(int topicId) throws DaoException;
+    boolean add(Topic topic) throws DaoException;
 
-    boolean addTopic(Topic topic) throws DaoException;
+    boolean edit(Topic topic) throws DaoException;
 
-    boolean removeTopic(int topicId) throws DaoException;
-
-    boolean editTopic(Topic topic) throws DaoException;
+    boolean remove(int id) throws DaoException;
 }
