@@ -3,20 +3,25 @@ package by.khaletski.project.service.impl;
 import by.khaletski.project.dao.UserDao;
 import by.khaletski.project.entity.User;
 import by.khaletski.project.dao.exception.DaoException;
+import by.khaletski.project.service.UserService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.PasswordEncoder;
 import by.khaletski.project.service.util.Validator;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class UserServiceImpl implements by.khaletski.project.service.UserService {
-    private static final Logger logger = LogManager.getLogger();
+/**
+ * Service class "UserService"
+ *
+ * @author Anton Khaletski
+ */
+
+public class UserServiceImpl implements UserService {
+    private static final Logger LOGGER = LogManager.getLogger();
     private final UserDao userDao;
 
     public UserServiceImpl(UserDao userDao) {
@@ -24,42 +29,31 @@ public class UserServiceImpl implements by.khaletski.project.service.UserService
     }
 
     @Override
-    public List<User> findAllUsers() throws ServiceException {
+    public List<User> findAll() throws ServiceException {
         List<User> userList;
         try {
-            userList = userDao.findAllUsers();
+            userList = userDao.findAll();
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
         return userList;
     }
 
     @Override
-    public List<User> findUsersBySurname(String userSurname) throws ServiceException {
-        List<User> userList = new ArrayList<>();
-        if (Validator.isValidName(userSurname)) {
-            try {
-                userList = userDao.findUsersBySurname(userSurname);
-            } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
-        }
-        return userList;
-    }
-
-    @Override
-    public List<User> findUsersByRole(User.Role userRole) throws ServiceException {
-        List<User> userList;
+    public Optional<User> find(int id) throws ServiceException {
+        Optional<User> optionalUser;
         try {
-            userList = userDao.findUsersByRole(userRole);
+            optionalUser = userDao.find(id);
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
-        return userList;
+        return optionalUser;
     }
 
     @Override
-    public boolean addUser(Map<String, String> userData) throws ServiceException {
+    public boolean add(Map<String, String> userData) throws ServiceException {
         boolean isAdded;
         if (Validator.isValidPassword(userData.get("password"))
                 && Validator.isValidEmail(userData.get("email"))
@@ -74,8 +68,9 @@ public class UserServiceImpl implements by.khaletski.project.service.UserService
                     .setSurname(userData.get("surname"))
                     .build();
             try {
-                isAdded = userDao.addUser(user, encodedPassword);
+                isAdded = userDao.add(user, encodedPassword);
             } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -85,39 +80,30 @@ public class UserServiceImpl implements by.khaletski.project.service.UserService
     }
 
     @Override
-    public boolean removeUser(int id) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = userDao.removeUser(id);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
-        }
-        return isRemoved;
-    }
-
-    @Override
-    public boolean changeUserRole(int userId, User.Role userRole) throws ServiceException {
+    public boolean changeRole(int id, User.Role role) throws ServiceException {
         boolean isChanged;
         try {
-            isChanged = userDao.changeUserRole(userId, userRole);
+            isChanged = userDao.changeRole(id, role);
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
         return isChanged;
     }
 
     @Override
-    public boolean editUserInfo(User user, Map<String, String> userData) throws ServiceException {
+    public boolean edit(User user, Map<String, String> userData) throws ServiceException {
         boolean isEdited = false;
         if (Validator.isValidName(userData.get("name"))
                 && Validator.isValidName(userData.get("patronymic"))
                 && Validator.isValidName(userData.get("surname"))) {
             user.setName(userData.get("name"));
-            user.setName(userData.get("patronymic"));
+            user.setPatronymic(userData.get("patronymic"));
             user.setSurname(userData.get("surname"));
             try {
-                isEdited = userDao.editUserInfo(user);
+                isEdited = userDao.edit(user);
             } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         }
@@ -125,19 +111,48 @@ public class UserServiceImpl implements by.khaletski.project.service.UserService
     }
 
     @Override
-    public Optional<User> findUserByEmailAndPassword(String email, String password) throws ServiceException {
-        logger.log(Level.DEBUG, "findUserByEmailPassword()");
-        Optional<User> optionalUser = null;
+    public boolean remove(int id) throws ServiceException {
+        boolean isRemoved;
+        try {
+            isRemoved = userDao.remove(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return isRemoved;
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) throws ServiceException {
+        Optional<User> user;
+        try {
+            if (Validator.isValidEmail(email)) {
+                user = userDao.findUserByEmail(email);
+            } else {
+                user = Optional.empty();
+            }
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return user;
+    }
+
+    @Override
+    public Optional<User> findByEmailAndPassword(String email, String password) throws ServiceException {
+        LOGGER.info("Attempt to find user by email and password");
+        Optional<User> optionalUser;
         if (Validator.isValidEmail(email)) {
             String encodedPassword = PasswordEncoder.encodePassword(password);
-            logger.log(Level.DEBUG, "Encoded password: " + encodedPassword);
+            // FIXME: 12.12.2021 remove logger later
+            LOGGER.debug("Encoded password: " + encodedPassword);
             try {
                 Optional<String> passwordFromDBOptional = userDao.findPasswordByEmail(email);
                 if (passwordFromDBOptional.isPresent()) {
                     String passwordFromDB = passwordFromDBOptional.get();
-                    logger.log(Level.DEBUG, "passwordFromDB: " + passwordFromDB);
                     if (passwordFromDB.equals(encodedPassword)) {
-                        logger.log(Level.INFO, "passwords equals, authorization is successful for user: " + email);
+                        // FIXME: 12.12.2021 remove logger later
+                        LOGGER.debug("Authorization is successful for user: " + email);
                         optionalUser = userDao.findUserByEmail(email);
                     } else {
                         optionalUser = Optional.empty();
@@ -146,7 +161,7 @@ public class UserServiceImpl implements by.khaletski.project.service.UserService
                     optionalUser = Optional.empty();
                 }
             } catch (DaoException e) {
-                logger.log(Level.ERROR, "dao exception in method FindUsersByLoginPassword" + e);
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {

@@ -3,22 +3,20 @@ package by.khaletski.project.service;
 import by.khaletski.project.entity.Application;
 import by.khaletski.project.service.exception.ServiceException;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ApplicationService {
-    boolean addApplication(Map<String, String> applicationData) throws ServiceException;
+    List<Application> findAll() throws ServiceException;
 
-    boolean editApplication(Map<String, String> applicationData) throws ServiceException;
+    Optional<Application> find(int id) throws ServiceException;
 
-    boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus) throws ServiceException;
+    boolean add(Map<String, String> applicationData) throws ServiceException;
 
-    List<Application> findAllApplications() throws ServiceException;
+    boolean changeStatus(int id, Application.Status status) throws ServiceException;
 
-    List<Application> findApplicationsByUserId(int userId) throws ServiceException;
+    boolean edit(Map<String, String> applicationData) throws ServiceException;
 
-    List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws ServiceException;
-
-    List<Application> findApplicationsByDate(Date conferenceDate) throws ServiceException;
+    boolean remove(int id) throws ServiceException;
 }

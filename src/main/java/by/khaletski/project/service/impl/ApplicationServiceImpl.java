@@ -7,16 +7,23 @@ import by.khaletski.project.entity.Application;
 import by.khaletski.project.dao.exception.DaoException;
 import by.khaletski.project.entity.Conference;
 import by.khaletski.project.entity.User;
+import by.khaletski.project.service.ApplicationService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class ApplicationServiceImpl implements by.khaletski.project.service.ApplicationService {
+/**
+ * Service class "ApplicationService"
+ *
+ * @author Anton Khaletski
+ */
+
+public class ApplicationServiceImpl implements ApplicationService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final ApplicationDao applicationDao;
     private final ConferenceDao conferenceDao;
@@ -29,29 +36,51 @@ public class ApplicationServiceImpl implements by.khaletski.project.service.Appl
     }
 
     @Override
-    public boolean addApplication(Map<String, String> applicationData) throws ServiceException {
+    public List<Application> findAll() throws ServiceException {
+        List<Application> applicationList;
+        try {
+            applicationList = applicationDao.findAll();
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return applicationList;
+    }
+
+    @Override
+    public Optional<Application> find(int id) throws ServiceException {
+        Optional<Application> optionalApplication;
+        try {
+            optionalApplication = applicationDao.find(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return optionalApplication;
+    }
+
+    @Override
+    public boolean add(Map<String, String> applicationData) throws ServiceException {
         boolean isAdded;
         if (Validator.isValidName(applicationData.get("application_description"))) {
-            User user;
-            Conference conference;
             try {
-                user = userDao.findUserById(Integer.parseInt("user_id"));
-                conference = conferenceDao.findConferenceById(Integer.parseInt("conference_id"));
+                Optional<User> optionalUser = userDao.find(Integer.parseInt("user_id"));
+                Optional<Conference> optionalConference = conferenceDao.
+                        find(Integer.parseInt("conference_id"));
+                if (optionalConference.isEmpty() || optionalUser.isEmpty()) {
+                    return false;
+                }
+                User user = optionalUser.get();
+                Conference conference = optionalConference.get();
+                Application application = new Application.Builder()
+                        .setUser(user)
+                        .setConference(conference)
+                        .setDescription(applicationData.get("application_description"))
+                        .setStatus(Application.Status.CLAIMED)
+                        .build();
+                isAdded = applicationDao.add(application);
             } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
-            if (conference == null || user == null) {
-                return false;
-            }
-            Application application = new Application.Builder()
-                    .setUser(user)
-                    .setConference(conference)
-                    .setDescription(applicationData.get("application_description"))
-                    .setStatus(Application.Status.CLAIMED)
-                    .build();
-            try {
-                isAdded = applicationDao.addApplication(application);
-            } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -61,28 +90,26 @@ public class ApplicationServiceImpl implements by.khaletski.project.service.Appl
     }
 
     @Override
-    public boolean editApplication(Map<String, String> applicationData) throws ServiceException {
+    public boolean edit(Map<String, String> applicationData) throws ServiceException {
         boolean isEdited;
         if (Validator.isValidName(applicationData.get("application_description"))) {
-            User user;
-            Conference conference;
             try {
-                user = userDao.findUserById(Integer.parseInt("user_id"));
-                conference = conferenceDao.findConferenceById(Integer.parseInt("conference_id"));
+                Optional<User> optionalUser = userDao.find(Integer.parseInt("user_id"));
+                Optional<Conference> optionalConference = conferenceDao.
+                        find(Integer.parseInt("conference_id"));
+                if (optionalConference.isEmpty() || optionalUser.isEmpty()) {
+                    return false;
+                }
+                User user = optionalUser.get();
+                Conference conference = optionalConference.get();
+                Application application = new Application.Builder()
+                        .setUser(user)
+                        .setConference(conference)
+                        .setDescription(applicationData.get("application_description"))
+                        .build();
+                isEdited = applicationDao.add(application);
             } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
-            if (conference == null || user == null) {
-                return false;
-            }
-            Application application = new Application.Builder()
-                    .setUser(user)
-                    .setConference(conference)
-                    .setDescription(applicationData.get("application_description"))
-                    .build();
-            try {
-                isEdited = applicationDao.addApplication(application);
-            } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -92,58 +119,27 @@ public class ApplicationServiceImpl implements by.khaletski.project.service.Appl
     }
 
     @Override
-    public boolean changeApplicationStatus(int applicationId, Application.Status applicationStatus)
+    public boolean changeStatus(int id, Application.Status status)
             throws ServiceException {
         boolean isChanged;
         try {
-            isChanged = applicationDao.changeApplicationStatus(applicationId, applicationStatus);
+            isChanged = applicationDao.changeStatus(id, status);
         } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
         return isChanged;
     }
 
     @Override
-    public List<Application> findAllApplications() throws ServiceException {
-        List<Application> applicationList;
+    public boolean remove(int id) throws ServiceException {
+        boolean isRemoved;
         try {
-            applicationList = applicationDao.findAllApplications();
+            isRemoved = applicationDao.remove(id);
         } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
-        return applicationList;
-    }
-
-    @Override
-    public List<Application> findApplicationsByUserId(int userId) throws ServiceException {
-        List<Application> applicationList;
-        try {
-            applicationList = applicationDao.findApplicationsByUserId(userId);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
-        }
-        return applicationList;
-    }
-
-    @Override
-    public List<Application> findApplicationsByStatus(Application.Status applicationStatus) throws ServiceException {
-        List<Application> applicationList;
-        try {
-            applicationList = applicationDao.findApplicationsByStatus(applicationStatus);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
-        }
-        return applicationList;
-    }
-
-    @Override
-    public List<Application> findApplicationsByDate(Date conferenceDate) throws ServiceException {
-        List<Application> applicationList;
-        try {
-            applicationList = applicationDao.findApplicationsByDate(conferenceDate);
-        } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
-        }
-        return applicationList;
+        return isRemoved;
     }
 }

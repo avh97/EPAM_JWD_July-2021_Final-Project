@@ -8,19 +8,19 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
-    List<User> findAllUsers() throws ServiceException;
+    List<User> findAll() throws ServiceException;
 
-    List<User> findUsersBySurname(String userSurname) throws ServiceException;
+    Optional<User> find(int id) throws ServiceException;
 
-    List<User> findUsersByRole(User.Role userRole) throws ServiceException;
+    boolean add(Map<String, String> userData) throws ServiceException;
 
-    boolean addUser(Map<String, String> userData) throws ServiceException;
+    boolean changeRole(int id, User.Role role) throws ServiceException;
 
-    boolean removeUser(int id) throws ServiceException;
+    boolean edit(User user, Map<String, String> userData) throws ServiceException;
 
-    boolean changeUserRole(int userId, User.Role userRole) throws ServiceException;
+    boolean remove(int id) throws ServiceException;
 
-    boolean editUserInfo(User user, Map<String, String> userData) throws ServiceException;
+    Optional<User> findByEmail(String email) throws ServiceException;
 
-    Optional<User> findUserByEmailAndPassword(String email, String password) throws ServiceException;
+    Optional<User> findByEmailAndPassword(String email, String password) throws ServiceException;
 }

@@ -3,16 +3,23 @@ package by.khaletski.project.service.impl;
 import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.dao.exception.DaoException;
 import by.khaletski.project.entity.Topic;
+import by.khaletski.project.service.TopicService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class TopicServiceImpl implements by.khaletski.project.service.TopicService {
+/**
+ * Service class "TopicService"
+ *
+ * @author Anton Khaletski
+ */
+
+public class TopicServiceImpl implements TopicService {
     private static final Logger LOGGER = LogManager.getLogger();
     private final TopicDao topicDao;
 
@@ -21,43 +28,42 @@ public class TopicServiceImpl implements by.khaletski.project.service.TopicServi
     }
 
     @Override
-    public List<Topic> findAllTopics() throws ServiceException {
+    public List<Topic> findAll() throws ServiceException {
         List<Topic> topicList;
         try {
-            topicList = topicDao.findAllTopics();
+            topicList = topicDao.findAll();
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
         return topicList;
     }
 
     @Override
-    public List<Topic> findTopicsByName(String topicName) throws ServiceException {
-        List<Topic> topicList = new ArrayList<>();
-        if (Validator.isValidName(topicName)) {
-            try {
-                topicList = topicDao.findTopicByName(topicName);
-            } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
+    public Optional<Topic> find(int id) throws ServiceException {
+        Optional<Topic> optionalTopic;
+        try {
+            optionalTopic = topicDao.find(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
-        return topicList;
+        return optionalTopic;
     }
 
     @Override
-    public boolean addTopic(Map<String, String> topicData) throws ServiceException {
+    public boolean add(Map<String, String> topicData) throws ServiceException {
         boolean isAdded;
         if (Validator.isValidName(topicData.get("topic_name"))
-                && Validator.isValidImageName(topicData.get("image_name"))
-                && Validator.isValidEmail(topicData.get("topic_description"))) {
+                && Validator.isValidName(topicData.get("topic_description"))) {
             Topic topic = new Topic.Builder()
-                    .setName("topic_name")
-                    .setImageName("image_name")
-                    .setDescription("topic_description")
+                    .setName(topicData.get("topic_name"))
+                    .setDescription(topicData.get("topic_description"))
                     .build();
             try {
-                isAdded = topicDao.addTopic(topic);
+                isAdded = topicDao.add(topic);
             } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -67,29 +73,37 @@ public class TopicServiceImpl implements by.khaletski.project.service.TopicServi
     }
 
     @Override
-    public boolean removeTopic(int topicId) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = topicDao.removeTopic(topicId);
-        } catch (DaoException e) {
-            throw new ServiceException(e);
+    public boolean edit(Map<String, String> topicData) throws ServiceException {
+        boolean isEdited;
+        if (Validator.isValidName(topicData.get("topic_name"))
+                && Validator.isValidName(topicData.get("topic_description"))) {
+            int currentId = Integer.parseInt(topicData.get("id"));
+            Topic topic = new Topic.Builder()
+                    .setId(currentId)
+                    .setName(topicData.get("topic_name"))
+                    .setDescription(topicData.get("topic_description"))
+                    .build();
+            try {
+                isEdited = topicDao.edit(topic);
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
+        } else {
+            isEdited = false;
         }
-        return isRemoved;
+        return isEdited;
     }
 
     @Override
-    public boolean editTopic(Map<String, String> topicData) throws ServiceException {
-        boolean isEdited;
+    public boolean remove(int id) throws ServiceException {
+        boolean isRemoved;
         try {
-            Topic topic = new Topic.Builder()
-                    .setName(topicData.get("topic_name"))
-                    .setImageName(topicData.get("image_name"))
-                    .setDescription(topicData.get("topic_description"))
-                    .build();
-            isEdited = topicDao.editTopic(topic);
+            isRemoved = topicDao.remove(id);
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
-        return isEdited;
+        return isRemoved;
     }
 }

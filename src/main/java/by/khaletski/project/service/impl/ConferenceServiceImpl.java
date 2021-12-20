@@ -5,17 +5,25 @@ import by.khaletski.project.dao.TopicDao;
 import by.khaletski.project.dao.exception.DaoException;
 import by.khaletski.project.entity.Conference;
 import by.khaletski.project.entity.Topic;
-import by.khaletski.project.entity.User;
+import by.khaletski.project.service.ConferenceService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.util.Validator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class ConferenceServiceImpl implements by.khaletski.project.service.ConferenceService {
+/**
+ * Service class "ConferenceService"
+ *
+ * @author Anton Khaletski
+ */
+
+public class ConferenceServiceImpl implements ConferenceService {
+    private static final Logger LOGGER = LogManager.getLogger();
     private final ConferenceDao conferenceDao;
     private final TopicDao topicDao;
 
@@ -25,54 +33,53 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
     }
 
     @Override
-    public List<Conference> findAllConferences() throws ServiceException {
+    public List<Conference> findAll() throws ServiceException {
         List<Conference> conferenceList;
         try {
-            conferenceList = conferenceDao.findAllConferences();
+            conferenceList = conferenceDao.findAll();
         } catch (DaoException e) {
+            LOGGER.error(e);
             throw new ServiceException(e);
         }
         return conferenceList;
     }
 
     @Override
-    public List<Conference> findConferencesByName(String conferenceName) throws ServiceException {
-        List<Conference> conferenceList = new ArrayList<>();
-        if (Validator.isValidName(conferenceName)) {
-            try {
-                conferenceList = conferenceDao.findConferencesByName(conferenceName);
-            } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
+    public Optional<Conference> find(int id) throws ServiceException {
+        Optional<Conference> optionalConference;
+        try {
+            optionalConference = conferenceDao.find(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
-        return conferenceList;
+        return optionalConference;
     }
 
     @Override
-    public boolean addConference(Map<String, String> conferenceData) throws ServiceException {
+    public boolean add(Map<String, String> conferenceData) throws ServiceException {
         boolean isAdded;
-        Topic topic = null;
+        Optional<Topic> optionalTopic;
         if (Validator.isValidName(conferenceData.get("conference_name"))
                 && Validator.isValidName(conferenceData.get("conference_description"))
                 && Validator.isDateFormatValid(conferenceData.get("date"))) {
             try {
-                topic = topicDao.findTopicById(Integer.parseInt("topic_id"));
-                if (topic == null) {
+                optionalTopic = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
+                LOGGER.debug(optionalTopic);
+                if (optionalTopic.isEmpty()) {
                     return false;
                 }
+                Topic topic = optionalTopic.get();
+                Conference conference = new Conference.Builder()
+                        .setTopic(topic)
+                        .setName(conferenceData.get("conference_name"))
+                        .setDescription(conferenceData.get("conference_description"))
+                        .setDate(Date.valueOf(conferenceData.get(("date"))))
+                        .setStatus(Conference.Status.PENDING)
+                        .build();
+                isAdded = conferenceDao.add(conference);
             } catch (DaoException e) {
-                throw new ServiceException(e);
-            }
-            Conference conference = new Conference.Builder()
-                    .setName(conferenceData.get("conference_name"))
-                    .setTopic(topic)
-                    .setDescription(conferenceData.get("conference_description"))
-                    .setDate(Date.valueOf(conferenceData.get(("date"))))
-                    .setStatus(Conference.Status.PENDING)
-                    .build();
-            try {
-                isAdded = conferenceDao.addConference(conference);
-            } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -82,40 +89,38 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
     }
 
     @Override
-    public boolean removeConference(int id) throws ServiceException {
-        boolean isRemoved;
+    public boolean changeStatus(int id, Conference.Status status) throws ServiceException {
+        boolean isChanged;
         try {
-            isRemoved = conferenceDao.removeConference(id);
+            isChanged = conferenceDao.changeStatus(id, status);
         } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
-        return isRemoved;
+        return isChanged;
     }
 
     @Override
-    public boolean editConference(Conference conference, Map<String, String> conferenceData) throws ServiceException {
+    public boolean edit(Conference conference, Map<String, String> conferenceData) throws ServiceException {
         boolean isEdited;
+        Optional<Topic> optionalTopic;
+        // FIXME: 14.12.2021 add topicId validator
         if (Validator.isValidName(conferenceData.get("conference_name"))
                 && Validator.isValidName(conferenceData.get("conference_description"))
                 && Validator.isDateFormatValid(conferenceData.get("date"))) {
             try {
-                Topic topic = topicDao.findTopicById(Integer.parseInt("topic_id"));
-                if (topic == null) {
+                optionalTopic = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
+                if (optionalTopic.isEmpty()) {
                     return false;
                 }
-                conference = new Conference.Builder()
-                        .setName(conferenceData.get("conference_name"))
-                        .setTopic(topic)
-                        .setDescription(conferenceData.get("conference_description"))
-                        .setDate(Date.valueOf(conferenceData.get(("date"))))
-                        .setStatus(Conference.Status.valueOf("conference_status"))
-                        .build();
+                Topic topic = optionalTopic.get();
+                conference.setTopic(topic);
+                conference.setName(conferenceData.get("conference_name"));
+                conference.setDescription(conferenceData.get("conference_description"));
+                conference.setDate(Date.valueOf(conferenceData.get(("date"))));
+                isEdited = conferenceDao.edit(conference);
             } catch (DaoException e) {
-                e.printStackTrace();
-            }
-            try {
-                isEdited = conferenceDao.addConference(conference);
-            } catch (DaoException e) {
+                LOGGER.error(e);
                 throw new ServiceException(e);
             }
         } else {
@@ -125,13 +130,14 @@ public class ConferenceServiceImpl implements by.khaletski.project.service.Confe
     }
 
     @Override
-    public boolean changeConferenceStatus(int id, Conference.Status status) throws ServiceException {
-        boolean isChanged;
+    public boolean remove(int id) throws ServiceException {
+        boolean isRemoved;
         try {
-            isChanged = conferenceDao.changeConferenceStatus(id, status);
+            isRemoved = conferenceDao.remove(id);
         } catch (DaoException e) {
-            throw new ServiceException(e.getMessage());
+            LOGGER.error(e);
+            throw new ServiceException(e);
         }
-        return isChanged;
+        return isRemoved;
     }
 }

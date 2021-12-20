@@ -5,15 +5,16 @@ import by.khaletski.project.service.exception.ServiceException;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface TopicService {
-    List<Topic> findAllTopics() throws ServiceException;
+    List<Topic> findAll() throws ServiceException;
 
-    List<Topic> findTopicsByName(String topicName) throws ServiceException;
+    Optional<Topic> find(int id) throws ServiceException;
 
-    boolean addTopic(Map<String, String> topicData) throws ServiceException;
+    boolean add(Map<String, String> topicData) throws ServiceException;
 
-    boolean removeTopic(int topicId) throws ServiceException;
+    boolean edit(Map<String, String> topicData) throws ServiceException;
 
-    boolean editTopic(Map<String, String> topicData) throws ServiceException;
+    boolean remove(int id) throws ServiceException;
 }
