@@ -8,9 +8,8 @@ package by.khaletski.project.entity;
 
 public class Topic {
     private int id;
-    private String topicName;
-    private String image;
-    private String topicDescription;
+    private String name;
+    private String description;
 
     public Topic() {
     }
@@ -23,28 +22,20 @@ public class Topic {
         this.id = id;
     }
 
-    public String getTopicName() {
-        return topicName;
+    public String getName() {
+        return name;
     }
 
-    public void setTopicName(String topicName) {
-        this.topicName = topicName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getDescription() {
+        return description;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getTopicDescription() {
-        return topicDescription;
-    }
-
-    public void setTopicDescription(String topicDescription) {
-        this.topicDescription = topicDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -55,17 +46,15 @@ public class Topic {
         Topic topic = (Topic) o;
 
         if (id != topic.id) return false;
-        if (!topicName.equals(topic.topicName)) return false;
-        if (!image.equals(topic.image)) return false;
-        return topicDescription.equals(topic.topicDescription);
+        if (!name.equals(topic.name)) return false;
+        return description.equals(topic.description);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + topicName.hashCode();
-        result = 31 * result + image.hashCode();
-        result = 31 * result + topicDescription.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + description.hashCode();
         return result;
     }
 
@@ -73,9 +62,8 @@ public class Topic {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder("Topic{");
         stringBuilder.append("id=").append(id);
-        stringBuilder.append(", topicName='").append(topicName).append('\'');
-        stringBuilder.append(", image='").append(image).append('\'');
-        stringBuilder.append(", topicDescription='").append(topicDescription).append('\'');
+        stringBuilder.append(", name='").append(name).append('\'');
+        stringBuilder.append(", description='").append(description).append('\'');
         stringBuilder.append('}');
         return stringBuilder.toString();
     }
@@ -93,17 +81,12 @@ public class Topic {
         }
 
         public Builder setName(String topicName) {
-            newTopic.topicName = topicName;
-            return this;
-        }
-
-        public Builder setImageName(String image) {
-            newTopic.image = image;
+            newTopic.name = topicName;
             return this;
         }
 
         public Builder setDescription(String topicDescription) {
-            newTopic.topicDescription = topicDescription;
+            newTopic.description = topicDescription;
             return this;
         }
 

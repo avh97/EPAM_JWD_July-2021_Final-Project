@@ -11,10 +11,10 @@ import java.sql.Date;
 public class Conference {
     private int id;
     private Topic topic;
-    private String conferenceName;
-    private String conferenceDescription;
+    private String name;
+    private String description;
     private Date date;
-    private Status conferenceStatus;
+    private Status status;
 
     public enum Status {
         PENDING, CANCELED, ENDED
@@ -39,20 +39,20 @@ public class Conference {
         this.topic = topic;
     }
 
-    public String getConferenceName() {
-        return conferenceName;
+    public String getName() {
+        return name;
     }
 
-    public void setConferenceName(String conferenceName) {
-        this.conferenceName = conferenceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getConferenceDescription() {
-        return conferenceDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setConferenceDescription(String conferenceDescription) {
-        this.conferenceDescription = conferenceDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getDate() {
@@ -63,12 +63,12 @@ public class Conference {
         this.date = date;
     }
 
-    public Status getConferenceStatus() {
-        return conferenceStatus;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setConferenceStatus(Status conferenceStatus) {
-        this.conferenceStatus = conferenceStatus;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -80,20 +80,20 @@ public class Conference {
 
         if (id != that.id) return false;
         if (!topic.equals(that.topic)) return false;
-        if (!conferenceName.equals(that.conferenceName)) return false;
-        if (!conferenceDescription.equals(that.conferenceDescription)) return false;
+        if (!name.equals(that.name)) return false;
+        if (!description.equals(that.description)) return false;
         if (!date.equals(that.date)) return false;
-        return conferenceStatus == that.conferenceStatus;
+        return status == that.status;
     }
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + topic.hashCode();
-        result = 31 * result + conferenceName.hashCode();
-        result = 31 * result + conferenceDescription.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + description.hashCode();
         result = 31 * result + date.hashCode();
-        result = 31 * result + conferenceStatus.hashCode();
+        result = 31 * result + status.hashCode();
         return result;
     }
 
@@ -102,10 +102,10 @@ public class Conference {
         final StringBuilder stringBuilder = new StringBuilder("Conference{");
         stringBuilder.append("id=").append(id);
         stringBuilder.append(", topic=").append(topic);
-        stringBuilder.append(", conferenceName='").append(conferenceName).append('\'');
-        stringBuilder.append(", conferenceDescription='").append(conferenceDescription).append('\'');
+        stringBuilder.append(", name='").append(name).append('\'');
+        stringBuilder.append(", description='").append(description).append('\'');
         stringBuilder.append(", date=").append(date);
-        stringBuilder.append(", conferenceStatus=").append(conferenceStatus);
+        stringBuilder.append(", status=").append(status);
         stringBuilder.append('}');
         return stringBuilder.toString();
     }
@@ -128,22 +128,22 @@ public class Conference {
         }
 
         public Builder setName(String conferenceName) {
-            newConference.conferenceName = conferenceName;
+            newConference.name = conferenceName;
             return this;
         }
 
         public Builder setDescription(String conferenceDescription) {
-            newConference.conferenceDescription = conferenceDescription;
+            newConference.description = conferenceDescription;
             return this;
         }
 
-        public Builder setDate(Date date) {
-            newConference.date = date;
+        public Builder setDate(Date conferenceDate) {
+            newConference.date = conferenceDate;
             return this;
         }
 
         public Builder setStatus(Status conferenceStatus) {
-            newConference.conferenceStatus = conferenceStatus;
+            newConference.status = conferenceStatus;
             return this;
         }
 

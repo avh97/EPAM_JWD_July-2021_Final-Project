@@ -115,7 +115,7 @@ public class User {
             newUser = new User();
         }
 
-        public Builder setUserId(int id) {
+        public Builder setId(int id) {
             newUser.id = id;
             return this;
         }
