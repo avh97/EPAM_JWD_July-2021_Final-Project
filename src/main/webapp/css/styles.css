@@ -1,0 +1,29 @@
+@charset "UTF-8";
+.container-fluid {
+    padding: 15px 20px;
+}
+
+.btn-primary {
+    width: 150px;
+}
+
+.btn-outline-primary {
+    width: 250px;
+}
+
+.btn-danger {
+    margin: 5px;
+    width: 175px;
+}
+
+/*.form-group {*/
+/*    padding: 5px 10px;*/
+/*}*/
+
+.table {
+    text-align: center;
+}
+
+th {
+    text-align: center;
+}
