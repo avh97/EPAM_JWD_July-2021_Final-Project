@@ -7,7 +7,7 @@ import by.khaletski.project.controller.command.Parameters;
 import by.khaletski.project.controller.command.Router;
 import by.khaletski.project.controller.command.Router.Type;
 import by.khaletski.project.dao.impl.UserDaoImpl;
-import by.khaletski.project.entity.User.Role;
+import by.khaletski.project.entity.User;
 import by.khaletski.project.service.UserService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.impl.UserServiceImpl;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * This command changes user role to "observer".
+ * This command changes user role.
  * If the user role has been changed, the user receives a success message.
  * If not, the user receives a failure message. In both cases, the user is redirected to a personal page.
  * If an exception is caught, the user is forwarded to the error page.
@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSession;
  * @author Anton Khaletski
  */
 
-public class ChangeUserToObserverCommand implements Command {
+public class ChangeUserRoleCommand implements Command {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final UserService userService = new UserServiceImpl(new UserDaoImpl());
 
@@ -36,11 +36,12 @@ public class ChangeUserToObserverCommand implements Command {
 		Router router = new Router();
 		HttpSession session = request.getSession();
 		int id = Integer.parseInt(request.getParameter(Parameters.ID));
+		User.Role role = User.Role.valueOf(request.getParameter(Parameters.ROLE));
 		try {
-			if (userService.changeRole(id, Role.OBSERVER)) {
-				session.setAttribute(Attributes.MESSAGE, "User role has been set to \"Observer\".");
+			if (userService.changeRole(id, role)) {
+				session.setAttribute(Attributes.MESSAGE, "User role has been changed.");
 			} else {
-				session.setAttribute(Attributes.MESSAGE, "User role hasn't been set to \"Observer\".");
+				session.setAttribute(Attributes.MESSAGE, "User role hasn't been changed.");
 			}
 			router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
 			router.setType(Type.REDIRECT);

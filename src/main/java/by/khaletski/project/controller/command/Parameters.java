@@ -25,6 +25,8 @@ public final class Parameters {
     public static final String CONFERENCE_STATUS = "conference_status";
     public static final String LANGUAGE = "language";
     public static final String COMMAND = "command";
+    public static final String STATUS = "status";
+    public static final String ROLE = "role";
 
     private Parameters() {
     }

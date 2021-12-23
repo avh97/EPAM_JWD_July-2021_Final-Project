@@ -105,24 +105,25 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="user-role-dropdown-menu-button">
                                     <c:if test="${user.role ne 'ADMIN'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_user_role_to_admin">
+                                        <button type="submit" class="dropdown-item" name="role"
+                                                value="ADMIN">
                                             <c:out value="ADMIN"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${user.role ne 'PARTICIPANT'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_user_role_to_participant">
+                                        <button type="submit" class="dropdown-item" name="role"
+                                                value="PARTICIPANT">
                                             <c:out value="PARTICIPANT"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${user.role ne 'OBSERVER'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_user_role_to_observer">
+                                        <button type="submit" class="dropdown-item" name="role"
+                                                value="OBSERVER">
                                             <c:out value="OBSERVER"/>
                                         </button>
                                     </c:if>
                                     <input type="hidden" name="id" value="${user.id}">
+                                    <input type="hidden" name="command" value="change_user_role">
                                 </div>
                             </form>
                         </div>
@@ -221,24 +222,25 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="conference-status-dropdown-menu-button">
                                     <c:if test="${conference.status ne 'PENDING'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_conference_status_to_pending">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="PENDING">
                                             <c:out value="PENDING"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${conference.status ne 'CANCELED'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_conference_status_to_canceled">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="CANCELED">
                                             <c:out value="CANCELED"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${conference.status ne 'ENDED'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_conference_status_to_ended">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="ENDED">
                                             <c:out value="ENDED"/>
                                         </button>
                                     </c:if>
                                     <input type="hidden" name="id" value="${conference.id}">
+                                    <input type="hidden" name="command" value="change_conference_status">
                                 </div>
                             </form>
                         </div>
@@ -306,24 +308,25 @@
                                 </button>
                                 <div class="dropdown-menu" aria-labelledby="application-status-dropdown-menu-button">
                                     <c:if test="${application.status ne 'CLAIMED'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_application_status_to_claimed">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="CLAIMED">
                                             <c:out value="CLAIMED"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${application.status ne 'CONFIRMED'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_application_status_to_confirmed">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="CONFIRMED">
                                             <c:out value="CONFIRMED"/>
                                         </button>
                                     </c:if>
                                     <c:if test="${application.status ne 'REJECTED'}">
-                                        <button type="submit" class="dropdown-item" name="command"
-                                                value="change_application_status_to_rejected">
+                                        <button type="submit" class="dropdown-item" name="status"
+                                                value="REJECTED">
                                             <c:out value="REJECTED"/>
                                         </button>
                                     </c:if>
                                     <input type="hidden" name="id" value="${application.id}">
+                                    <input type="hidden" name="command" value="change_application_status">
                                 </div>
                             </form>
                         </div>
