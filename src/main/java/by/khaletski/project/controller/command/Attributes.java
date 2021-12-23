@@ -22,6 +22,7 @@ public final class Attributes {
     public static final String SELECTED_USER = "selected_user";
     public static final String NAME = "name";
     public static final String PATRONYMIC = "patronymic";
+    public static final String LOCALE = "locale";
 
     private Attributes() {
 

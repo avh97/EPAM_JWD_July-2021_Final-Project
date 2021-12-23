@@ -1,5 +1,6 @@
 package by.khaletski.project.controller.command;
 
+import by.khaletski.project.controller.command.other.SelectLocaleCommand;
 import by.khaletski.project.controller.command.other.ToMainCommand;
 import by.khaletski.project.controller.command.other.UnknownCommand;
 import by.khaletski.project.controller.command.application.ChangeApplicationToClaimedCommand;
@@ -211,6 +212,11 @@ public enum CommandEnum {
     REMOVE_APPLICATION {
         {
             this.command = new RemoveApplicationCommand();
+        }
+    },
+    SELECT_LOCALE {
+        {
+            this.command = new SelectLocaleCommand();
         }
     },
     UNKNOWN_COMMAND {

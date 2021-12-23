@@ -1,9 +1,6 @@
 package by.khaletski.project.controller.command.other;
 
-import by.khaletski.project.controller.command.Attributes;
-import by.khaletski.project.controller.command.Command;
-import by.khaletski.project.controller.command.Parameters;
-import by.khaletski.project.controller.command.Router;
+import by.khaletski.project.controller.command.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,9 +20,9 @@ public class SelectLocaleCommand implements Command {
     public Router execute(HttpServletRequest request) {
         Router router = new Router();
         HttpSession session = request.getSession();
-        router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+        router.setPagePath(PagePaths.TO_MAIN_PAGE);
         String language = request.getParameter(Parameters.LANGUAGE);
-        session.setAttribute(Parameters.LANGUAGE, language);
+        session.setAttribute(Attributes.LOCALE, language);
         LOGGER.debug(language);
         return router;
     }

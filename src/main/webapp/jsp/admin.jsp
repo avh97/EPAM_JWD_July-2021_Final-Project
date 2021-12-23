@@ -344,17 +344,15 @@
     </c:if>
 </div>
 <%--JS script--%>
-<%--<c:if test="${locale.e == ru_RU}">--%>
-    <script>
-        $(document).ready(function () {
-            $('#myTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Russian.json'
-                }
-            });
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/English.json'
+            }
         });
-    </script>
-<%--</c:if>--%>
+    });
+</script>
 <c:import url="footer.jsp"/>
 </body>
 </html>

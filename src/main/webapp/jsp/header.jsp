@@ -46,6 +46,25 @@
                     class="btn"> <input type="hidden" name="command"
                                         value="to_personal_page">
         </form>
+        <div class="dropdown">
+            <form action="controller" method="post">
+                <button class="btn dropdown-toggle" type="button"
+                        id="locale-dropdown-menu-button" data-bs-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">
+                    <fmt:message key="label.language"/>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="locale-dropdown-menu-button">
+                        <button class="dropdown-item" type="submit" name="language"
+                                value="ru_RU">Русский
+                        </button>
+                        <button class="dropdown-item" type="submit" name="language"
+                                value="en_US">English (US)
+                        </button>
+                    <input type="hidden" name="command" value="select_locale" >
+                </div>
+            </form>
+        </div>
     </div>
     <c:if test="${user.getRole().toString() eq null}">
         <div class="header_button">
