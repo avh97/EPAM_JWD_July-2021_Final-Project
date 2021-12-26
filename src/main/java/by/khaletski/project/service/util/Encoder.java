@@ -3,21 +3,20 @@ package by.khaletski.project.service.util;
 import java.math.BigInteger;
 import java.util.Base64;
 
-public final class PasswordEncoder {
+public final class Encoder {
 
-    private PasswordEncoder() {
+    private Encoder() {
     }
 
     /**
      * @param password
-     * @return String hash value of a password
+     * @return String hash value of a string
      */
 
-    public static String encodePassword(String password) {
+    public static String encode(String password) {
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] bytesEncoded = encoder.encode(password.getBytes());
         BigInteger bigInt = new BigInteger(1, bytesEncoded);
-        String resultHex = bigInt.toString(16);
-        return resultHex;
+        return bigInt.toString(16);
     }
 }
