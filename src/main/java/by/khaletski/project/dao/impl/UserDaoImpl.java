@@ -32,7 +32,7 @@ public class UserDaoImpl implements UserDao {
     private static final String SQL_CHANGE_USER_ROLE_BY_ID
             = "UPDATE users SET role=? WHERE id=?";
     private static final String SQL_EDIT_USER_INFO_BY_ID
-            = "UPDATE users SET name=?, patronymic=?, surname=? WHERE id=?";
+            = "UPDATE users SET email=?, name=?, patronymic=?, surname=? WHERE id=?";
     private static final String SQL_REMOVE_USER_BY_ID
             = "DELETE FROM users WHERE id=?";
     private static final String SQL_FIND_USER_BY_EMAIL =
@@ -129,10 +129,11 @@ public class UserDaoImpl implements UserDao {
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_EDIT_USER_INFO_BY_ID)) {
-            statement.setString(1, user.getName());
-            statement.setString(2, user.getPatronymic());
-            statement.setString(3, user.getSurname());
-            statement.setInt(4, user.getId());
+            statement.setString(1, user.getEmail());
+            statement.setString(2, user.getName());
+            statement.setString(3, user.getPatronymic());
+            statement.setString(4, user.getSurname());
+            statement.setInt(5, user.getId());
             int counter = statement.executeUpdate();
             if (counter != 0) {
                 isChanged = true;

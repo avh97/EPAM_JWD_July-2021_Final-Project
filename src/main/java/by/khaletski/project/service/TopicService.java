@@ -14,7 +14,7 @@ public interface TopicService {
 
     boolean add(Map<String, String> topicData) throws ServiceException;
 
-    boolean edit(Map<String, String> topicData) throws ServiceException;
+    boolean edit(Topic topic, Map<String, String> topicData) throws ServiceException;
 
     boolean remove(int id) throws ServiceException;
 }

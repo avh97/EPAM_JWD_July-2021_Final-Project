@@ -1,8 +1,21 @@
 package by.khaletski.project.controller.command;
 
-import by.khaletski.project.controller.command.application.*;
-import by.khaletski.project.controller.command.conference.*;
+import by.khaletski.project.controller.command.application.AddApplicationCommand;
+import by.khaletski.project.controller.command.application.ChangeApplicationStatusCommand;
+import by.khaletski.project.controller.command.application.FindAllApplicationsCommand;
+import by.khaletski.project.controller.command.application.FindConferenceApplicationsCommand;
+import by.khaletski.project.controller.command.application.FindUserApplicationsCommand;
+import by.khaletski.project.controller.command.application.RemoveApplicationCommand;
+import by.khaletski.project.controller.command.application.ToAddApplicationCommand;
+import by.khaletski.project.controller.command.conference.AddConferenceCommand;
+import by.khaletski.project.controller.command.conference.ChangeConferenceStatusCommand;
+import by.khaletski.project.controller.command.conference.EditConferenceCommand;
+import by.khaletski.project.controller.command.conference.FindAllConferencesCommand;
+import by.khaletski.project.controller.command.conference.RemoveConferenceCommand;
+import by.khaletski.project.controller.command.conference.ToAddConferenceCommand;
+import by.khaletski.project.controller.command.conference.ToEditConferenceCommand;
 import by.khaletski.project.controller.command.other.SelectLocaleCommand;
+import by.khaletski.project.controller.command.other.ToAboutCommand;
 import by.khaletski.project.controller.command.other.ToMainCommand;
 import by.khaletski.project.controller.command.other.UnknownCommand;
 import by.khaletski.project.controller.command.topic.AddTopicCommand;
@@ -11,7 +24,17 @@ import by.khaletski.project.controller.command.topic.FindAllTopicsCommand;
 import by.khaletski.project.controller.command.topic.RemoveTopicCommand;
 import by.khaletski.project.controller.command.topic.ToAddTopicCommand;
 import by.khaletski.project.controller.command.topic.ToEditTopicCommand;
-import by.khaletski.project.controller.command.user.*;
+import by.khaletski.project.controller.command.user.ChangeUserRoleCommand;
+import by.khaletski.project.controller.command.user.EditUserCommand;
+import by.khaletski.project.controller.command.user.FindAllUsersCommand;
+import by.khaletski.project.controller.command.user.LogInCommand;
+import by.khaletski.project.controller.command.user.LogOutCommand;
+import by.khaletski.project.controller.command.user.RemoveUserCommand;
+import by.khaletski.project.controller.command.user.SignUpCommand;
+import by.khaletski.project.controller.command.user.ToEditUserCommand;
+import by.khaletski.project.controller.command.user.ToPersonalPageCommand;
+import by.khaletski.project.controller.command.user.ToSignInCommand;
+import by.khaletski.project.controller.command.user.ToSignUpCommand;
 
 /**
  * Enumeration contains all types of commands
@@ -33,6 +56,11 @@ public enum CommandEnum {
     TO_MAIN {
         {
             this.command = new ToMainCommand();
+        }
+    },
+    TO_ABOUT_PAGE {
+        {
+            this.command = new ToAboutCommand();
         }
     },
     TO_SIGN_IN {
@@ -163,6 +191,26 @@ public enum CommandEnum {
     CHANGE_USER_ROLE {
         {
             this.command = new ChangeUserRoleCommand();
+        }
+    },
+    ADD_APPLICATION {
+        {
+            this.command = new AddApplicationCommand();
+        }
+    },
+    TO_ADD_APPLICATION {
+        {
+            this.command = new ToAddApplicationCommand();
+        }
+    },
+    FIND_USER_APPLICATIONS {
+        {
+            this.command = new FindUserApplicationsCommand();
+        }
+    },
+    FIND_CONFERENCE_APPLICATIONS {
+        {
+            this.command = new FindConferenceApplicationsCommand();
         }
     },
     UNKNOWN_COMMAND {

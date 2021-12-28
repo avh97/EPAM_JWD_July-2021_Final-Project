@@ -45,8 +45,6 @@ public class LogInCommand implements Command {
                 }
                 session.setAttribute(Attributes.USER, user);
                 session.setAttribute(Attributes.MESSAGE, "Successful log in.");
-                session.setAttribute(Attributes.NAME, user.getName());
-                session.setAttribute(Attributes.PATRONYMIC, user.getPatronymic());
             } else {
                 router.setPagePath(PagePaths.SIGN_IN);
                 request.setAttribute(Attributes.MESSAGE, "Incorrect email or password.");

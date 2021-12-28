@@ -6,7 +6,6 @@ package by.khaletski.project.controller.command;
  * @author Anton Khaletski
  */
 
-
 public final class Parameters {
 
     public static final String ID = "id";
@@ -27,6 +26,7 @@ public final class Parameters {
     public static final String COMMAND = "command";
     public static final String STATUS = "status";
     public static final String ROLE = "role";
+    public static final String APPLICATION_DESCRIPTION = "application_description";
 
     private Parameters() {
     }

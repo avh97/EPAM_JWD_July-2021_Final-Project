@@ -11,6 +11,10 @@ public interface ApplicationDao {
 
     Optional<Application> find(int id) throws DaoException;
 
+    List<Application> findByUserId(int id) throws DaoException;
+
+    List<Application> findByConferenceId(int id) throws DaoException;
+
     boolean add(Application application) throws DaoException;
 
     boolean changeStatus(int id, Application.Status status) throws DaoException;

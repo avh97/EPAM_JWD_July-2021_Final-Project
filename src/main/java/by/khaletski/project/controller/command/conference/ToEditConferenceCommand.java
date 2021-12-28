@@ -20,7 +20,7 @@ import java.util.Optional;
 
 /**
  * Go to "edit conference" page command.
- * This command transfers to "edit conference" page while saving conference ID as an attribute from current page.
+ * This command transfers to "edit conference" page while saving conference ID as session attribute.
  * If conference cannot be found or an exception is caught, user gets a message and is transferred to the error page.
  *
  * @author Anton Khaletski
@@ -36,11 +36,12 @@ public class ToEditConferenceCommand implements Command {
         LOGGER.debug("Going to \"edit conference\" page...");
         Router router = new Router();
         HttpSession session = request.getSession();
+        session.removeAttribute(Attributes.SELECTED);
         int id = Integer.parseInt(request.getParameter(Parameters.ID));
         try {
             Optional<Conference> optional = conferenceService.find(id);
             if (optional.isPresent()) {
-                request.setAttribute(Attributes.CONFERENCE, optional.get());
+                session.setAttribute(Attributes.SELECTED, optional.get());
                 session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_EDIT_CONFERENCE_PAGE);
                 router.setPagePath(PagePaths.EDIT_CONFERENCE);
             } else {

@@ -5,7 +5,7 @@ import by.khaletski.project.entity.User;
 import by.khaletski.project.dao.exception.DaoException;
 import by.khaletski.project.service.UserService;
 import by.khaletski.project.service.exception.ServiceException;
-import by.khaletski.project.service.util.PasswordEncoder;
+import by.khaletski.project.service.util.Encoder;
 import by.khaletski.project.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
                 && Validator.isValidName(userData.get("name"))
                 && Validator.isValidName(userData.get("patronymic"))
                 && Validator.isValidName(userData.get("surname"))) {
-            String encodedPassword = PasswordEncoder.encodePassword(userData.get("password"));
+            String encodedPassword = Encoder.encode(userData.get("password"));
             User user = new User.Builder()
                     .setEmail(userData.get("email"))
                     .setName(userData.get("name"))
@@ -94,9 +94,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean edit(User user, Map<String, String> userData) throws ServiceException {
         boolean isEdited = false;
-        if (Validator.isValidName(userData.get("name"))
+        if (Validator.isValidEmail(userData.get("email"))
+                && Validator.isValidName(userData.get("name"))
                 && Validator.isValidName(userData.get("patronymic"))
                 && Validator.isValidName(userData.get("surname"))) {
+            user.setEmail(userData.get("email"));
             user.setName(userData.get("name"));
             user.setPatronymic(userData.get("patronymic"));
             user.setSurname(userData.get("surname"));
@@ -143,7 +145,7 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("Attempt to find user by email and password");
         Optional<User> optionalUser;
         if (Validator.isValidEmail(email)) {
-            String encodedPassword = PasswordEncoder.encodePassword(password);
+            String encodedPassword = Encoder.encode(password);
             // FIXME: 12.12.2021 remove logger later
             LOGGER.debug("Encoded password: " + encodedPassword);
             try {

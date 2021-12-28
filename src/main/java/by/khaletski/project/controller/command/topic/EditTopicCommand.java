@@ -7,6 +7,7 @@ import by.khaletski.project.controller.command.Parameters;
 import by.khaletski.project.controller.command.Router;
 import by.khaletski.project.controller.command.Router.Type;
 import by.khaletski.project.dao.impl.TopicDaoImpl;
+import by.khaletski.project.entity.Topic;
 import by.khaletski.project.service.TopicService;
 import by.khaletski.project.service.exception.ServiceException;
 import by.khaletski.project.service.impl.TopicServiceImpl;
@@ -37,11 +38,11 @@ public class EditTopicCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         Map<String, String> topicData = new HashMap<>();
-        topicData.put(Parameters.ID, request.getParameter(Parameters.ID));
+        Topic topic = (Topic) session.getAttribute(Attributes.SELECTED);
         topicData.put(Parameters.TOPIC_NAME, request.getParameter(Parameters.TOPIC_NAME));
         topicData.put(Parameters.TOPIC_DESCRIPTION, request.getParameter(Parameters.TOPIC_DESCRIPTION));
         try {
-            if (topicService.edit(topicData)) {
+            if (topicService.edit(topic, topicData)) {
                 session.setAttribute(Attributes.MESSAGE,"Topic has been edited.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "Topic hasn't been edited.");

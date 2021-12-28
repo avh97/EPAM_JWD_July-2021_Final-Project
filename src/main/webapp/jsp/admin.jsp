@@ -16,10 +16,11 @@
 <%--Jumbotron--%>
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
-        <h2 class="display-4"><fmt:message key="label.welcome"/>, ${name } ${patronymic}</h2>
-        <p class="lead">Здесь должно было быть какое-то приветствие. Но я его не придумал :(</p>
+        <h2 class="display-4"><fmt:message key="label.welcome"/>,
+            ${sessionScope.user.name } ${sessionScope.user.patronymic}</h2>
+        <br>
+        <p class="lead">${message}</p>
         <hr class="my-4">
-        <p>${message}</p>
         <%--Dropdown main menu--%>
         <div class="btn-group dropdown">
             <form action="controller" method="post">
@@ -81,7 +82,7 @@
                 <th><fmt:message key="label.user_name"/></th>
                 <th><fmt:message key="label.user_patronymic"/></th>
                 <th><fmt:message key="label.user_surname"/></th>
-                <th><fmt:message key="label.email"/></th>
+                <th><fmt:message key="label.table_email"/></th>
                 <th><fmt:message key="label.role"/></th>
                 <th><fmt:message key="label.action"/></th>
             </tr>
@@ -260,6 +261,13 @@
                             </button>
                             <input type="hidden" name="id" value="${conference.id}">
                         </form>
+                        <form action="controller" method="post">
+                            <button type="submit" class="btn btn-danger" name="command"
+                                    value="find_conference_applications">
+                                <fmt:message key="label.find_all_participants"/>
+                            </button>
+                            <input type="hidden" name="id" value="${conference.id}">
+                        </form>
                     </td>
                 </tr>
             </c:forEach>
@@ -277,7 +285,7 @@
                 <th><fmt:message key="label.topic_name"/></th>
                 <th><fmt:message key="label.conference_status"/></th>
                 <th><fmt:message key="label.date"/></th>
-                <th><fmt:message key="label.user_name"/></th>
+                <th><fmt:message key="label.name_patronymic_surname"/></th>
                 <th><fmt:message key="label.role"/></th>
                 <th><fmt:message key="label.application_description"/></th>
                 <th><fmt:message key="label.application_status"/></th>

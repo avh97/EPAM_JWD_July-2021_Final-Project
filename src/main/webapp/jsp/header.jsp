@@ -38,7 +38,7 @@
             <input type="submit" value=
             <fmt:message key="label.about"/>
                     class="btn"> <input type="hidden" name="command"
-                                        value="to_about">
+                                        value="to_about_page">
         </form>
         <form action="controller" method="get">
             <input type="submit" value=

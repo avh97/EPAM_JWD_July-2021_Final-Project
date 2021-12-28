@@ -4,16 +4,42 @@
 }
 
 .btn-primary {
-    width: 150px;
+    margin: 10px;
+    /*width: 150px;*/
 }
 
 .btn-outline-primary {
     width: 250px;
 }
 
+.btn-outline-danger {
+    margin: 5px;
+    /*width: 150px;*/
+}
+
 .btn-danger {
     margin: 5px;
-    width: 175px;
+    /*width: 100px;*/
+}
+
+.btn-success {
+    margin: 5px;
+    /*width: 100px;*/
+}
+
+.btn-warning {
+    margin: 5px;
+    /*width: 100px;*/
+}
+
+.btn-dark {
+    margin: 5px;
+    /*width: 100px;*/
+}
+
+.btn-info {
+    margin: 5px;
+    /*width: 100px;*/
 }
 
 /*.form-group {*/

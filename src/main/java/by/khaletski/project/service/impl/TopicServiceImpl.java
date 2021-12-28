@@ -54,8 +54,8 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public boolean add(Map<String, String> topicData) throws ServiceException {
         boolean isAdded;
-        if (Validator.isValidName(topicData.get("topic_name"))
-                && Validator.isValidName(topicData.get("topic_description"))) {
+        if (Validator.isValidText(topicData.get("topic_name"))
+                && Validator.isValidText(topicData.get("topic_description"))) {
             Topic topic = new Topic.Builder()
                     .setName(topicData.get("topic_name"))
                     .setDescription(topicData.get("topic_description"))
@@ -73,16 +73,12 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public boolean edit(Map<String, String> topicData) throws ServiceException {
+    public boolean edit(Topic topic, Map<String, String> topicData) throws ServiceException {
         boolean isEdited;
-        if (Validator.isValidName(topicData.get("topic_name"))
-                && Validator.isValidName(topicData.get("topic_description"))) {
-            int currentId = Integer.parseInt(topicData.get("id"));
-            Topic topic = new Topic.Builder()
-                    .setId(currentId)
-                    .setName(topicData.get("topic_name"))
-                    .setDescription(topicData.get("topic_description"))
-                    .build();
+        if (Validator.isValidText(topicData.get("topic_name"))
+                && Validator.isValidText(topicData.get("topic_description"))) {
+            topic.setName(topicData.get("topic_name"));
+            topic.setDescription(topicData.get("topic_description"));
             try {
                 isEdited = topicDao.edit(topic);
             } catch (DaoException e) {

@@ -21,8 +21,8 @@ import java.util.Map;
 
 /**
  * This command edits name, patronymic and surname of the selected user.
- * If the user has been edited, a success message is received, else the failure message.
- * In both cases, the user remains on the current page.
+ * If the user has been edited, session attribute "user" is updated and a success message is received,
+ * else the failure message. In both cases, the user remains on the current page.
  * If an exception is caught, the user receives a failure message and is forwarded to the error page.
  *
  * @author Anton Khaletski
@@ -38,13 +38,17 @@ public class EditUserCommand implements Command {
 		Router router = new Router();
 		HttpSession session = request.getSession();
 		Map<String, String> userData = new HashMap<>();
+		userData.put(Parameters.USER_EMAIL, request.getParameter(Parameters.USER_EMAIL));
 		userData.put(Parameters.USER_NAME, request.getParameter(Parameters.USER_NAME));
 		userData.put(Parameters.USER_PATRONYMIC, request.getParameter(Parameters.USER_PATRONYMIC));
 		userData.put(Parameters.USER_SURNAME, request.getParameter(Parameters.USER_SURNAME));
 		try {
-			User user = (User) session.getAttribute(Attributes.SELECTED_USER);
+			User user = (User) session.getAttribute(Attributes.SELECTED);
 			if (userService.edit(user, userData)) {
 				session.setAttribute(Attributes.MESSAGE, "User has been edited.");
+				if (user.getId() == ((User) session.getAttribute(Attributes.USER)).getId()) {
+					session.setAttribute(Attributes.USER, user);
+				}
 			} else {
 				session.setAttribute(Attributes.MESSAGE, "User hasn't been edited.");
 			}

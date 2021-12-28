@@ -60,9 +60,9 @@ public class ConferenceServiceImpl implements ConferenceService {
     public boolean add(Map<String, String> conferenceData) throws ServiceException {
         boolean isAdded;
         Optional<Topic> optionalTopic;
-        if (Validator.isValidName(conferenceData.get("conference_name"))
-                && Validator.isValidName(conferenceData.get("conference_description"))
-                && Validator.isDateFormatValid(conferenceData.get("date"))) {
+        if (Validator.isValidText(conferenceData.get("conference_name"))
+                && Validator.isValidText(conferenceData.get("conference_description"))
+                && Validator.isValidDateFormat(conferenceData.get("date"))) {
             try {
                 optionalTopic = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
                 LOGGER.debug(optionalTopic);
@@ -103,18 +103,17 @@ public class ConferenceServiceImpl implements ConferenceService {
     @Override
     public boolean edit(Conference conference, Map<String, String> conferenceData) throws ServiceException {
         boolean isEdited;
-        Optional<Topic> optionalTopic;
-        // FIXME: 14.12.2021 add topicId validator
-        if (Validator.isValidName(conferenceData.get("conference_name"))
-                && Validator.isValidName(conferenceData.get("conference_description"))
-                && Validator.isDateFormatValid(conferenceData.get("date"))) {
+        Optional<Topic> optional;
+        if (Validator.isValidId(conferenceData.get("topic_id"))
+                && Validator.isValidText(conferenceData.get("conference_name"))
+                && Validator.isValidText(conferenceData.get("conference_description"))
+                && Validator.isValidDateFormat(conferenceData.get("date"))) {
             try {
-                optionalTopic = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
-                if (optionalTopic.isEmpty()) {
+                optional = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
+                if (optional.isEmpty()) {
                     return false;
                 }
-                Topic topic = optionalTopic.get();
-                conference.setTopic(topic);
+                conference.setTopic(optional.get());
                 conference.setName(conferenceData.get("conference_name"));
                 conference.setDescription(conferenceData.get("conference_description"));
                 conference.setDate(Date.valueOf(conferenceData.get(("date"))));

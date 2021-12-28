@@ -60,18 +60,34 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public boolean add(Map<String, String> applicationData) throws ServiceException {
+    public List<Application> findByUserId(int id) throws ServiceException {
+        List<Application> applications;
+        try {
+            applications = applicationDao.findByUserId(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return applications;
+    }
+
+    @Override
+    public List<Application> findByConferenceId(int id) throws ServiceException {
+        List<Application> applications;
+        try {
+            applications = applicationDao.findByConferenceId(id);
+        } catch (DaoException e) {
+            LOGGER.error(e);
+            throw new ServiceException(e);
+        }
+        return applications;
+    }
+
+    @Override
+    public boolean add(User user, Conference conference, Map<String, String> applicationData) throws ServiceException {
         boolean isAdded;
-        if (Validator.isValidName(applicationData.get("application_description"))) {
+        if (Validator.isValidText(applicationData.get("application_description"))) {
             try {
-                Optional<User> optionalUser = userDao.find(Integer.parseInt("user_id"));
-                Optional<Conference> optionalConference = conferenceDao.
-                        find(Integer.parseInt("conference_id"));
-                if (optionalConference.isEmpty() || optionalUser.isEmpty()) {
-                    return false;
-                }
-                User user = optionalUser.get();
-                Conference conference = optionalConference.get();
                 Application application = new Application.Builder()
                         .setUser(user)
                         .setConference(conference)
@@ -92,7 +108,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public boolean edit(Map<String, String> applicationData) throws ServiceException {
         boolean isEdited;
-        if (Validator.isValidName(applicationData.get("application_description"))) {
+        if (Validator.isValidText(applicationData.get("application_description"))) {
             try {
                 Optional<User> optionalUser = userDao.find(Integer.parseInt("user_id"));
                 Optional<Conference> optionalConference = conferenceDao.

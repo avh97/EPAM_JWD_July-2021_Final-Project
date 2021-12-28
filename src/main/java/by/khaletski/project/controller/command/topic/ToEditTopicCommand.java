@@ -19,7 +19,7 @@ import java.util.Optional;
 
 /**
  * Go to "edit topic" page command.
- * This command transfers to "edit topic" page while saving topic ID as an attribute from current page.
+ * This command transfers to "edit topic" page while saving topic ID as session attribute.
  * If topic cannot be found or an exception is caught, user gets a message and is transferred to the error page.
  *
  * @author Anton Khaletski
@@ -34,11 +34,12 @@ public class ToEditTopicCommand implements Command {
         LOGGER.debug("Going to \"edit topic\" page...");
         Router router = new Router();
         HttpSession session = request.getSession();
+        session.removeAttribute(Attributes.SELECTED);
         int id = Integer.parseInt(request.getParameter(Parameters.ID));
         try {
             Optional<Topic> optional = topicService.find(id);
             if (optional.isPresent()) {
-                request.setAttribute(Attributes.TOPIC, optional.get());
+                session.setAttribute(Attributes.SELECTED, optional.get());
                 session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_EDIT_TOPIC_PAGE);
                 router.setPagePath(PagePaths.EDIT_TOPIC);
             } else {

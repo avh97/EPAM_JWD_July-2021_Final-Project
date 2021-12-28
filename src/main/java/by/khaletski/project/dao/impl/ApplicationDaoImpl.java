@@ -46,8 +46,28 @@ public class ApplicationDaoImpl implements ApplicationDao {
             "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
             "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
             "INNER JOIN users ON applications.user_id = users.id WHERE applications.id=?";
+    private static final String SQL_FIND_APPLICATIONS_BY_USER_ID
+            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
+            "applications.application_description, applications.application_status, \n" +
+            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
+            "conferences.conference_status, conferences.date, \n" +
+            "topics.topic_name, topics.topic_description,\n" +
+            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
+            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            "INNER JOIN users ON applications.user_id = users.id WHERE applications.user_id=?";
+    private static final String SQL_FIND_USERS_BY_CONFERENCE_ID
+                = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
+                        "applications.application_description, applications.application_status, \n" +
+                        "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
+                        "conferences.conference_status, conferences.date, \n" +
+                        "topics.topic_name, topics.topic_description,\n" +
+                        "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
+                        "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
+                        "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+                        "INNER JOIN users ON applications.user_id = users.id WHERE applications.conference_id=?";
     private static final String SQL_ADD_APPLICATION
-            = "INSERT INTO applications (user_id,conference_id,descripton,status) values(?,?,?,?)";
+            = "INSERT INTO applications (user_id, conference_id, application_description, application_status) values(?,?,?,?)";
     private static final String SQL_CHANGE_APPLICATION_STATUS
             = "UPDATE applications set application_status=? WHERE id=?";
     private static final String SQL_EDIT_APPLICATION
@@ -74,7 +94,7 @@ public class ApplicationDaoImpl implements ApplicationDao {
 
     @Override
     public Optional<Application> find(int id) throws DaoException {
-        LOGGER.info("Attempt to find applicationList by user id in the database");
+        LOGGER.info("Attempt to find application by user id in the database");
         Optional<Application> optionalApplication = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
@@ -89,6 +109,42 @@ public class ApplicationDaoImpl implements ApplicationDao {
             throw new DaoException(e);
         }
         return optionalApplication;
+    }
+
+    @Override
+    public List<Application> findByUserId(int id) throws DaoException {
+        LOGGER.info("Attempt to find applications by user id in the database");
+        List<Application> applications = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATIONS_BY_USER_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                applications.add(retrieve(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find all applications by user id in the database");
+            throw new DaoException(e);
+        }
+        return applications;
+    }
+
+    @Override
+    public List<Application> findByConferenceId(int id) throws DaoException {
+        LOGGER.info("Attempt to find users by conference id in the database");
+        List<Application> applications = new ArrayList<>();
+        try (Connection connection = ConnectionPool.INSTANCE.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USERS_BY_CONFERENCE_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                applications.add(retrieve(resultSet));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("Failed attempt to find users by conference id in the database");
+            throw new DaoException(e);
+        }
+        return applications;
     }
 
     @Override
@@ -185,31 +241,28 @@ public class ApplicationDaoImpl implements ApplicationDao {
     }
 
     private Application retrieve(ResultSet resultSet) throws SQLException {
-        User user = new User.Builder()
-                .setId(resultSet.getInt("user_id"))
-                .setEmail(resultSet.getString("email"))
-                .setName(resultSet.getString("name"))
-                .setPatronymic(resultSet.getString("patronymic"))
-                .setSurname(resultSet.getString("surname"))
-                .setRole(User.Role.valueOf(resultSet.getString("role")))
-                .build();
-        Topic topic = new Topic.Builder()
-                .setId(resultSet.getInt("topic_id"))
-                .setName(resultSet.getString("topic_name"))
-                .setDescription(resultSet.getString("topic_description"))
-                .build();
-        Conference conference = new Conference.Builder()
-                .setId(resultSet.getInt("conference_id"))
-                .setTopic(topic)
-                .setName(resultSet.getString("conference_name"))
-                .setDescription(resultSet.getString("conference_description"))
-                .setDate(resultSet.getDate("date"))
-                .setStatus(Conference.Status.valueOf(resultSet.getString("conference_status")))
-                .build();
         return new Application.Builder()
                 .setId(resultSet.getInt("id"))
-                .setUser(user)
-                .setConference(conference)
+                .setUser(new User.Builder()
+                        .setId(resultSet.getInt("user_id"))
+                        .setEmail(resultSet.getString("email"))
+                        .setName(resultSet.getString("name"))
+                        .setPatronymic(resultSet.getString("patronymic"))
+                        .setSurname(resultSet.getString("surname"))
+                        .setRole(User.Role.valueOf(resultSet.getString("role")))
+                        .build())
+                .setConference(new Conference.Builder()
+                        .setId(resultSet.getInt("conference_id"))
+                        .setTopic(new Topic.Builder()
+                                .setId(resultSet.getInt("topic_id"))
+                                .setName(resultSet.getString("topic_name"))
+                                .setDescription(resultSet.getString("topic_description"))
+                                .build())
+                        .setName(resultSet.getString("conference_name"))
+                        .setDescription(resultSet.getString("conference_description"))
+                        .setDate(resultSet.getDate("date"))
+                        .setStatus(Conference.Status.valueOf(resultSet.getString("conference_status")))
+                        .build())
                 .setDescription(resultSet.getString("application_description"))
                 .setStatus(Application.Status.valueOf(resultSet.getString("application_status")))
                 .build();

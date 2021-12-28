@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * This command edits topic ID, name, description and date in the selected conference.
@@ -41,15 +40,13 @@ public class EditConferenceCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         Map<String, String> conferenceData = new HashMap<>();
-        int id = Integer.parseInt(request.getParameter(Parameters.ID));
+        Conference conference = (Conference) session.getAttribute(Attributes.SELECTED);
         conferenceData.put(Parameters.TOPIC_ID, request.getParameter(Parameters.TOPIC_ID));
         conferenceData.put(Parameters.CONFERENCE_NAME, request.getParameter(Parameters.CONFERENCE_NAME));
         conferenceData.put(Parameters.CONFERENCE_DESCRIPTION, request.getParameter(Parameters.CONFERENCE_DESCRIPTION));
         conferenceData.put(Parameters.CONFERENCE_DATE, request.getParameter(Parameters.CONFERENCE_DATE));
-        conferenceData.put(Parameters.CONFERENCE_STATUS, request.getParameter(Parameters.CONFERENCE_STATUS));
         try {
-            Optional<Conference> optional = conferenceService.find(id);
-            if (optional.isPresent() && conferenceService.edit(optional.get(), conferenceData)) {
+            if (conferenceService.edit(conference, conferenceData)) {
                 session.setAttribute(Attributes.MESSAGE, "Conference has been edited.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "Conference hasn't been edited.");
