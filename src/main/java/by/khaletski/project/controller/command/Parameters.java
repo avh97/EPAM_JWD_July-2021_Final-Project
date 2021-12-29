@@ -9,6 +9,7 @@ package by.khaletski.project.controller.command;
 public final class Parameters {
 
     public static final String ID = "id";
+    public static final String USER_ID = "user_id";
     public static final String USER_NAME = "name";
     public static final String USER_PATRONYMIC = "patronymic";
     public static final String USER_SURNAME = "surname";
@@ -27,6 +28,8 @@ public final class Parameters {
     public static final String STATUS = "status";
     public static final String ROLE = "role";
     public static final String APPLICATION_DESCRIPTION = "application_description";
+    public static final String QUESTION = "question";
+    public static final String ANSWER = "answer";
 
     private Parameters() {
     }

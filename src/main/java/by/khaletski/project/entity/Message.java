@@ -1,5 +1,7 @@
 package by.khaletski.project.entity;
 
+import java.sql.Timestamp;
+
 /**
  * Entity class "Message"
  *
@@ -8,9 +10,10 @@ package by.khaletski.project.entity;
 
 public class Message {
     private int id;
-    private int fromId;
-    private int toId;
-    private String content;
+    private Timestamp timestamp;
+    private User user;
+    private String question;
+    private String answer;
 
     public Message() {
     }
@@ -23,28 +26,36 @@ public class Message {
         this.id = id;
     }
 
-    public int getFromId() {
-        return fromId;
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
-    public void setFromId(int fromId) {
-        this.fromId = fromId;
+    public void setTimestamp(Timestamp timestamp) {
+        this.timestamp = timestamp;
     }
 
-    public int getToId() {
-        return toId;
+    public User getUser() {
+        return user;
     }
 
-    public void setToId(int toId) {
-        this.toId = toId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getContent() {
-        return content;
+    public String getQuestion() {
+        return question;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     @Override
@@ -55,17 +66,19 @@ public class Message {
         Message message = (Message) o;
 
         if (id != message.id) return false;
-        if (fromId != message.fromId) return false;
-        if (toId != message.toId) return false;
-        return content.equals(message.content);
+        if (!this.timestamp.equals(message.timestamp)) return false;
+        if (!this.user.equals(message.user)) return false;
+        if (!this.question.equals(message.question)) return false;
+        return this.answer.equals(message.answer);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + fromId;
-        result = 31 * result + toId;
-        result = 31 * result + content.hashCode();
+        result = 31 * result + user.hashCode();
+        result = 31 * result + timestamp.hashCode();
+        result = 31 * result + question.hashCode();
+        result = 31 * result + answer.hashCode();
         return result;
     }
 
@@ -73,9 +86,10 @@ public class Message {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder("Message{");
         stringBuilder.append("id=").append(id);
-        stringBuilder.append(", fromId=").append(fromId);
-        stringBuilder.append(", toId=").append(toId);
-        stringBuilder.append(", content='").append(content).append('\'');
+        stringBuilder.append(", timestamp=").append(timestamp);
+        stringBuilder.append(", user=").append(user);
+        stringBuilder.append(", question='").append(question).append('\'');
+        stringBuilder.append(", answer='").append(answer).append('\'');
         stringBuilder.append('}');
         return stringBuilder.toString();
     }
@@ -92,18 +106,23 @@ public class Message {
             return this;
         }
 
-        public Builder setFromId(int fromId) {
-            newMessage.fromId = fromId;
+        public Builder setTimestamp(Timestamp timestamp) {
+            newMessage.timestamp = timestamp;
             return this;
         }
 
-        public Builder setToId(int toId) {
-            newMessage.toId = toId;
+        public Builder setUser(User user) {
+            newMessage.user = user;
             return this;
         }
 
-        public Builder setContent(String content) {
-            newMessage.content = content;
+        public Builder setQuestion(String question) {
+            newMessage.question = question;
+            return this;
+        }
+
+        public Builder setAnswer(String answer) {
+            newMessage.answer = answer;
             return this;
         }
 

@@ -55,6 +55,12 @@
                     </li>
                     <li>
                         <button type="submit" class="dropdown-item" name="command"
+                                value="find_all_messages">
+                            <fmt:message key="label.find_all_messages"/>
+                        </button>
+                    </li>
+                    <li>
+                        <button type="submit" class="dropdown-item" name="command"
                                 value="to_add_topic">
                             <fmt:message key="label.add_topic"/>
                         </button>
@@ -346,6 +352,51 @@
                                 <fmt:message key="label.remove"/>
                             </button>
                             <input type="hidden" name="id" value="${application.id}">
+                        </form>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </c:if>
+    <%--Table 5: Messages--%>
+    <c:if test="${message_list ne null}">
+        <h2><fmt:message key="label.messages"/></h2>
+        <table class="table table-fluid" id="myTable">
+            <thead>
+            <tr>
+                <th><fmt:message key="label.id"/></th>
+                <th><fmt:message key="label.timestamp"/></th>
+                <th><fmt:message key="label.name_patronymic_surname"/></th>
+                <th><fmt:message key="label.question"/></th>
+                <th><fmt:message key="label.answer"/></th>
+                <th><fmt:message key="label.action"/></th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach var="message" items="${message_list}">
+                <tr>
+                    <td><c:out value="${message.id}"/></td>
+                    <td><c:out value="${message.timestamp}"/></td>
+                    <td><c:out value="${message.user.surname}"/><br>
+                        <c:out value="${fn:substring(message.user.name, 0, 1)}. "/>
+                        <c:out value="${fn:substring(message.user.patronymic, 0, 1)}."/></td>
+                    <td><c:out value="${message.question}"/></td>
+                    <td><c:out value="${message.answer}"/></td>
+                    <td>
+                        <form action="controller" method="post">
+                            <button type="submit" class="btn btn-danger" name="command"
+                                    value="to_edit_message">
+                                <fmt:message key="label.edit"/>
+                            </button>
+                            <input type="hidden" name="id" value="${message.id}">
+                        </form>
+                        <form action="controller" method="post">
+                            <button type="submit" class="btn btn-danger" name="command"
+                                    value="remove_message">
+                                <fmt:message key="label.remove"/>
+                            </button>
+                            <input type="hidden" name="id" value="${message.id}">
                         </form>
                     </td>
                 </tr>

@@ -14,6 +14,7 @@ import by.khaletski.project.controller.command.conference.FindAllConferencesComm
 import by.khaletski.project.controller.command.conference.RemoveConferenceCommand;
 import by.khaletski.project.controller.command.conference.ToAddConferenceCommand;
 import by.khaletski.project.controller.command.conference.ToEditConferenceCommand;
+import by.khaletski.project.controller.command.message.*;
 import by.khaletski.project.controller.command.other.SelectLocaleCommand;
 import by.khaletski.project.controller.command.other.ToAboutCommand;
 import by.khaletski.project.controller.command.other.ToMainCommand;
@@ -211,6 +212,41 @@ public enum CommandEnum {
     FIND_CONFERENCE_APPLICATIONS {
         {
             this.command = new FindConferenceApplicationsCommand();
+        }
+    },
+    FIND_ALL_MESSAGES {
+        {
+            this.command = new FindAllMessagesCommand();
+        }
+    },
+    FIND_USER_MESSAGES {
+        {
+            this.command = new FindUserMessagesCommand();
+        }
+    },
+    TO_ADD_MESSAGE {
+        {
+            this.command = new ToAddMessageCommand();
+        }
+    },
+    TO_EDIT_MESSAGE {
+        {
+            this.command = new ToEditMessageCommand();
+        }
+    },
+    ADD_MESSAGE {
+        {
+            this.command = new AddMessageCommand();
+        }
+    },
+    EDIT_MESSAGE {
+        {
+            this.command = new EditMessageCommand();
+        }
+    },
+    REMOVE_MESSAGE {
+        {
+            this.command = new RemoveMessageCommand();
         }
     },
     UNKNOWN_COMMAND {
