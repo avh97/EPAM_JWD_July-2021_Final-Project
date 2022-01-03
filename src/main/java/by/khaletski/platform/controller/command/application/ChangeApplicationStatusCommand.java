@@ -1,11 +1,13 @@
 package by.khaletski.platform.controller.command.application;
 
-import by.khaletski.platform.controller.command.*;
-import by.khaletski.platform.controller.command.Router.Type;
+import by.khaletski.platform.controller.command.Attributes;
+import by.khaletski.platform.controller.command.Command;
+import by.khaletski.platform.controller.command.PagePaths;
+import by.khaletski.platform.controller.command.Parameters;
+import by.khaletski.platform.controller.command.Router;
 import by.khaletski.platform.dao.impl.ApplicationDaoImpl;
 import by.khaletski.platform.dao.impl.ConferenceDaoImpl;
 import by.khaletski.platform.dao.impl.UserDaoImpl;
-import by.khaletski.platform.entity.Application;
 import by.khaletski.platform.service.ApplicationService;
 import by.khaletski.platform.service.exception.ServiceException;
 import by.khaletski.platform.service.impl.ApplicationServiceImpl;
@@ -21,7 +23,7 @@ import javax.servlet.http.HttpSession;
  * If not, the user receives a failure message. In both cases, the user is redirected to a personal page.
  * If an exception is caught, the user is forwarded to the error page.
  *
- *  @author Anton Khaletski
+ * @author Anton Khaletski
  */
 
 public class ChangeApplicationStatusCommand implements Command {
@@ -34,8 +36,8 @@ public class ChangeApplicationStatusCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        int id = Integer.parseInt(request.getParameter(Parameters.ID));
-        Application.Status status = Application.Status.valueOf(request.getParameter(Parameters.STATUS));
+        String id = request.getParameter(Parameters.ID);
+        String status = request.getParameter(Parameters.STATUS);
         try {
             if (applicationService.changeStatus(id, status)) {
                 session.setAttribute(Attributes.MESSAGE, "Application status has been changed.");
@@ -43,7 +45,7 @@ public class ChangeApplicationStatusCommand implements Command {
                 session.setAttribute(Attributes.MESSAGE, "Application status has not been changed.");
             }
             router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-            router.setType(Type.REDIRECT);
+            router.setType(Router.Type.REDIRECT);
         } catch (ServiceException e) {
             LOGGER.error(e);
             session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to change application status.");

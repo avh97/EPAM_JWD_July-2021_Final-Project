@@ -13,8 +13,8 @@ import by.khaletski.platform.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -48,50 +48,47 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Optional<Application> find(int id) throws ServiceException {
-        Optional<Application> optionalApplication;
-        try {
-            optionalApplication = applicationDao.find(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
-        }
-        return optionalApplication;
-    }
-
-    @Override
-    public List<Application> findByUserId(int id) throws ServiceException {
-        List<Application> applications;
-        try {
-            applications = applicationDao.findByUserId(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
-        }
-        return applications;
-    }
-
-    @Override
-    public List<Application> findByConferenceId(int id) throws ServiceException {
-        List<Application> applications;
-        try {
-            applications = applicationDao.findByConferenceId(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
-        }
-        return applications;
-    }
-
-    @Override
-    public boolean add(User user, Conference conference, Map<String, String> applicationData) throws ServiceException {
-        boolean isAdded;
-        if (Validator.isValidText(applicationData.get("application_description"))) {
+    public List<Application> findByUserId(String id) throws ServiceException {
+        List<Application> applications = new ArrayList<>();
+        if (Validator.isValidId(id)) {
             try {
+                applications = applicationDao.findByUserId(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
+        }
+        return applications;
+    }
+
+    @Override
+    public List<Application> findByConferenceId(String id) throws ServiceException {
+        List<Application> applications = new ArrayList<>();
+        if (Validator.isValidId(id)) {
+            try {
+                applications = applicationDao.findByConferenceId(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
+        }
+        return applications;
+    }
+
+    @Override
+    public boolean add(String userId, String conferenceId, String description) throws ServiceException {
+        boolean isAdded = false;
+        if (Validator.isValidId(userId) && Validator.isValidId(conferenceId) && Validator.isValidText(description)) {
+            try {
+                Optional<User> optionalUser = userDao.find(Integer.parseInt(userId));
+                Optional<Conference> optionalConference = conferenceDao.find(Integer.parseInt(conferenceId));
+                if (optionalUser.isEmpty() || optionalConference.isEmpty()) {
+                    return false;
+                }
                 Application application = new Application.Builder()
-                        .setUser(user)
-                        .setConference(conference)
-                        .setDescription(applicationData.get("application_description"))
+                        .setUser(optionalUser.get())
+                        .setConference(optionalConference.get())
+                        .setDescription(description)
                         .setStatus(Application.Status.CLAIMED)
                         .build();
                 isAdded = applicationDao.add(application);
@@ -99,62 +96,37 @@ public class ApplicationServiceImpl implements ApplicationService {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isAdded = false;
         }
         return isAdded;
     }
 
     @Override
-    public boolean edit(Map<String, String> applicationData) throws ServiceException {
-        boolean isEdited;
-        if (Validator.isValidText(applicationData.get("application_description"))) {
+    public boolean changeStatus(String id, String status)
+            throws ServiceException {
+        boolean isChanged = false;
+        if (Validator.isValidId(id) && Validator.isValidText(status)) {
+            int applicationId = Integer.parseInt(id);
+            Application.Status applicationStatus = Application.Status.valueOf(status);
             try {
-                Optional<User> optionalUser = userDao.find(Integer.parseInt("user_id"));
-                Optional<Conference> optionalConference = conferenceDao.
-                        find(Integer.parseInt("conference_id"));
-                if (optionalConference.isEmpty() || optionalUser.isEmpty()) {
-                    return false;
-                }
-                User user = optionalUser.get();
-                Conference conference = optionalConference.get();
-                Application application = new Application.Builder()
-                        .setUser(user)
-                        .setConference(conference)
-                        .setDescription(applicationData.get("application_description"))
-                        .build();
-                isEdited = applicationDao.add(application);
+                isChanged = applicationDao.changeStatus(applicationId, applicationStatus);
             } catch (DaoException e) {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isEdited = false;
-        }
-        return isEdited;
-    }
-
-    @Override
-    public boolean changeStatus(int id, Application.Status status)
-            throws ServiceException {
-        boolean isChanged;
-        try {
-            isChanged = applicationDao.changeStatus(id, status);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
         }
         return isChanged;
     }
 
     @Override
-    public boolean remove(int id) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = applicationDao.remove(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public boolean remove(String id) throws ServiceException {
+        boolean isRemoved = false;
+        if (Validator.isValidId(id)) {
+            try {
+                isRemoved = applicationDao.remove(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return isRemoved;
     }

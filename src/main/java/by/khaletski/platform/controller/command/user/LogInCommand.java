@@ -44,6 +44,7 @@ public class LogInCommand implements Command {
                     router.setPagePath(PagePaths.TO_PERSONAL_PAGE);
                 }
                 session.setAttribute(Attributes.USER, user);
+                session.setAttribute(Attributes.ID, user.getId());
                 session.setAttribute(Attributes.MESSAGE, "Successful log in.");
             } else {
                 router.setPagePath(PagePaths.SIGN_IN);

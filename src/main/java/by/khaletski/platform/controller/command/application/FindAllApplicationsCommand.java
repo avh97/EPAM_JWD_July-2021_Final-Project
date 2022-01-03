@@ -37,7 +37,7 @@ public class FindAllApplicationsCommand implements Command {
 		HttpSession session = request.getSession();
 		try {
 			List<Application> applications = applicationService.findAll();
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.APPLICATION_LIST, applications);
 		} catch (ServiceException e) {
 			LOGGER.error(e);

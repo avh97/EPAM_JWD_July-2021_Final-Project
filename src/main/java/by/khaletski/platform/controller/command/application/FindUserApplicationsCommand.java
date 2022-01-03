@@ -37,15 +37,16 @@ public class FindUserApplicationsCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		int id;
-		if (((User) session.getAttribute(Attributes.USER)).getRole().equals(User.Role.ADMIN)) {
-			id = Integer.parseInt(request.getParameter(Parameters.ID));
+		String id;
+		User.Role role = ((User) session.getAttribute(Attributes.USER)).getRole();
+		if (role.equals(User.Role.ADMIN)) {
+			id = request.getParameter(Parameters.ID);
 		} else {
-			id = ((User) session.getAttribute(Attributes.USER)).getId();
+			id = String.valueOf(session.getAttribute(Attributes.ID));
 		}
 		try {
 			List<Application> applications = applicationService.findByUserId(id);
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.APPLICATION_LIST, applications);
 		} catch (ServiceException e) {
 			LOGGER.error(e);

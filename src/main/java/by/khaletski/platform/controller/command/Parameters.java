@@ -22,7 +22,6 @@ public final class Parameters {
     public static final String CONFERENCE_NAME = "conference_name";
     public static final String CONFERENCE_DESCRIPTION = "conference_description";
     public static final String CONFERENCE_DATE = "date";
-    public static final String CONFERENCE_STATUS = "conference_status";
     public static final String LANGUAGE = "language";
     public static final String COMMAND = "command";
     public static final String STATUS = "status";
@@ -30,6 +29,7 @@ public final class Parameters {
     public static final String APPLICATION_DESCRIPTION = "application_description";
     public static final String QUESTION = "question";
     public static final String ANSWER = "answer";
+    public static final String DESCRIPTION = "description";
 
     private Parameters() {
     }

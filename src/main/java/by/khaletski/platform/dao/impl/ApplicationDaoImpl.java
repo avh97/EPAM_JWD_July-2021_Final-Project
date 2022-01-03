@@ -80,8 +80,8 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to find all applications in the database");
         List<Application> applicationList = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_APPLICATIONS)) {
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 applicationList.add(retrieve(resultSet));
             }
@@ -97,9 +97,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to find application by user id in the database");
         Optional<Application> optionalApplication = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_APPLICATION_BY_ID)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Application application = retrieve(resultSet);
                 optionalApplication = Optional.of(application);
@@ -116,9 +116,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to find applications by user id in the database");
         List<Application> applications = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APPLICATIONS_BY_USER_ID)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_APPLICATIONS_BY_USER_ID)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 applications.add(retrieve(resultSet));
             }
@@ -134,9 +134,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to find users by conference id in the database");
         List<Application> applications = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_USERS_BY_CONFERENCE_ID)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_USERS_BY_CONFERENCE_ID)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 applications.add(retrieve(resultSet));
             }
@@ -152,12 +152,12 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to add new application to the database");
         boolean isAdded = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_ADD_APPLICATION)) {
-            preparedStatement.setInt(1, application.getUser().getId());
-            preparedStatement.setInt(2, application.getConference().getId());
-            preparedStatement.setString(3, application.getDescription());
-            preparedStatement.setString(4, application.getStatus().name());
-            int rowCount = preparedStatement.executeUpdate();
+             PreparedStatement statement = connection.prepareStatement(SQL_ADD_APPLICATION)) {
+            statement.setInt(1, application.getUser().getId());
+            statement.setInt(2, application.getConference().getId());
+            statement.setString(3, application.getDescription());
+            statement.setString(4, application.getStatus().name());
+            int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isAdded = true;
                 LOGGER.info("New application has been added:");
@@ -177,10 +177,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to change application status in the database");
         boolean isChanged = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
-            preparedStatement.setString(1, status.name());
-            preparedStatement.setInt(2, id);
-            int rowCount = preparedStatement.executeUpdate();
+             PreparedStatement statement = connection.prepareStatement(SQL_CHANGE_APPLICATION_STATUS)) {
+            statement.setString(1, status.name());
+            statement.setInt(2, id);
+            int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isChanged = true;
                 LOGGER.info("Application status has been changed");
@@ -199,13 +199,13 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to edit application in the database");
         boolean isEdited = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_EDIT_APPLICATION)) {
-            preparedStatement.setInt(1, application.getUser().getId());
-            preparedStatement.setInt(2, application.getConference().getId());
-            preparedStatement.setString(3, application.getDescription());
-            preparedStatement.setString(4, application.getStatus().name());
-            preparedStatement.setInt(5, application.getId());
-            int rowCount = preparedStatement.executeUpdate();
+             PreparedStatement statement = connection.prepareStatement(SQL_EDIT_APPLICATION)) {
+            statement.setInt(1, application.getUser().getId());
+            statement.setInt(2, application.getConference().getId());
+            statement.setString(3, application.getDescription());
+            statement.setString(4, application.getStatus().name());
+            statement.setInt(5, application.getId());
+            int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 isEdited = true;
                 LOGGER.info("Application has been edited");
@@ -224,9 +224,9 @@ public class ApplicationDaoImpl implements ApplicationDao {
         LOGGER.info("Attempt to remove application from the database");
         boolean ifRemoved = false;
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SQL_REMOVE_APPLICATION_BY_ID)) {
-            preparedStatement.setInt(1, id);
-            int rowCount = preparedStatement.executeUpdate();
+             PreparedStatement statement = connection.prepareStatement(SQL_REMOVE_APPLICATION_BY_ID)) {
+            statement.setInt(1, id);
+            int rowCount = statement.executeUpdate();
             if (rowCount != 0) {
                 ifRemoved = true;
                 LOGGER.info("Application has been removed");

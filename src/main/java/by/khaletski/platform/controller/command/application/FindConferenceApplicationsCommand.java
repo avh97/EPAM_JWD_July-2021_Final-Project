@@ -36,10 +36,10 @@ public class FindConferenceApplicationsCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		int id = Integer.parseInt(request.getParameter(Parameters.ID));
+		String id = request.getParameter(Parameters.ID);
 		try {
 			List<Application> applications = applicationService.findByConferenceId(id);
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.APPLICATION_LIST, applications);
 		} catch (ServiceException e) {
 			LOGGER.error(e);

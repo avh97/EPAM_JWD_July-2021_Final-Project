@@ -14,7 +14,7 @@
     <h4>Add application</h4>
     <div class="form-inline">
         <form action="controller" method="post">
-            <input type="text" name="application_description" value="" required pattern=".*[^<>]" class="form-control"
+            <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.description"/>>
             <input type="hidden" name="command" value="add_application">
             <button type="submit" class="btn btn-primary">

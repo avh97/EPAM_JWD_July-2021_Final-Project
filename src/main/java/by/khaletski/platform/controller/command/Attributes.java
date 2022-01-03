@@ -15,6 +15,7 @@ public final class Attributes {
     public static final String CONFERENCE_LIST = "conference_list";
     public static final String TOPIC_LIST = "topic_list";
     public static final String USER = "user";
+    public static final String ID = "id";
     public static final String USER_LIST = "user_list";
     public static final String MAIN_LIST = "main_list";
     public static final String SELECTED = "selected";
