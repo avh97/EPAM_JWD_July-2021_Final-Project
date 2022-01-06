@@ -19,7 +19,7 @@
         <h2 class="display-4"><fmt:message key="label.welcome"/>,
             ${sessionScope.user.name } ${sessionScope.user.patronymic}</h2>
         <br>
-        <p class="lead">${message}</p>
+        <p class="lead"><strong>${message}</strong></p>
         <hr class="my-4">
         <%--Dropdown main menu--%>
         <div class="btn-group dropdown">
@@ -387,7 +387,7 @@
                         <form action="controller" method="post">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="to_edit_message">
-                                <fmt:message key="label.edit"/>
+                                <fmt:message key="label.add_answer"/>
                             </button>
                             <input type="hidden" name="id" value="${message.id}">
                         </form>

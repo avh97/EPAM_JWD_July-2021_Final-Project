@@ -11,8 +11,8 @@ import by.khaletski.platform.service.util.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -44,37 +44,39 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Optional<Message> find(int id) throws ServiceException {
-        Optional<Message> optional;
-        try {
-            optional = messageDao.find(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public Optional<Message> find(String id) throws ServiceException {
+        Optional<Message> optional = Optional.empty();
+        if (Validator.isValidId(id)) {
+            try {
+                optional = messageDao.find(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return optional;
     }
 
     @Override
-    public List<Message> findByUserId(int id) throws ServiceException {
-        List<Message> messages;
-        try {
-            messages = messageDao.findByUserId(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public List<Message> findByUserId(String userId) throws ServiceException {
+        List<Message> messages = new ArrayList<>();
+        if (Validator.isValidId(userId)) {
+            try {
+                messages = messageDao.findByUserId(Integer.parseInt(userId));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return messages;
     }
 
     @Override
-    public boolean add(Map<String, String> messageData) throws ServiceException {
-        boolean isAdded;
-        String question = messageData.get("question");
-        int id = Integer.parseInt(messageData.get("user_id"));
-        if (Validator.isValidText(question)) {
+    public boolean add(String userId, String question) throws ServiceException {
+        boolean isAdded = false;
+        if (Validator.isValidId(userId) && Validator.isValidText(question)) {
             try {
-                Optional<User> optional = userDao.find(id);
+                Optional<User> optional = userDao.find(Integer.parseInt(userId));
                 if (optional.isEmpty()) {
                     return false;
                 }
@@ -88,19 +90,16 @@ public class MessageServiceImpl implements MessageService {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isAdded = false;
         }
         return isAdded;
     }
 
     @Override
-    public boolean edit(Map<String, String> messageData) throws ServiceException {
-        boolean isEdited;
-        String answer = messageData.get("answer");
-        if (Validator.isValidText(answer)) {
+    public boolean edit(String id, String answer) throws ServiceException {
+        boolean isEdited = false;
+        if (Validator.isValidId(id) && Validator.isValidText(answer)) {
             try {
-                Optional<Message> optional = messageDao.find(Integer.parseInt(messageData.get("id")));
+                Optional<Message> optional = messageDao.find(Integer.parseInt(id));
                 if (optional.isEmpty()) {
                     return false;
                 }
@@ -111,20 +110,20 @@ public class MessageServiceImpl implements MessageService {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isEdited = false;
         }
         return isEdited;
     }
 
     @Override
-    public boolean remove(int id) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = messageDao.remove(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public boolean remove(String id) throws ServiceException {
+        boolean isRemoved = false;
+        if (Validator.isValidId(id)) {
+            try {
+                isRemoved = messageDao.remove(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return isRemoved;
     }

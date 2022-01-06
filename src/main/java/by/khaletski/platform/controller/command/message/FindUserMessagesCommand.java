@@ -7,7 +7,6 @@ import by.khaletski.platform.controller.command.Router;
 import by.khaletski.platform.dao.impl.MessageDaoImpl;
 import by.khaletski.platform.dao.impl.UserDaoImpl;
 import by.khaletski.platform.entity.Message;
-import by.khaletski.platform.entity.User;
 import by.khaletski.platform.service.MessageService;
 import by.khaletski.platform.service.exception.ServiceException;
 import by.khaletski.platform.service.impl.MessageServiceImpl;
@@ -35,10 +34,10 @@ public class FindUserMessagesCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        int id = ((User) session.getAttribute(Attributes.USER)).getId();
+        String id = String.valueOf(session.getAttribute(Attributes.ID));
         try {
             List<Message> messages = messageService.findByUserId(id);
-            router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+            router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
             request.setAttribute(Attributes.MESSAGE_LIST, messages);
         } catch (ServiceException e) {
             LOGGER.error(e);

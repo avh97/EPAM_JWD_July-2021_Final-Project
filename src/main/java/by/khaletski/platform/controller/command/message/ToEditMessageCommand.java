@@ -26,6 +26,7 @@ public class ToEditMessageCommand implements Command {
         LOGGER.debug("Going to \"edit message\" page...");
         Router router = new Router();
         HttpSession session = request.getSession();
+        session.removeAttribute(Attributes.SELECTED);
         session.setAttribute(Attributes.SELECTED, request.getParameter(Parameters.ID));
         session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_EDIT_MESSAGE_PAGE);
         router.setPagePath(PagePaths.EDIT_MESSAGE);

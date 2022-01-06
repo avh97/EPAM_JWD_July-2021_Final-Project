@@ -60,6 +60,7 @@ public class MessageDaoImpl implements MessageDao {
         Optional<Message> optional = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
              PreparedStatement statement = connection.prepareStatement(SQL_FIND_MESSAGE_BY_ID)){
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Message message = retrieve(resultSet);

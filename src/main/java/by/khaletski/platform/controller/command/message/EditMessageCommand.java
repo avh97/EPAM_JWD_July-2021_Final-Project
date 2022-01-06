@@ -5,7 +5,6 @@ import by.khaletski.platform.controller.command.Command;
 import by.khaletski.platform.controller.command.PagePaths;
 import by.khaletski.platform.controller.command.Parameters;
 import by.khaletski.platform.controller.command.Router;
-import by.khaletski.platform.controller.command.Router.Type;
 import by.khaletski.platform.dao.impl.MessageDaoImpl;
 import by.khaletski.platform.dao.impl.UserDaoImpl;
 import by.khaletski.platform.service.MessageService;
@@ -16,9 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This command edits answer in the selected message.
  * If the message has been edited, the user receives a success notification.
@@ -38,17 +34,16 @@ public class EditMessageCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        Map<String, String> messageData = new HashMap<>();
-        messageData.put(Parameters.ID, (String) session.getAttribute(Attributes.SELECTED));
-        messageData.put(Parameters.ANSWER, request.getParameter(Parameters.ANSWER));
+        String id = String.valueOf(session.getAttribute(Attributes.SELECTED));
+        String answer = request.getParameter(Parameters.ANSWER);
         try {
-            if (messageService.edit(messageData)) {
+            if (messageService.edit(id, answer)) {
                 session.setAttribute(Attributes.MESSAGE, "Message has been edited.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "Message hasn't been edited.");
             }
             router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-            router.setType(Type.REDIRECT);
+            router.setType(Router.Type.REDIRECT);
         } catch (ServiceException e) {
             LOGGER.error(e);
             session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to edit message.");

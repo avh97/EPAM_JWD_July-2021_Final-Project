@@ -36,7 +36,7 @@ public class FindAllMessagesCommand implements Command {
 		HttpSession session = request.getSession();
 		try {
 			List<Message> messages = messageService.findAll();
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.MESSAGE_LIST, messages);
 		} catch (ServiceException e) {
 			LOGGER.error(e);

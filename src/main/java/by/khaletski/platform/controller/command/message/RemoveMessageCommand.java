@@ -35,8 +35,9 @@ public class RemoveMessageCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
+		String id = request.getParameter(Parameters.ID);
 		try {
-			if (messageService.remove(Integer.parseInt(request.getParameter(Parameters.ID)))) {
+			if (messageService.remove(id)) {
 				session.setAttribute(Attributes.MESSAGE, "Message has been removed.");
 			} else {
 				session.setAttribute(Attributes.MESSAGE, "Message hasn't been removed.");
