@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -34,47 +33,48 @@ public class ConferenceServiceImpl implements ConferenceService {
 
     @Override
     public List<Conference> findAll() throws ServiceException {
-        List<Conference> conferenceList;
+        List<Conference> conferences;
         try {
-            conferenceList = conferenceDao.findAll();
+            conferences = conferenceDao.findAll();
         } catch (DaoException e) {
             LOGGER.error(e);
             throw new ServiceException(e);
         }
-        return conferenceList;
+        return conferences;
     }
 
     @Override
-    public Optional<Conference> find(int id) throws ServiceException {
-        Optional<Conference> optionalConference;
-        try {
-            optionalConference = conferenceDao.find(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
-        }
-        return optionalConference;
-    }
-
-    @Override
-    public boolean add(Map<String, String> conferenceData) throws ServiceException {
-        boolean isAdded;
-        Optional<Topic> optionalTopic;
-        if (Validator.isValidText(conferenceData.get("conference_name"))
-                && Validator.isValidText(conferenceData.get("conference_description"))
-                && Validator.isValidDateFormat(conferenceData.get("date"))) {
+    public Optional<Conference> find(String id) throws ServiceException {
+        Optional<Conference> optional = Optional.empty();
+        if (Validator.isValidId(id)) {
             try {
-                optionalTopic = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
-                LOGGER.debug(optionalTopic);
-                if (optionalTopic.isEmpty()) {
+                optional = conferenceDao.find(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
+        }
+        return optional;
+    }
+
+    @Override
+    public boolean add(String topicId, String name, String description, String date) throws ServiceException {
+        boolean isAdded = false;
+        if (Validator.isValidId(topicId)
+                && Validator.isValidText(name)
+                && Validator.isValidText(description)
+                && Validator.isValidDateFormat(date)) {
+            try {
+                Optional<Topic> optional = topicDao.find(Integer.parseInt(topicId));
+                if (optional.isEmpty()) {
                     return false;
                 }
-                Topic topic = optionalTopic.get();
+                Topic topic = optional.get();
                 Conference conference = new Conference.Builder()
                         .setTopic(topic)
-                        .setName(conferenceData.get("conference_name"))
-                        .setDescription(conferenceData.get("conference_description"))
-                        .setDate(Date.valueOf(conferenceData.get(("date"))))
+                        .setName(name)
+                        .setDescription(description)
+                        .setDate(Date.valueOf(date))
                         .setStatus(Conference.Status.PENDING)
                         .build();
                 isAdded = conferenceDao.add(conference);
@@ -82,60 +82,63 @@ public class ConferenceServiceImpl implements ConferenceService {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isAdded = false;
         }
         return isAdded;
     }
 
     @Override
-    public boolean changeStatus(int id, Conference.Status status) throws ServiceException {
-        boolean isChanged;
-        try {
-            isChanged = conferenceDao.changeStatus(id, status);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public boolean changeStatus(String id, String status) throws ServiceException {
+        boolean isChanged = false;
+        if (Validator.isValidId(id) && Validator.isValidText(status)) {
+            int newId = Integer.parseInt(id);
+            Conference.Status newStatus = Conference.Status.valueOf(status);
+            try {
+                isChanged = conferenceDao.changeStatus(newId, newStatus);
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return isChanged;
     }
 
     @Override
-    public boolean edit(Conference conference, Map<String, String> conferenceData) throws ServiceException {
-        boolean isEdited;
-        Optional<Topic> optional;
-        if (Validator.isValidId(conferenceData.get("topic_id"))
-                && Validator.isValidText(conferenceData.get("conference_name"))
-                && Validator.isValidText(conferenceData.get("conference_description"))
-                && Validator.isValidDateFormat(conferenceData.get("date"))) {
+    public boolean edit(Conference conference, String topicId, String name, String description, String date)
+            throws ServiceException {
+        boolean isEdited = false;
+        if (Validator.isValidId(topicId)
+                && Validator.isValidText(name)
+                && Validator.isValidText(description)
+                && Validator.isValidDateFormat(date)) {
             try {
-                optional = topicDao.find(Integer.parseInt(conferenceData.get("topic_id")));
+                Optional<Topic> optional = topicDao.find(Integer.parseInt(topicId));
                 if (optional.isEmpty()) {
                     return false;
                 }
-                conference.setTopic(optional.get());
-                conference.setName(conferenceData.get("conference_name"));
-                conference.setDescription(conferenceData.get("conference_description"));
-                conference.setDate(Date.valueOf(conferenceData.get(("date"))));
+                Topic topic = optional.get();
+                conference.setTopic(topic);
+                conference.setName(name);
+                conference.setDescription(description);
+                conference.setDate(Date.valueOf(date));
                 isEdited = conferenceDao.edit(conference);
             } catch (DaoException e) {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isEdited = false;
         }
         return isEdited;
     }
 
     @Override
-    public boolean remove(int id) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = conferenceDao.remove(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public boolean remove(String id) throws ServiceException {
+        boolean isRemoved = false;
+        if (Validator.isValidId(id)) {
+            try {
+                isRemoved = conferenceDao.remove(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return isRemoved;
     }

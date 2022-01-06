@@ -20,23 +20,22 @@
                        placeholder=<fmt:message key="label.topic_id"/>>
             </div>
             <div class="form-group col-md-3">
-                <input type="text" name="conference_name" value="${selected.name }" pattern=".*[^<>]"
+                <input type="text" name="name" value="${selected.name}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
             </div>
             <div class="form-group col-md-3">
-                <input type="text" name="conference_description" value="${selected.description }" pattern=".*[^<>]"
+                <input type="text" name="description" value="${selected.description}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.description"/>>
             </div>
             <div class="form-group col-md-3">
-                <input type="date" name="date" value="${selected.date }" pattern=".*[^<>]"
+                <input type="date" name="date" value="${selected.date}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.date"/>>
             </div>
         </div>
         <div class="form-row">
-            <input type="hidden" name="id" value="${selected.id}">
             <input type="hidden" name="command" value="edit_conference">
         </div>
         <button type="submit" class="btn btn-primary">

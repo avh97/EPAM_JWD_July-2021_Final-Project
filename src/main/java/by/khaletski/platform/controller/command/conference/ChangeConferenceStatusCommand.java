@@ -1,10 +1,12 @@
 package by.khaletski.platform.controller.command.conference;
 
-import by.khaletski.platform.controller.command.*;
-import by.khaletski.platform.controller.command.Router.Type;
+import by.khaletski.platform.controller.command.Attributes;
+import by.khaletski.platform.controller.command.Command;
+import by.khaletski.platform.controller.command.PagePaths;
+import by.khaletski.platform.controller.command.Parameters;
+import by.khaletski.platform.controller.command.Router;
 import by.khaletski.platform.dao.impl.ConferenceDaoImpl;
 import by.khaletski.platform.dao.impl.TopicDaoImpl;
-import by.khaletski.platform.entity.Conference;
 import by.khaletski.platform.service.ConferenceService;
 import by.khaletski.platform.service.exception.ServiceException;
 import by.khaletski.platform.service.impl.ConferenceServiceImpl;
@@ -33,8 +35,8 @@ public class ChangeConferenceStatusCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		int id = Integer.parseInt(request.getParameter(Parameters.ID));
-		Conference.Status status = Conference.Status.valueOf(request.getParameter(Parameters.STATUS));
+		String id = request.getParameter(Parameters.ID);
+		String status = request.getParameter(Parameters.STATUS);
 		try {
 			if (conferenceService.changeStatus(id, status)) {
 				session.setAttribute(Attributes.MESSAGE, "Conference status has been changed.");
@@ -42,7 +44,7 @@ public class ChangeConferenceStatusCommand implements Command {
 				session.setAttribute(Attributes.MESSAGE, "Conference status hasn't been changed.");
 			}
 			router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-			router.setType(Type.REDIRECT);
+			router.setType(Router.Type.REDIRECT);
 		} catch (ServiceException e) {
 			LOGGER.error(e);
 			session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to change conference status.");

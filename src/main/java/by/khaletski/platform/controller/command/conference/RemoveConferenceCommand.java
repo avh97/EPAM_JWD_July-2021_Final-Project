@@ -35,8 +35,9 @@ public class RemoveConferenceCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
+		String id = request.getParameter(Parameters.ID);
 		try {
-			if (conferenceService.remove(Integer.parseInt(request.getParameter(Parameters.ID)))) {
+			if (conferenceService.remove(id)) {
 				session.setAttribute(Attributes.MESSAGE, "Conference has been removed.");
 			} else {
 				session.setAttribute(Attributes.MESSAGE, "Conference hasn't been removed.");

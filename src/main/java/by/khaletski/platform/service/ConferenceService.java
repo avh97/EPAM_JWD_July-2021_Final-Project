@@ -4,19 +4,19 @@ import by.khaletski.platform.entity.Conference;
 import by.khaletski.platform.service.exception.ServiceException;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface ConferenceService {
     List<Conference> findAll() throws ServiceException;
 
-    Optional<Conference> find(int id) throws ServiceException;
+    Optional<Conference> find(String id) throws ServiceException;
 
-    boolean add(Map<String, String> conferenceData) throws ServiceException;
+    boolean add(String topicId, String name, String description, String date) throws ServiceException;
 
-    boolean changeStatus(int id, Conference.Status status) throws ServiceException;
+    boolean changeStatus(String id, String status) throws ServiceException;
 
-    boolean edit(Conference conference, Map<String, String> conferenceData) throws ServiceException;
+    boolean edit(Conference conference, String topicId, String name, String description, String date)
+            throws ServiceException;
 
-    boolean remove(int id) throws ServiceException;
+    boolean remove(String id) throws ServiceException;
 }

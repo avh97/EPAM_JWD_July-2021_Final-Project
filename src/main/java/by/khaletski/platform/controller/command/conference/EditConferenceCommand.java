@@ -5,7 +5,6 @@ import by.khaletski.platform.controller.command.Command;
 import by.khaletski.platform.controller.command.PagePaths;
 import by.khaletski.platform.controller.command.Parameters;
 import by.khaletski.platform.controller.command.Router;
-import by.khaletski.platform.controller.command.Router.Type;
 import by.khaletski.platform.dao.impl.ConferenceDaoImpl;
 import by.khaletski.platform.dao.impl.TopicDaoImpl;
 import by.khaletski.platform.entity.Conference;
@@ -17,8 +16,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This command edits topic ID, name, description and date in the selected conference.
@@ -39,20 +36,19 @@ public class EditConferenceCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        Map<String, String> conferenceData = new HashMap<>();
         Conference conference = (Conference) session.getAttribute(Attributes.SELECTED);
-        conferenceData.put(Parameters.TOPIC_ID, request.getParameter(Parameters.TOPIC_ID));
-        conferenceData.put(Parameters.CONFERENCE_NAME, request.getParameter(Parameters.CONFERENCE_NAME));
-        conferenceData.put(Parameters.CONFERENCE_DESCRIPTION, request.getParameter(Parameters.CONFERENCE_DESCRIPTION));
-        conferenceData.put(Parameters.CONFERENCE_DATE, request.getParameter(Parameters.CONFERENCE_DATE));
+        String topicId = request.getParameter(Parameters.TOPIC_ID);
+        String name = request.getParameter(Parameters.NAME);
+        String description = request.getParameter(Parameters.DESCRIPTION);
+        String date = request.getParameter(Parameters.DATE);
         try {
-            if (conferenceService.edit(conference, conferenceData)) {
+            if (conferenceService.edit(conference, topicId, name, description, date)) {
                 session.setAttribute(Attributes.MESSAGE, "Conference has been edited.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "Conference hasn't been edited.");
             }
             router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-            router.setType(Type.REDIRECT);
+            router.setType(Router.Type.REDIRECT);
         } catch (ServiceException e) {
             LOGGER.error(e);
             session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to edit conference.");

@@ -37,7 +37,7 @@ public class ToEditConferenceCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         session.removeAttribute(Attributes.SELECTED);
-        int id = Integer.parseInt(request.getParameter(Parameters.ID));
+        String id = request.getParameter(Parameters.ID);
         try {
             Optional<Conference> optional = conferenceService.find(id);
             if (optional.isPresent()) {
@@ -45,7 +45,7 @@ public class ToEditConferenceCommand implements Command {
                 session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_EDIT_CONFERENCE_PAGE);
                 router.setPagePath(PagePaths.EDIT_CONFERENCE);
             } else {
-                request.setAttribute(Attributes.MESSAGE, "Cannot go to \"edit conference\" page.");
+                request.setAttribute(Attributes.MESSAGE, "Cannot find conference to edit.");
                 session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.ERROR);
                 router.setPagePath(PagePaths.ERROR);
             }

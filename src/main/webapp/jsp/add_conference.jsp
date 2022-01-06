@@ -16,9 +16,9 @@
         <form action="controller" method="post">
             <input type="text" name="topic_id" value="" pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.topic_id"/>>
-            <input type="text" name="conference_name" value="" required pattern=".*[^<>]" class="form-control"
+            <input type="text" name="name" value="" required pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.conference_name"/>>
-            <input type="text" name="conference_description" value="" required pattern=".*[^<>]" class="form-control"
+            <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.description"/>>
             <input type="date" min="2021-01-12" name="date" value="" required class="form-control"
                    placeholder=<fmt:message key="label.date"/>>

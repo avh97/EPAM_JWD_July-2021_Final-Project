@@ -36,7 +36,7 @@ public class FindAllConferencesCommand implements Command {
 		HttpSession session = request.getSession();
 		try {
 			List<Conference> conferences = conferenceService.findAll();
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.CONFERENCE_LIST, conferences);
 		} catch (ServiceException e) {
 			LOGGER.error(e);
