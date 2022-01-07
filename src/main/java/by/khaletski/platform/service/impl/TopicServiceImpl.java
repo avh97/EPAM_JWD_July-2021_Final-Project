@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -29,76 +28,74 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> findAll() throws ServiceException {
-        List<Topic> topicList;
+        List<Topic> topics;
         try {
-            topicList = topicDao.findAll();
+            topics = topicDao.findAll();
         } catch (DaoException e) {
             LOGGER.error(e);
             throw new ServiceException(e);
         }
-        return topicList;
+        return topics;
     }
 
     @Override
-    public Optional<Topic> find(int id) throws ServiceException {
-        Optional<Topic> optionalTopic;
-        try {
-            optionalTopic = topicDao.find(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
-        }
-        return optionalTopic;
-    }
-
-    @Override
-    public boolean add(Map<String, String> topicData) throws ServiceException {
-        boolean isAdded;
-        if (Validator.isValidText(topicData.get("topic_name"))
-                && Validator.isValidText(topicData.get("topic_description"))) {
-            Topic topic = new Topic.Builder()
-                    .setName(topicData.get("topic_name"))
-                    .setDescription(topicData.get("topic_description"))
-                    .build();
+    public Optional<Topic> find(String id) throws ServiceException {
+        Optional<Topic> optional = Optional.empty();
+        if (Validator.isValidId(id)) {
             try {
+                optional = topicDao.find(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
+        }
+        return optional;
+    }
+
+    @Override
+    public boolean add(String name, String description) throws ServiceException {
+        boolean isAdded = false;
+        if (Validator.isValidText(name) && Validator.isValidText(description)) {
+            try {
+                Topic topic = new Topic.Builder()
+                        .setName(name)
+                        .setDescription(description)
+                        .build();
                 isAdded = topicDao.add(topic);
             } catch (DaoException e) {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isAdded = false;
         }
         return isAdded;
     }
 
     @Override
-    public boolean edit(Topic topic, Map<String, String> topicData) throws ServiceException {
-        boolean isEdited;
-        if (Validator.isValidText(topicData.get("topic_name"))
-                && Validator.isValidText(topicData.get("topic_description"))) {
-            topic.setName(topicData.get("topic_name"));
-            topic.setDescription(topicData.get("topic_description"));
+    public boolean edit(Topic topic, String name, String description) throws ServiceException {
+        boolean isEdited = false;
+        if (Validator.isValidText(name) && Validator.isValidText(description)) {
+            topic.setName(name);
+            topic.setDescription(description);
             try {
                 isEdited = topicDao.edit(topic);
             } catch (DaoException e) {
                 LOGGER.error(e);
                 throw new ServiceException(e);
             }
-        } else {
-            isEdited = false;
         }
         return isEdited;
     }
 
     @Override
-    public boolean remove(int id) throws ServiceException {
-        boolean isRemoved;
-        try {
-            isRemoved = topicDao.remove(id);
-        } catch (DaoException e) {
-            LOGGER.error(e);
-            throw new ServiceException(e);
+    public boolean remove(String id) throws ServiceException {
+        boolean isRemoved = false;
+        if (Validator.isValidId(id)) {
+            try {
+                isRemoved = topicDao.remove(Integer.parseInt(id));
+            } catch (DaoException e) {
+                LOGGER.error(e);
+                throw new ServiceException(e);
+            }
         }
         return isRemoved;
     }

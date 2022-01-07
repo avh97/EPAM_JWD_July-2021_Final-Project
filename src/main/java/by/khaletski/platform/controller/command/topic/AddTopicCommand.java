@@ -5,7 +5,6 @@ import by.khaletski.platform.controller.command.Command;
 import by.khaletski.platform.controller.command.PagePaths;
 import by.khaletski.platform.controller.command.Parameters;
 import by.khaletski.platform.controller.command.Router;
-import by.khaletski.platform.controller.command.Router.Type;
 import by.khaletski.platform.dao.impl.TopicDaoImpl;
 import by.khaletski.platform.service.TopicService;
 import by.khaletski.platform.service.exception.ServiceException;
@@ -15,8 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This command adds new topic.
@@ -36,17 +33,16 @@ public class AddTopicCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        Map<String, String> topicData = new HashMap<>();
-        topicData.put(Parameters.TOPIC_NAME, request.getParameter(Parameters.TOPIC_NAME));
-        topicData.put(Parameters.TOPIC_DESCRIPTION, request.getParameter(Parameters.TOPIC_DESCRIPTION));
+        String name = request.getParameter(Parameters.NAME);
+        String description = request.getParameter(Parameters.DESCRIPTION);
         try {
-            if (topicService.add(topicData)) {
+            if (topicService.add(name, description)) {
                 session.setAttribute(Attributes.MESSAGE, "New topic has been added.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "New topic hasn't been added.");
             }
             router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-            router.setType(Type.REDIRECT);
+            router.setType(Router.Type.REDIRECT);
         } catch (ServiceException e) {
             LOGGER.error(e);
             session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to add new topic.");

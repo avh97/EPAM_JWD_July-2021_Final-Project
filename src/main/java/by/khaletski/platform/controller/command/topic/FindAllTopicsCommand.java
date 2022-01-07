@@ -34,7 +34,7 @@ public class FindAllTopicsCommand implements Command {
 		HttpSession session = request.getSession();
 		try {
 			List<Topic> topics = topicService.findAll();
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
 			request.setAttribute(Attributes.TOPIC_LIST, topics);
 		} catch (ServiceException e) {
 			LOGGER.error(e);

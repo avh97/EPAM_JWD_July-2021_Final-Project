@@ -15,18 +15,17 @@
     <form action="controller" method="post">
         <div class="form-row">
             <div class="form-group col-md-3">
-                <input type="text" name="topic_name" value="${selected.name}" pattern=".*[^<>]"
+                <input type="text" name="name" value="${selected.name}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
             </div>
             <div class="form-group col-md-3">
-                <input type="text" name="topic_description" value="${selected.description}" pattern=".*[^<>]"
+                <input type="text" name="description" value="${selected.description}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
             </div>
         </div>
         <div class="form-row">
-            <input type="hidden" name="id" value="${selected.id}">
             <input type="hidden" name="command" value="edit_topic">
         </div>
         <button type="submit" class="btn btn-primary">

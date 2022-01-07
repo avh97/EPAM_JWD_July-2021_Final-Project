@@ -35,7 +35,7 @@ public class ToEditTopicCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         session.removeAttribute(Attributes.SELECTED);
-        int id = Integer.parseInt(request.getParameter(Parameters.ID));
+        String id = request.getParameter(Parameters.ID);
         try {
             Optional<Topic> optional = topicService.find(id);
             if (optional.isPresent()) {

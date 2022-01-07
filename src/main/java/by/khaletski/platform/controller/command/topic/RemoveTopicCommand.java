@@ -33,13 +33,14 @@ public class RemoveTopicCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
+        String id = request.getParameter(Parameters.ID);
         try {
-            if (topicService.remove(Integer.parseInt(request.getParameter(Parameters.ID)))) {
+            if (topicService.remove(id)) {
                 session.setAttribute(Attributes.MESSAGE, "Topic has been removed.");
             } else {
                 session.setAttribute(Attributes.MESSAGE, "Topic hasn't been removed.");
             }
-            router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+            router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
         } catch (ServiceException e) {
             LOGGER.error(e);
             session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to remove the topic.");

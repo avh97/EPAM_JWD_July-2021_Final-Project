@@ -14,9 +14,9 @@
     <h4>Add topic</h4>
     <div class="form-inline">
         <form action="controller" method="POST">
-            <input type="text" name="topic_name" value="" pattern=".*[^<>]" class="form-control"
+            <input type="text" name="name" value="" pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.name"/>>
-            <input type="text" name="topic_description" value="" required pattern=".*[^<>]" class="form-control"
+            <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
                    placeholder=<fmt:message key="label.description"/>>
             <input type="hidden" name="command" value="add_topic">
             <button type="submit" class="btn btn-primary">
