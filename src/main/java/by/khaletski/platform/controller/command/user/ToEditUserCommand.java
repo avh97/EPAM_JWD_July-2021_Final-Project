@@ -35,11 +35,11 @@ public class ToEditUserCommand implements Command {
         Router router = new Router();
         HttpSession session = request.getSession();
         session.removeAttribute(Attributes.SELECTED);
-        int id;
+        String id;
         if (((User) session.getAttribute(Attributes.USER)).getRole().equals(User.Role.ADMIN)) {
-            id = Integer.parseInt(request.getParameter(Parameters.ID));
+            id = request.getParameter(Parameters.ID);
         } else {
-            id = ((User) session.getAttribute(Attributes.USER)).getId();
+            id = String.valueOf(session.getAttribute(Attributes.ID));
         }
         try {
             Optional<User> optional = userService.find(id);

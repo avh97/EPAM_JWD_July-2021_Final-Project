@@ -15,8 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This command adds new user.
@@ -36,22 +34,16 @@ public class SignUpCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		Map<String, String> userData = new HashMap<>();
-		String name = request.getParameter(Parameters.USER_NAME);
-		String patronymic = request.getParameter(Parameters.USER_PATRONYMIC);
-		String surname = request.getParameter(Parameters.USER_SURNAME);
-		String email = request.getParameter(Parameters.USER_EMAIL);
-		String password = request.getParameter(Parameters.USER_PASSWORD);
-		String confirmedPassword = request.getParameter(Parameters.USER_CONFIRMED_PASSWORD);
-		userData.put(Parameters.USER_NAME, name);
-		userData.put(Parameters.USER_PATRONYMIC, patronymic);
-		userData.put(Parameters.USER_SURNAME, surname);
-		userData.put(Parameters.USER_EMAIL, email);
-		userData.put(Parameters.USER_PASSWORD, password);
+		String name = request.getParameter(Parameters.NAME);
+		String patronymic = request.getParameter(Parameters.PATRONYMIC);
+		String surname = request.getParameter(Parameters.SURNAME);
+		String email = request.getParameter(Parameters.EMAIL);
+		String password = request.getParameter(Parameters.PASSWORD);
+		String confirmedPassword = request.getParameter(Parameters.CONFIRMED_PASSWORD);
 		if (password.equals(confirmedPassword)) {
 			try {
 				if (userService.findByEmail(email).isEmpty()) {
-					if (userService.add(userData)) {
+					if (userService.add(password, email, name, patronymic, surname)) {
 						router.setPagePath(PagePaths.TO_SIGN_IN_PAGE);
 						router.setType(Type.FORWARD);
 						session.setAttribute(Attributes.MESSAGE, "New account has been created.");

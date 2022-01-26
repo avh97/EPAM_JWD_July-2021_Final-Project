@@ -36,7 +36,6 @@
             </div>
         </div>
         <div class="form-row">
-            <input type="hidden" name="id" value="${selected.id}">
             <input type="hidden" name="command" value="edit_user">
         </div>
         <button type="submit" class="btn btn-primary">

@@ -15,7 +15,7 @@ public class User {
     private Role role;
 
     public enum Role {
-        ADMIN, OBSERVER, PARTICIPANT
+        ADMIN, PARTICIPANT
     }
 
     public User() {

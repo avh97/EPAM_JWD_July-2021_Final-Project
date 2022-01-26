@@ -4,12 +4,7 @@ import by.khaletski.platform.controller.command.Attributes;
 import by.khaletski.platform.controller.command.Command;
 import by.khaletski.platform.controller.command.PagePaths;
 import by.khaletski.platform.controller.command.Router;
-import by.khaletski.platform.dao.impl.ApplicationDaoImpl;
-import by.khaletski.platform.dao.impl.ConferenceDaoImpl;
-import by.khaletski.platform.dao.impl.UserDaoImpl;
 import by.khaletski.platform.entity.User;
-import by.khaletski.platform.service.ApplicationService;
-import by.khaletski.platform.service.impl.ApplicationServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,22 +21,17 @@ import javax.servlet.http.HttpSession;
 
 public class ToPersonalPageCommand implements Command {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final ApplicationService applicationService
-			= new ApplicationServiceImpl(new ApplicationDaoImpl(), new ConferenceDaoImpl(), new UserDaoImpl());
 
 	@Override
 	public Router execute(HttpServletRequest request) {
 		LOGGER.debug("Going to personal page...");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute(Attributes.USER);
-		if (user != null && user.getRole().equals(User.Role.ADMIN)) {
+		User.Role role = ((User) session.getAttribute(Attributes.USER)).getRole();
+		if (role.equals(User.Role.ADMIN)) {
 			session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_PERSONAL_PAGE);
 			router.setPagePath(PagePaths.ADMIN);
-		} else if (user != null && user.getRole().equals(User.Role.OBSERVER)){
-			session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_PERSONAL_PAGE);
-			router.setPagePath(PagePaths.OBSERVER);
-		} else if (user != null && user.getRole().equals(User.Role.PARTICIPANT)){
+		} else if (role.equals(User.Role.PARTICIPANT)){
 			session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_PERSONAL_PAGE);
 			router.setPagePath(PagePaths.PARTICIPANT);
 		} else {

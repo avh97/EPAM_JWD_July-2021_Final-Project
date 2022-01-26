@@ -33,8 +33,9 @@ public class RemoveUserCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
+		String id = request.getParameter(Parameters.ID);
 		try {
-			if (userService.remove(Integer.parseInt(request.getParameter(Parameters.ID)))) {
+			if (userService.remove(id)) {
 				session.setAttribute(Attributes.MESSAGE,
 						"User has been removed.");
 			} else {

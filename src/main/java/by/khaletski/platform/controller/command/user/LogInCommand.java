@@ -7,7 +7,6 @@ import by.khaletski.platform.controller.command.Parameters;
 import by.khaletski.platform.controller.command.Router;
 import by.khaletski.platform.dao.impl.UserDaoImpl;
 import by.khaletski.platform.entity.User;
-import by.khaletski.platform.entity.User.Role;
 import by.khaletski.platform.service.UserService;
 import by.khaletski.platform.service.exception.ServiceException;
 import by.khaletski.platform.service.impl.UserServiceImpl;
@@ -33,16 +32,13 @@ public class LogInCommand implements Command {
         LOGGER.debug("Attempt to execute command");
         Router router = new Router();
         HttpSession session = request.getSession();
-        String email = request.getParameter(Parameters.USER_EMAIL);
-        String password = request.getParameter(Parameters.USER_PASSWORD);
+        String email = request.getParameter(Parameters.EMAIL);
+        String password = request.getParameter(Parameters.PASSWORD);
         try {
             Optional<User> optional = userService.findByEmailAndPassword(email, password);
             if (optional.isPresent()) {
                 User user = optional.get();
-                Role role = user.getRole();
-                if (role.equals(Role.ADMIN) || role.equals(Role.PARTICIPANT) || role.equals(Role.OBSERVER)) {
-                    router.setPagePath(PagePaths.TO_PERSONAL_PAGE);
-                }
+                router.setPagePath(PagePaths.TO_PERSONAL_PAGE);
                 session.setAttribute(Attributes.USER, user);
                 session.setAttribute(Attributes.ID, user.getId());
                 session.setAttribute(Attributes.MESSAGE, "Successful log in.");

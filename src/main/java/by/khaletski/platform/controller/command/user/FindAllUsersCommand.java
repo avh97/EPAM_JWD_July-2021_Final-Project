@@ -34,7 +34,7 @@ public class FindAllUsersCommand implements Command {
         HttpSession session = request.getSession();
         try {
             List<User> users = userService.findAll();
-            router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+            router.setPagePath(String.valueOf(session.getAttribute(Attributes.CURRENT_PAGE)));
             request.setAttribute(Attributes.USER_LIST, users);
         } catch (ServiceException e) {
             LOGGER.error(e);

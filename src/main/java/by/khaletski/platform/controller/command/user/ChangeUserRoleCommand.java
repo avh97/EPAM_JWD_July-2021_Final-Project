@@ -5,9 +5,7 @@ import by.khaletski.platform.controller.command.Command;
 import by.khaletski.platform.controller.command.PagePaths;
 import by.khaletski.platform.controller.command.Parameters;
 import by.khaletski.platform.controller.command.Router;
-import by.khaletski.platform.controller.command.Router.Type;
 import by.khaletski.platform.dao.impl.UserDaoImpl;
-import by.khaletski.platform.entity.User;
 import by.khaletski.platform.service.UserService;
 import by.khaletski.platform.service.exception.ServiceException;
 import by.khaletski.platform.service.impl.UserServiceImpl;
@@ -35,8 +33,8 @@ public class ChangeUserRoleCommand implements Command {
 		LOGGER.debug("Attempt to execute command");
 		Router router = new Router();
 		HttpSession session = request.getSession();
-		int id = Integer.parseInt(request.getParameter(Parameters.ID));
-		User.Role role = User.Role.valueOf(request.getParameter(Parameters.ROLE));
+		String id = request.getParameter(Parameters.ID);
+		String role = request.getParameter(Parameters.ROLE);
 		try {
 			if (userService.changeRole(id, role)) {
 				session.setAttribute(Attributes.MESSAGE, "User role has been changed.");
@@ -44,7 +42,7 @@ public class ChangeUserRoleCommand implements Command {
 				session.setAttribute(Attributes.MESSAGE, "User role hasn't been changed.");
 			}
 			router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
-			router.setType(Type.REDIRECT);
+			router.setType(Router.Type.REDIRECT);
 		} catch (ServiceException e) {
 			LOGGER.error(e);
 			session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to change user role.");
