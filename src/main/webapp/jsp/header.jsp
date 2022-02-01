@@ -23,31 +23,40 @@
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" ></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
 <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="toolbar with button groups">
     <div class="btn-group" role="group" aria-label="First group">
-        <form action="controller" method="get">
+        <form action="controller" method="GET">
             <input type="submit" value=
             <fmt:message key="label.home"/>
                     class="btn"> <input type="hidden" name="command"
                                         value="to_main">
         </form>
-        <form action="controller" method="get">
+        <form action="controller" method="GET">
             <input type="submit" value=
             <fmt:message key="label.about"/>
                     class="btn"> <input type="hidden" name="command"
                                         value="to_about_page">
         </form>
-        <form action="controller" method="get">
-            <input type="submit" value=
-            <fmt:message key="label.account"/>
-                    class="btn"> <input type="hidden" name="command"
-                                        value="to_personal_page">
-        </form>
+        <c:if test="${user.getRole().toString() eq null}">
+            <form action="controller" method="GET">
+                <input type="submit" value=
+                    <fmt:message key="label.account"/>
+                        class="btn"> <input type="hidden" name="command" value="to_sign_in">
+            </form>
+        </c:if>
+        <c:if test="${user.getRole().toString() ne null}">
+            <form action="controller" method="GET">
+                <input type="submit" value=
+                    <fmt:message key="label.account"/>
+                        class="btn"> <input
+                    type="hidden" name="command" value="to_personal_page">
+            </form>
+        </c:if>
         <div class="dropdown">
-            <form action="controller" method="post">
+            <form action="controller" method="POST">
                 <button class="btn dropdown-toggle" type="button"
                         id="locale-dropdown-menu-button" data-bs-toggle="dropdown"
                         aria-haspopup="true"
@@ -55,20 +64,20 @@
                     <fmt:message key="label.language"/>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="locale-dropdown-menu-button">
-                        <button class="dropdown-item" type="submit" name="language"
-                                value="ru_RU">Русский
-                        </button>
-                        <button class="dropdown-item" type="submit" name="language"
-                                value="en_US">English (US)
-                        </button>
-                    <input type="hidden" name="command" value="select_locale" >
+                    <button class="dropdown-item" type="submit" name="language"
+                            value="ru_RU">Русский
+                    </button>
+                    <button class="dropdown-item" type="submit" name="language"
+                            value="en_US">English (US)
+                    </button>
+                    <input type="hidden" name="command" value="select_locale">
                 </div>
             </form>
         </div>
     </div>
     <c:if test="${user.getRole().toString() eq null}">
         <div class="header_button">
-            <form action="controller" method="get">
+            <form action="controller" method="GET">
                 <input type="submit" value=
                     <fmt:message key="label.login"/>
                         class="btn"> <input type="hidden" name="command" value="to_sign_in">
@@ -77,7 +86,7 @@
     </c:if>
     <c:if test="${user.getRole().toString() ne null}">
         <div class="header_button">
-            <form action="controller" method="get">
+            <form action="controller" method="GET">
                 <input type="submit" value=
                     <fmt:message key="label.logout"/>
                         class="btn"> <input

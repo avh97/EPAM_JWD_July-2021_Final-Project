@@ -6,16 +6,18 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Ask question</title>
+    <title><fmt:message key="label.add_message"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
-    <h4>Ask question</h4>
+    <h4><fmt:message key="label.add_message"/></h4>
     <div class="form-inline">
         <form action="controller" method="POST">
-            <input type="text" name="question" value="" required pattern=".*[^<>]" class="form-control"
-                   placeholder=<fmt:message key="label.description"/>>
+            <div class="form-group col-md-5">
+                <input type="text" name="question" value="" required pattern=".*[^<>]" class="form-control"
+                       placeholder=<fmt:message key="label.description"/>>
+            </div>
             <input type="hidden" name="command" value="add_message">
             <button type="submit" class="btn btn-primary">
                 <fmt:message key="label.submit"/>

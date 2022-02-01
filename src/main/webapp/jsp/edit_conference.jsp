@@ -6,30 +6,32 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Edit conference</title>
+    <title><fmt:message key="label.edit"/></title>
+</head>
+</title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid bg">
-    <h4>Edit conference</h4>
-    <form action="controller" method="post">
+    <h4><fmt:message key="label.edit"/></h4>
+    <form action="controller" method="POST">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="topic_id" value="${selected.topic.id}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.topic_id"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="name" value="${selected.name}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="description" value="${selected.description}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.description"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="date" name="date" value="${selected.date}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.date"/>>

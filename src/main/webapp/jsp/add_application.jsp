@@ -6,16 +6,18 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Add application</title>
+    <title><fmt:message key="label.add_application"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
-    <h4>Add application</h4>
+    <h4><fmt:message key="label.add_application"/></h4>
     <div class="form-inline">
-        <form action="controller" method="post">
-            <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
-                   placeholder=<fmt:message key="label.description"/>>
+        <form action="controller" method="POST">
+            <div class="form-group col-md-5">
+                <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
+                       placeholder=<fmt:message key="label.description"/>>
+            </div>
             <input type="hidden" name="command" value="add_application">
             <button type="submit" class="btn btn-primary">
                 <fmt:message key="label.add"/>

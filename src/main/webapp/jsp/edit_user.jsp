@@ -6,30 +6,30 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Edit user</title>
+    <title><fmt:message key="label.edit"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
     <h4><fmt:message key="label.user_profile"/></h4>
-    <form action="controller" method="post">
+    <form action="controller" method="POST">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="email" value="${selected.email}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.email"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="name" value="${selected.name}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.new_name"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="patronymic" value="${selected.patronymic}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.new_patronymic"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="surname" value="${selected.surname}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.new_surname"/>>

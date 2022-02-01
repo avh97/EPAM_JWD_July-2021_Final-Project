@@ -8,7 +8,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Log in</title>
+    <title><fmt:message key="label.sign-in"/></title>
 </head>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
@@ -18,7 +18,7 @@
     <c:if test="${message ne null}">
         <div>${message}</div>
     </c:if>
-    <form action="controller" method="post">
+    <form action="controller" method="POST">
         <div class="form-group col-md-3">
             <input class="form-control" name="email" required pattern=".*[^<>]"
                    placeholder=<fmt:message key="label.email"/>>
@@ -32,7 +32,7 @@
             <fmt:message key="label.submit"/>
         </button>
     </form>
-    <form action="controller" method="post">
+    <form action="controller" method="POST">
         <input type="hidden" name="command" value="to_sign_up">
         <button type="submit" class="btn btn-outline-primary btn-block">
             <fmt:message key="label.signup"/>

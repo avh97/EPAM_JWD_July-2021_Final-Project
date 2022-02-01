@@ -9,7 +9,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/styles.css">
-    <title>Participant</title>
+    <title><fmt:message key="label.user_participant"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
@@ -23,7 +23,7 @@
         <hr class="my-4">
         <%--Dropdown main menu--%>
         <div class="btn-group dropdown">
-            <form action="controller" method="post">
+            <form action="controller" method="POST">
                 <button class="btn btn-primary dropdown-toggle" type="button"
                         id="dropdownMenuButton0" data-bs-toggle="dropdown" aria-expanded="false">
                     <fmt:message key="label.menu"/>
@@ -112,11 +112,6 @@
                                     <fmt:message key="label.user_participant"/>
                                 </button>
                             </c:when>
-                            <c:when test="${user.role eq 'OBSERVER'}">
-                                <button class="btn btn-info">
-                                    <fmt:message key="label.user_observer"/>
-                                </button>
-                            </c:when>
                             <c:otherwise>
                                 <button class="btn btn-danger">
                                     <c:out value="Invalid role"/>
@@ -201,7 +196,7 @@
                     <td>
                         <c:choose>
                             <c:when test="${conference.status eq 'PENDING'}">
-                                <form action="controller" method="post">
+                                <form action="controller" method="POST">
                                     <button type="submit" class="btn btn-danger" name="command"
                                             value="to_add_application">
                                         <fmt:message key="label.add_application"/>
@@ -266,7 +261,7 @@
                         </c:choose>
                     </td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_application">
                                 <fmt:message key="label.remove_application"/>
@@ -300,14 +295,14 @@
                     <td><c:out value="${message.question}"/></td>
                     <td><c:out value="${message.answer}"/></td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="add_message">
                                 <fmt:message key="label.add"/>
                             </button>
                             <input type="hidden" name="id" value="${message.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_message">
                                 <fmt:message key="label.remove"/>

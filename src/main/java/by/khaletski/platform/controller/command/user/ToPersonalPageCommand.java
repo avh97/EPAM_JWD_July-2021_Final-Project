@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 /**
  * Go to personal page command.
  * This command transfers to users' personal page depending on user role.
- * If role cannot be found or an exception is caught, user gets a message and is transferred to the sign-in page.
+ * If an exception is caught, user gets a message and is transferred to the main page.
  *
  * @author Anton Khaletski
  */
@@ -35,8 +35,8 @@ public class ToPersonalPageCommand implements Command {
 			session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_PERSONAL_PAGE);
 			router.setPagePath(PagePaths.PARTICIPANT);
 		} else {
-			session.setAttribute(Attributes.CURRENT_PAGE, PagePaths.TO_SIGN_IN_PAGE);
-			router.setPagePath(PagePaths.SIGN_IN);
+			router.setPagePath(request.getContextPath() + PagePaths.TO_MAIN_PAGE);
+			router.setType(Router.Type.REDIRECT);
 		}
 		return router;
 	}

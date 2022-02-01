@@ -6,18 +6,22 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Add topic</title>
+    <title><fmt:message key="label.add_topic"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
-    <h4>Add topic</h4>
+    <h4><fmt:message key="label.add_topic"/></h4>
     <div class="form-inline">
         <form action="controller" method="POST">
-            <input type="text" name="name" value="" pattern=".*[^<>]" class="form-control"
-                   placeholder=<fmt:message key="label.name"/>>
-            <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
-                   placeholder=<fmt:message key="label.description"/>>
+            <div class="form-group col-md-5">
+                <input type="text" name="name" value="" pattern=".*[^<>]" class="form-control"
+                       placeholder=<fmt:message key="label.name"/>>
+            </div>
+            <div class="form-group col-md-5">
+                <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
+                       placeholder=<fmt:message key="label.description"/>>
+            </div>
             <input type="hidden" name="command" value="add_topic">
             <button type="submit" class="btn btn-primary">
                 <fmt:message key="label.add"/>

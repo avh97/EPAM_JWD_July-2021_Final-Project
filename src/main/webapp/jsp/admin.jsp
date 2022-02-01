@@ -9,7 +9,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/styles.css">
-    <title>Administrator</title>
+    <title><fmt:message key="label.user_admin"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
@@ -23,7 +23,7 @@
         <hr class="my-4">
         <%--Dropdown main menu--%>
         <div class="btn-group dropdown">
-            <form action="controller" method="post">
+            <form action="controller" method="POST">
                 <button class="btn btn-primary dropdown-toggle" type="button"
                         id="dropdownMenuButton0" data-bs-toggle="dropdown" aria-expanded="false">
                     <fmt:message key="label.menu"/>
@@ -103,7 +103,7 @@
                     <td><c:out value="${user.email}"/></td>
                     <td>
                         <div class="dropdown">
-                            <form action="controller" method="post">
+                            <form action="controller" method="POST">
                                 <button class="btn btn-outline-danger dropdown-toggle" type="button"
                                         id="user-role-dropdown-menu-button" data-bs-toggle="dropdown"
                                         aria-haspopup="true"
@@ -123,12 +123,6 @@
                                             <c:out value="PARTICIPANT"/>
                                         </button>
                                     </c:if>
-                                    <c:if test="${user.role ne 'OBSERVER'}">
-                                        <button type="submit" class="dropdown-item" name="role"
-                                                value="OBSERVER">
-                                            <c:out value="OBSERVER"/>
-                                        </button>
-                                    </c:if>
                                     <input type="hidden" name="id" value="${user.id}">
                                     <input type="hidden" name="command" value="change_user_role">
                                 </div>
@@ -136,14 +130,14 @@
                         </div>
                     </td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_user">
                                 <fmt:message key="label.remove"/>
                             </button>
                             <input type="hidden" name="id" value="${user.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="to_edit_user">
                                 <fmt:message key="label.edit"/>
@@ -175,14 +169,14 @@
                     <td><c:out value="${topic.name}"/></td>
                     <td><c:out value="${topic.description}"/></td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_topic">
                                 <fmt:message key="label.remove"/>
                             </button>
                             <input type="hidden" name="id" value="${topic.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="to_edit_topic">
                                 <fmt:message key="label.edit"/>
@@ -220,7 +214,7 @@
                     <td><c:out value="${conference.date}"/></td>
                     <td>
                         <div class="dropdown">
-                            <form action="controller" method="post">
+                            <form action="controller" method="POST">
                                 <button class="btn btn-outline-danger dropdown-toggle" type="button"
                                         id="conference-status-dropdown-menu-button" data-bs-toggle="dropdown"
                                         aria-haspopup="true"
@@ -253,21 +247,21 @@
                         </div>
                     </td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_conference">
                                 <fmt:message key="label.remove"/>
                             </button>
                             <input type="hidden" name="id" value="${conference.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="to_edit_conference">
                                 <fmt:message key="label.edit"/>
                             </button>
                             <input type="hidden" name="id" value="${conference.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="find_conference_applications">
                                 <fmt:message key="label.find_all_participants"/>
@@ -313,7 +307,7 @@
                     <td><c:out value="${application.description}"/></td>
                     <td>
                         <div class="dropdown">
-                            <form action="controller" method="post">
+                            <form action="controller" method="POST">
                                 <button class="btn btn-outline-danger dropdown-toggle" type="button"
                                         id="application-status-dropdown-menu-button" data-bs-toggle="dropdown"
                                         aria-haspopup="true"
@@ -346,7 +340,7 @@
                         </div>
                     </td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_application">
                                 <fmt:message key="label.remove"/>
@@ -384,14 +378,14 @@
                     <td><c:out value="${message.question}"/></td>
                     <td><c:out value="${message.answer}"/></td>
                     <td>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="to_edit_message">
                                 <fmt:message key="label.add_answer"/>
                             </button>
                             <input type="hidden" name="id" value="${message.id}">
                         </form>
-                        <form action="controller" method="post">
+                        <form action="controller" method="POST">
                             <button type="submit" class="btn btn-danger" name="command"
                                     value="remove_message">
                                 <fmt:message key="label.remove"/>

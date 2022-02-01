@@ -7,7 +7,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Conference</title>
+    <title><fmt:message key="label.conference_name"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>

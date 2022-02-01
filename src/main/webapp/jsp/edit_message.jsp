@@ -6,15 +6,15 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Answer question</title>
+    <title><fmt:message key="label.add_answer"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
-    <h4>Answer question</h4>
-    <form action="controller" method="post">
+    <h4><fmt:message key="label.add_answer"/></h4>
+    <form action="controller" method="POST">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="answer" value="" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.description"/>>

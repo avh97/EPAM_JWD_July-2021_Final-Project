@@ -6,20 +6,20 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/forms.css">
-    <title>Edit topic</title>
+    <title><fmt:message key="label.edit"/></title>
 </head>
 <body>
 <c:import url="header.jsp"/>
 <div class="container-fluid">
-    <h4>Edit topic</h4>
-    <form action="controller" method="post">
+    <h4><fmt:message key="label.edit"/></h4>
+    <form action="controller" method="POST">
         <div class="form-row">
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="name" value="${selected.name}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group col-md-5">
                 <input type="text" name="description" value="${selected.description}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.name"/>>
