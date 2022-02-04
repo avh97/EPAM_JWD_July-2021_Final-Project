@@ -3,10 +3,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="pagecontent"/>
+<%@ taglib uri="customtag" prefix="custom"%>
 
 <!doctype html>
 <html>
 <body>
-<h6 style="text-align: center">© A.V. Khaletski, 2021</h6>
+<custom:copyright/>
 </body>
 </html>
