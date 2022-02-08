@@ -3,6 +3,12 @@ package by.khaletski.platform.service.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Validator class.
+ *
+ * @author Anton Khaletski
+ */
+
 public final class Validator {
 
     private Validator() {
@@ -10,20 +16,20 @@ public final class Validator {
 
     /**
      * Email regex, where there is no less than 1 letter before "@", 2 letters after,
-     * and domain is no longer than 4 characters
+     * and domain is no longer than 4 characters.
      */
 
     private static final String EMAIL_REGEX = "^[-\\w.]+@([A-z0-9][-A-z0-9]+\\.)+[A-z]{2,4}$";
 
     /**
      * Regular expression for all alphanumeric characters and predefined wild characters,
-     * must consist of at least 8 characters and not more than 15 characters
+     * must consist of at least 8 characters and not more than 15 characters.
      */
 
     private static final String PASSWORD_REGEX = "^([a-zA-Z0-9@*#]{8,20})$";
 
     /**
-     * Regular expression for a positive integer
+     * Regular expression for a positive integer.
      */
 
     private static final String ID_REGEX = "(\\d|[1-9]\\d{1,8}|1\\d{9}|20\\d{8}|21[0-3]\\d{7}|214[0-6]" +
@@ -32,19 +38,19 @@ public final class Validator {
 
     /**
      * Regular expression for first/last name (hyphen is allowed) starting with a capital letter
-     * and no more than 25 letters long
+     * and no more than 25 letters long.
      */
 
     private static final String NAME_REGEX = "^[A-ZА-Я][\\p{Alpha}А-Яа-я\\s-]{1,25}";
 
     /**
-     * Regular expression for text up to 255 characters long
+     * Regular expression for text up to 255 characters long.
      */
 
     private static final String TEXT_REGEX = "^.{0,255}$";
 
     /**
-     * Regular expression for YYYY-MM-DD dates
+     * Regular expression for YYYY-MM-DD dates.
      */
 
     private static final String DATE_REGEX = "^(19|20)\\d\\d([-])(0[1-9]|1[012])\\2(0[1-9]|[12][0-9]|3[01])$";

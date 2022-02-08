@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service class "ApplicationService"
+ * Service class "ApplicationService".
+ * The methods in this class validate the received string values and pass them to the DAO methods.
  *
  * @author Anton Khaletski
  */
@@ -37,14 +38,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public List<Application> findAll() throws ServiceException {
-        List<Application> applicationList;
+        List<Application> applications;
         try {
-            applicationList = applicationDao.findAll();
+            applications = applicationDao.findAll();
         } catch (DaoException e) {
             LOGGER.error(e);
             throw new ServiceException(e);
         }
-        return applicationList;
+        return applications;
     }
 
     @Override

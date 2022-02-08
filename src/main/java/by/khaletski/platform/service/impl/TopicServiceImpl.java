@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service class "TopicService"
+ * Service class "TopicService".
+ * The methods in this class validate the received string values and pass them to the DAO methods.
  *
  * @author Anton Khaletski
  */
