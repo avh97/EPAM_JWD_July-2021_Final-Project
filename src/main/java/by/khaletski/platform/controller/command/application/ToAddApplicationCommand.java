@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to "add application" page command.
- * This command transfers to "add application" page while saving conference as session attribute.
- * If conference cannot be found or an exception is caught, user gets a message and is transferred to the error page.
+ * This command forwards to "add application" page while saving the ID of the selected conference as session attribute.
  *
  * @author Anton Khaletski
  */

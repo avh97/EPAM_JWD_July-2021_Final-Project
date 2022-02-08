@@ -19,9 +19,9 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 /**
- * Go to "edit conference" page command.
- * This command transfers to "edit conference" page while saving conference ID as session attribute.
- * If conference cannot be found or an exception is caught, user gets a message and is transferred to the error page.
+ * This command forwards to "edit conference" page while saving the ID of the selected conference as session attribute.
+ * If conference cannot be found or an exception is caught, user receives a notification and is transferred
+ * to the error page.
  *
  * @author Anton Khaletski
  */

@@ -18,8 +18,8 @@ import javax.servlet.http.HttpSession;
 
 /**
  * This command changes conference.
- * If the conference has been changed, the user receives a success message.
- * If not, the user receives a failure message. In both cases, the user is redirected to a personal page.
+ * If the conference has been changed, a success notification is received, else a failure notification.
+ * In both cases, the user is redirected to the personal page.
  * If an exception is caught, the user is forwarded to the error page.
  *
  * @author Anton Khaletski

@@ -14,7 +14,13 @@ import by.khaletski.platform.controller.command.conference.FindAllConferencesCom
 import by.khaletski.platform.controller.command.conference.RemoveConferenceCommand;
 import by.khaletski.platform.controller.command.conference.ToAddConferenceCommand;
 import by.khaletski.platform.controller.command.conference.ToEditConferenceCommand;
-import by.khaletski.platform.controller.command.message.*;
+import by.khaletski.platform.controller.command.message.AddMessageCommand;
+import by.khaletski.platform.controller.command.message.EditMessageCommand;
+import by.khaletski.platform.controller.command.message.FindAllMessagesCommand;
+import by.khaletski.platform.controller.command.message.FindUserMessagesCommand;
+import by.khaletski.platform.controller.command.message.RemoveMessageCommand;
+import by.khaletski.platform.controller.command.message.ToAddMessageCommand;
+import by.khaletski.platform.controller.command.message.ToEditMessageCommand;
 import by.khaletski.platform.controller.command.other.SelectLocaleCommand;
 import by.khaletski.platform.controller.command.other.ToAboutCommand;
 import by.khaletski.platform.controller.command.other.ToMainCommand;
@@ -38,22 +44,12 @@ import by.khaletski.platform.controller.command.user.ToSignInCommand;
 import by.khaletski.platform.controller.command.user.ToSignUpCommand;
 
 /**
- * Enumeration contains all types of commands
+ * Enumeration contains all types of commands.
  *
  * @author Anton Khaletski
  */
 
 public enum CommandEnum {
-    LOG_IN {
-        {
-            this.command = new LogInCommand();
-        }
-    },
-    TO_PERSONAL_PAGE {
-        {
-            this.command = new ToPersonalPageCommand();
-        }
-    },
     TO_MAIN {
         {
             this.command = new ToMainCommand();
@@ -64,9 +60,24 @@ public enum CommandEnum {
             this.command = new ToAboutCommand();
         }
     },
+    TO_PERSONAL_PAGE {
+        {
+            this.command = new ToPersonalPageCommand();
+        }
+    },
+    SELECT_LOCALE {
+        {
+            this.command = new SelectLocaleCommand();
+        }
+    },
     TO_SIGN_IN {
         {
             this.command = new ToSignInCommand();
+        }
+    },
+    LOG_IN {
+        {
+            this.command = new LogInCommand();
         }
     },
     LOG_OUT {
@@ -79,11 +90,6 @@ public enum CommandEnum {
             this.command = new FindAllUsersCommand();
         }
     },
-    REMOVE_USER {
-        {
-            this.command = new RemoveUserCommand();
-        }
-    },
     TO_EDIT_USER {
         {
             this.command = new ToEditUserCommand();
@@ -94,6 +100,16 @@ public enum CommandEnum {
             this.command = new EditUserCommand();
         }
     },
+    CHANGE_USER_ROLE {
+        {
+            this.command = new ChangeUserRoleCommand();
+        }
+    },
+    REMOVE_USER {
+        {
+            this.command = new RemoveUserCommand();
+        }
+    },
     TO_SIGN_UP {
         {
             this.command = new ToSignUpCommand();
@@ -102,21 +118,6 @@ public enum CommandEnum {
     SIGN_UP {
         {
             this.command = new SignUpCommand();
-        }
-    },
-    EDIT_TOPIC {
-        {
-            this.command = new EditTopicCommand();
-        }
-    },
-    REMOVE_TOPIC {
-        {
-            this.command = new RemoveTopicCommand();
-        }
-    },
-    TO_EDIT_TOPIC {
-        {
-            this.command = new ToEditTopicCommand();
         }
     },
     FIND_ALL_TOPICS {
@@ -134,6 +135,21 @@ public enum CommandEnum {
             this.command = new ToAddTopicCommand();
         }
     },
+    TO_EDIT_TOPIC {
+        {
+            this.command = new ToEditTopicCommand();
+        }
+    },
+    EDIT_TOPIC {
+        {
+            this.command = new EditTopicCommand();
+        }
+    },
+    REMOVE_TOPIC {
+        {
+            this.command = new RemoveTopicCommand();
+        }
+    },
     FIND_ALL_CONFERENCES {
         {
             this.command = new FindAllConferencesCommand();
@@ -149,14 +165,19 @@ public enum CommandEnum {
             this.command = new ToAddConferenceCommand();
         }
     },
+    TO_EDIT_CONFERENCE {
+        {
+            this.command = new ToEditConferenceCommand();
+        }
+    },
     EDIT_CONFERENCE {
         {
             this.command = new EditConferenceCommand();
         }
     },
-    TO_EDIT_CONFERENCE {
+    CHANGE_CONFERENCE_STATUS {
         {
-            this.command = new ToEditConferenceCommand();
+            this.command = new ChangeConferenceStatusCommand();
         }
     },
     REMOVE_CONFERENCE {
@@ -174,26 +195,6 @@ public enum CommandEnum {
             this.command = new RemoveApplicationCommand();
         }
     },
-    SELECT_LOCALE {
-        {
-            this.command = new SelectLocaleCommand();
-        }
-    },
-    CHANGE_APPLICATION_STATUS {
-        {
-            this.command = new ChangeApplicationStatusCommand();
-        }
-    },
-    CHANGE_CONFERENCE_STATUS {
-        {
-            this.command = new ChangeConferenceStatusCommand();
-        }
-    },
-    CHANGE_USER_ROLE {
-        {
-            this.command = new ChangeUserRoleCommand();
-        }
-    },
     ADD_APPLICATION {
         {
             this.command = new AddApplicationCommand();
@@ -202,6 +203,11 @@ public enum CommandEnum {
     TO_ADD_APPLICATION {
         {
             this.command = new ToAddApplicationCommand();
+        }
+    },
+    CHANGE_APPLICATION_STATUS {
+        {
+            this.command = new ChangeApplicationStatusCommand();
         }
     },
     FIND_USER_APPLICATIONS {
@@ -229,14 +235,14 @@ public enum CommandEnum {
             this.command = new ToAddMessageCommand();
         }
     },
-    TO_EDIT_MESSAGE {
-        {
-            this.command = new ToEditMessageCommand();
-        }
-    },
     ADD_MESSAGE {
         {
             this.command = new AddMessageCommand();
+        }
+    },
+    TO_EDIT_MESSAGE {
+        {
+            this.command = new ToEditMessageCommand();
         }
     },
     EDIT_MESSAGE {
@@ -256,10 +262,6 @@ public enum CommandEnum {
     };
 
     Command command;
-
-    /**
-     * @return {@link Command}
-     */
 
     public Command getCurrentCommand() {
         return command;

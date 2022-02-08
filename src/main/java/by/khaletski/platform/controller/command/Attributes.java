@@ -1,11 +1,10 @@
 package by.khaletski.platform.controller.command;
 
 /**
- * Session attributes
+ * Session attributes.
  *
  * @author Anton Khaletski
  */
-
 
 public final class Attributes {
 
@@ -23,7 +22,5 @@ public final class Attributes {
     public static final String LOCALE = "locale";
 
     private Attributes() {
-
     }
-
 }

@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Access filter defines pages that are accessible without log in
+ * Access filter defines pages that are accessible without log in.
  *
  * @author Anton Khaletski
  */

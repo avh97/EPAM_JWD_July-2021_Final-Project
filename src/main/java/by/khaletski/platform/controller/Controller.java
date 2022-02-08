@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Controller for queries from client
+ * Controller for queries from client.
  *
  * @author Anton Khaletski
  */
@@ -27,7 +27,9 @@ import java.io.IOException;
 public class Controller extends HttpServlet {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    @Override
     public void init() {
+        LOGGER.info("Controller initialized.");
     }
 
     @Override
@@ -63,6 +65,7 @@ public class Controller extends HttpServlet {
         }
     }
 
+    @Override
     public void destroy() {
         ConnectionPool.INSTANCE.destroyPool();
     }

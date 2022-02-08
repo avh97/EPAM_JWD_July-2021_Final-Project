@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to sign up page command
+ * This command forwards to sign up page.
  *
  * @author Anton Khaletski
  */

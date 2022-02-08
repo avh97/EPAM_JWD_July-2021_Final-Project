@@ -5,20 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * CommandProvider class
+ * CommandProvider class.
  *
  * @author Anton Khaletski
  */
 
 public class CommandProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
-
-	/**
-	 * Defines command
-	 *
-	 * @param command(command name)
-	 * @return {@link Command}
-	 */
 
 	public static Command defineCommand(String command) {
 		Command current;

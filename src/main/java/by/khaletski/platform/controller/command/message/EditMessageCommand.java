@@ -15,10 +15,11 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 /**
  * This command edits answer in the selected message.
- * If the message has been edited, the user receives a success notification.
- * If not, the user receives a failure notification. In both cases, the user remains on the current page.
+ * If the message has been edited, a success notification is received, else a failure notification.
+ * In both cases, the user is redirected to the personal page.
  * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski

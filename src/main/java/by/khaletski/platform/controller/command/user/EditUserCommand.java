@@ -18,9 +18,10 @@ import javax.servlet.http.HttpSession;
 
 /**
  * This command edits name, patronymic and surname of the selected user.
- * If the user has been edited, session attribute "user" is updated and a success message is received,
- * else the failure message. In both cases, the user remains on the current page.
- * If an exception is caught, the user receives a failure message and is forwarded to the error page.
+ * If the user has been edited (in case selected user is current user, session attribute "user" is updated too)
+ * a success notification is received, else the failure notification.
+ * In both cases, the user is redirected to the personal page.
+ * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */

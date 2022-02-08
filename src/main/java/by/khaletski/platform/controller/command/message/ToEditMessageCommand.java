@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to "edit message" page command.
- * This command transfers to "edit message" page while saving message ID as session attribute.
+ * This command forwards to "edit message" page while saving message ID as session attribute.
  *
  * @author Anton Khaletski
  */

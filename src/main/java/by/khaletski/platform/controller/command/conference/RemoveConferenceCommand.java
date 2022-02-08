@@ -18,9 +18,9 @@ import javax.servlet.http.HttpSession;
 
 /**
  * This command removes the conference by the transmitted ID.
- * If the conference has been removed, the user receives a success message.
- * If not, the user receives a failure message. In both cases, the user remains on the current page.
- * If an exception is caught, the user receives a failure message and is forwarded to the error page.
+ * If the conference has been removed, a success notification is received, else a failure notification.
+ * In both cases, the user is redirected to the personal page.
+ * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */
@@ -42,7 +42,8 @@ public class RemoveConferenceCommand implements Command {
 			} else {
 				session.setAttribute(Attributes.MESSAGE, "Conference hasn't been removed.");
 			}
-			router.setPagePath((String) session.getAttribute(Attributes.CURRENT_PAGE));
+			router.setPagePath(request.getContextPath() + PagePaths.TO_PERSONAL_PAGE);
+			router.setType(Router.Type.REDIRECT);
 		} catch (ServiceException e) {
 			LOGGER.error(e);
 			session.setAttribute(Attributes.MESSAGE, "An error occurred when trying to remove the conference.");

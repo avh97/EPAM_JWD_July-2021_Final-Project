@@ -18,9 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 /**
- * Go to "edit topic" page command.
- * This command transfers to "edit topic" page while saving topic ID as session attribute.
- * If topic cannot be found or an exception is caught, user gets a message and is transferred to the error page.
+ * This command forwards to "edit topic" page while saving topic ID as session attribute.
+ * If topic cannot be found or an exception is caught, user gets a notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */

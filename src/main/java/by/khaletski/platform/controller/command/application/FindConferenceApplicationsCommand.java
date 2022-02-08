@@ -20,8 +20,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * This command finds all applications to selected conference.
- * If an exception is caught, the user receives a failure message and is forwarded to the error page.
+ * This command finds all applications corresponding to the selected conference.
+ * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */

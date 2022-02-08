@@ -1,7 +1,7 @@
 package by.khaletski.platform.controller.command;
 
 /**
- * Request parameters
+ * Request parameters.
  *
  * @author Anton Khaletski
  */

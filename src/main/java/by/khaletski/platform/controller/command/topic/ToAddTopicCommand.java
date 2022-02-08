@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to "add topic" page command
+ * This command forwards to "add topic" page.
  *
  * @author Anton Khaletski
  */

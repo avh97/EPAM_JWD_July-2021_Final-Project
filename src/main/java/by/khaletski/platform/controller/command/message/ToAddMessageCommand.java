@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to "add message" page command
+ * This command forwards to "add message" page.
  *
  * @author Anton Khaletski
  */

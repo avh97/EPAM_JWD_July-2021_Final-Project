@@ -19,6 +19,10 @@ import java.util.Optional;
 
 /**
  * Log in command
+ * If the username and password are correct, the user is transferred to the personal page,
+ * session attributes "user" and "id" are also set.
+ * If not, it stays on current page. In both cases, the user receives a corresponding notification.
+ * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */

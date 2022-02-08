@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * This command forwards to main page when system can't define the command
+ * This command forwards to main page when system cannot define the command.
  *
  * @author Anton Khaletski
  */

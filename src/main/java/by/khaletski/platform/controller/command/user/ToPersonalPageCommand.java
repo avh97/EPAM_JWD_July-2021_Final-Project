@@ -12,9 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Go to personal page command.
- * This command transfers to users' personal page depending on user role.
- * If an exception is caught, user gets a message and is transferred to the main page.
+ * This command forwards to personal page depending on user role.
+ * If an exception is caught, user receives a message and is redirected to the main page.
  *
  * @author Anton Khaletski
  */

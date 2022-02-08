@@ -1,7 +1,7 @@
 package by.khaletski.platform.controller.command;
 
 /**
- * Contain all page paths
+ * All page paths.
  *
  * @author Anton Khaletski
  */
@@ -14,7 +14,6 @@ public final class PagePaths {
     public static final String SIGN_UP = "/jsp/sign_up.jsp";
     public static final String ADMIN = "/jsp/admin.jsp";
     public static final String PARTICIPANT = "/jsp/participant.jsp";
-    public static final String OBSERVER = "/jsp/observer.jsp";
     public static final String ADD_TOPIC = "/jsp/add_topic.jsp";
     public static final String ADD_CONFERENCE = "/jsp/add_conference.jsp";
     public static final String ADD_APPLICATION = "/jsp/add_application.jsp";
@@ -37,7 +36,6 @@ public final class PagePaths {
     public static final String TO_EDIT_TOPIC_PAGE = "/controller?command=to_edit_topic";
     public static final String TO_EDIT_CONFERENCE_PAGE = "/controller?command=to_edit_conference";
     public static final String TO_EDIT_MESSAGE_PAGE = "/controller?command=to_edit_message";
-
 
     private PagePaths() {
     }

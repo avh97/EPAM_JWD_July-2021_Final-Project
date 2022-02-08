@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
 /**
- * This filter sets encoding, corrects the encoding of the request and response
+ * This filter sets encoding, corrects the encoding of the request and response.
  *
  * @author Anton Khaletski
  */

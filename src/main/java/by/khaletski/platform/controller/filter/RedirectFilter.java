@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * This filter redirects all direct "/jsp/*" page accesses to the start page
+ * This filter redirects all direct "/jsp/*" page accesses to the start page.
  *
  * @author Anton Khaletski
  */

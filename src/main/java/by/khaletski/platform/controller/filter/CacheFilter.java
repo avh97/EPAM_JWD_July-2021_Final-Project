@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Cache filter, set cache control instructions
+ * Cache filter, set cache control instructions.
  *
  * @author Anton Khaletski
  */

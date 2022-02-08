@@ -1,7 +1,7 @@
 package by.khaletski.platform.controller.command;
 
 /**
- * Router class
+ * Router class.
  *
  * @author Anton Khaletski
  */
@@ -11,7 +11,7 @@ public class Router {
     private Type type;
 
     /**
-     * Enum describes all possible router type
+     * Enum describes all possible router type.
      */
 
     public enum Type {
@@ -20,7 +20,7 @@ public class Router {
     }
 
     /**
-     * Constructor sets default route type to "Forward"
+     * Constructor sets default route type to "Forward".
      */
 
     public Router() {
@@ -28,7 +28,7 @@ public class Router {
     }
 
     /**
-     * Constructor sets default route type to "Forward"
+     * Constructor sets default route type to "Forward".
      *
      * @param pagePath
      */
@@ -39,7 +39,7 @@ public class Router {
     }
 
     /**
-     * Constructor
+     * Constructor sets selected route type.
      *
      * @param pagePath
      * @param type     (type of router)

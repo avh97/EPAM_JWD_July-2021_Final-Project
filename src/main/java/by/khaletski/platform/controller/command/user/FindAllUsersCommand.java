@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This command finds all users.
- * If an exception is caught, the user receives a failure message and is forwarded to the error page.
+ * If an exception is caught, the user receives a failure notification and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */

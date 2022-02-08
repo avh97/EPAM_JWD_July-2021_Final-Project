@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Select locale command
+ * This command selects locale.
  *
  * @author Anton Khaletski
  */

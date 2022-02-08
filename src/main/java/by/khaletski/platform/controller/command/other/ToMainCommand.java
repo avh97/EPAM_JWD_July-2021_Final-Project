@@ -17,9 +17,8 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
- * Go to main page command.
- * This command transfers to main page while saving topic ID as an attribute from current page.
- * If topic cannot be found or an exception is caught, user gets a message and is transferred to the error page.
+ * This command forwards to main page while saving topics as an attribute from current page.
+ * If an exception is caught, user gets a notification and is transferred to the error page.
  *
  * @author Anton Khaletski
  */

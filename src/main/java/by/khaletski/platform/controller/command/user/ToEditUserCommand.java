@@ -18,9 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 /**
- * Go to "edit user" page command.
- * This command transfers to "edit user" page while saving selected users' ID as session attribute.
- * If user cannot be found or an exception is caught, current user gets a message and is transferred to the error page.
+ * This command forwards to "edit user" page while saving selected user ID as session attribute.
+ * If user cannot be found or an exception is caught, user receives a message and is forwarded to the error page.
  *
  * @author Anton Khaletski
  */
