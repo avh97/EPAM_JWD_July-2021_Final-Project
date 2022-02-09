@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Controller for queries from client.
+ * Controller servlet for queries from client.
  *
  * @author Anton Khaletski
  */
@@ -29,7 +29,7 @@ public class Controller extends HttpServlet {
 
     @Override
     public void init() {
-        LOGGER.info("Controller initialized.");
+        LOGGER.info("Controller servlet has been initialized");
     }
 
     @Override
