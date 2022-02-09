@@ -1,7 +1,7 @@
 package by.khaletski.platform.entity;
 
 /**
- * Entity class "User"
+ * Entity class "User".
  *
  * @author Anton Khaletski
  */
@@ -18,7 +18,7 @@ public class User {
         ADMIN, PARTICIPANT
     }
 
-    public User() {
+    private User() {
     }
 
     public int getId() {

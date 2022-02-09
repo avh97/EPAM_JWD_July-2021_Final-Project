@@ -3,7 +3,7 @@ package by.khaletski.platform.entity;
 import java.sql.Date;
 
 /**
- * Entity class "Conference"
+ * Entity class "Conference".
  *
  * @author Anton Khaletski
  */
@@ -20,7 +20,7 @@ public class Conference {
         PENDING, CANCELED, ENDED
     }
 
-    public Conference() {
+    private Conference() {
     }
 
     public int getId() {
@@ -127,23 +127,23 @@ public class Conference {
             return this;
         }
 
-        public Builder setName(String conferenceName) {
-            newConference.name = conferenceName;
+        public Builder setName(String name) {
+            newConference.name = name;
             return this;
         }
 
-        public Builder setDescription(String conferenceDescription) {
-            newConference.description = conferenceDescription;
+        public Builder setDescription(String description) {
+            newConference.description = description;
             return this;
         }
 
-        public Builder setDate(Date conferenceDate) {
-            newConference.date = conferenceDate;
+        public Builder setDate(Date date) {
+            newConference.date = date;
             return this;
         }
 
-        public Builder setStatus(Status conferenceStatus) {
-            newConference.status = conferenceStatus;
+        public Builder setStatus(Status status) {
+            newConference.status = status;
             return this;
         }
 

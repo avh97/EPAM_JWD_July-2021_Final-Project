@@ -3,7 +3,7 @@ package by.khaletski.platform.entity;
 import java.sql.Timestamp;
 
 /**
- * Entity class "Message"
+ * Entity class "Message".
  *
  * @author Anton Khaletski
  */
@@ -15,7 +15,7 @@ public class Message {
     private String question;
     private String answer;
 
-    public Message() {
+    private Message() {
     }
 
     public int getId() {

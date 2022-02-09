@@ -1,7 +1,7 @@
 package by.khaletski.platform.entity;
 
 /**
- * Entity class "Topic"
+ * Entity class "Topic".
  *
  * @author Anton Khaletski
  */
@@ -11,7 +11,7 @@ public class Topic {
     private String name;
     private String description;
 
-    public Topic() {
+    private Topic() {
     }
 
     public int getId() {
@@ -80,13 +80,13 @@ public class Topic {
             return this;
         }
 
-        public Builder setName(String topicName) {
-            newTopic.name = topicName;
+        public Builder setName(String name) {
+            newTopic.name = name;
             return this;
         }
 
-        public Builder setDescription(String topicDescription) {
-            newTopic.description = topicDescription;
+        public Builder setDescription(String description) {
+            newTopic.description = description;
             return this;
         }
 

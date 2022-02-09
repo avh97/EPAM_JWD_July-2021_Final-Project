@@ -1,7 +1,7 @@
 package by.khaletski.platform.entity;
 
 /**
- * Entity class "Application"
+ * Entity class "Application".
  *
  * @author Anton Khaletski
  */
@@ -17,7 +17,7 @@ public class Application {
         CLAIMED, CONFIRMED, REJECTED
     }
 
-    public Application() {
+    private Application() {
     }
 
     public int getId() {
@@ -118,13 +118,13 @@ public class Application {
             return this;
         }
 
-        public Builder setDescription(String applicationDescription) {
-            newApplication.description = applicationDescription;
+        public Builder setDescription(String description) {
+            newApplication.description = description;
             return this;
         }
 
-        public Builder setStatus(Status applicationStatus) {
-            newApplication.status = applicationStatus;
+        public Builder setStatus(Status status) {
+            newApplication.status = status;
             return this;
         }
 
