@@ -16,19 +16,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Dao class "MessageDao".
+ * The methods in this class are used for creating a PreparedStatement, executing the query
+ * and processing the ResultSet object.
+ *
+ * @author Anton Khaletski
+ */
+
 public class MessageDaoImpl implements MessageDao {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_MESSAGES
-            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM messages\n" +
+            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM messages " +
             "INNER JOIN users ON messages.user_id = users.id";
     private static final String SQL_FIND_MESSAGE_BY_ID
-            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM messages\n" +
+            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM messages " +
             "INNER JOIN users ON messages.user_id = users.id WHERE messages.id=?";
     private static final String SQL_FIND_MESSAGES_BY_USER_ID
-            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM messages\n" +
+            = "SELECT messages.id, messages.user_id, messages.timestamp, messages.question, messages.answer, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM messages " +
             "INNER JOIN users ON messages.user_id = users.id WHERE messages.user_id=?";
     private static final String SQL_ADD_MESSAGE
             = "INSERT INTO messages (user_id, question) values(?,?)";
@@ -156,16 +167,23 @@ public class MessageDaoImpl implements MessageDao {
         return isRemoved;
     }
 
+    /**
+     * This method creates an object from ResultSet.
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+
     private Message retrieve(ResultSet resultSet) throws SQLException {
         return new Message.Builder()
                 .setId(resultSet.getInt("id"))
                 .setUser(new User.Builder()
                         .setId(resultSet.getInt("user_id"))
-                        .setEmail(resultSet.getString("email"))
-                        .setName(resultSet.getString("name"))
-                        .setPatronymic(resultSet.getString("patronymic"))
-                        .setSurname(resultSet.getString("surname"))
-                        .setRole(User.Role.valueOf(resultSet.getString("role")))
+                        .setEmail(resultSet.getString("user_email"))
+                        .setName(resultSet.getString("user_name"))
+                        .setPatronymic(resultSet.getString("user_patronymic"))
+                        .setSurname(resultSet.getString("user_surname"))
+                        .setRole(User.Role.valueOf(resultSet.getString("user_role")))
                         .build())
                 .setTimestamp(resultSet.getTimestamp("timestamp"))
                 .setQuestion(resultSet.getString("question"))

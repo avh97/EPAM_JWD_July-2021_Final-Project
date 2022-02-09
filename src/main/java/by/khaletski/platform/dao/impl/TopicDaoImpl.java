@@ -17,22 +17,19 @@ import java.util.Optional;
 
 /**
  * Dao class "TopicDao"
+ * The methods in this class are used for creating a PreparedStatement, executing the query
+ * and processing the ResultSet object.
  *
  * @author Anton Khaletski
  */
 
 public class TopicDaoImpl implements TopicDao {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final String SQL_FIND_ALL_TOPICS
-            = "SELECT id, topic_name, topic_description FROM topics";
-    private static final String SQL_FIND_TOPIC_BY_ID
-            = "SELECT id, topic_name, topic_description FROM topics WHERE id=?";
-    private static final String SQL_ADD_TOPIC
-            = "INSERT INTO topics (topic_name, topic_description) values(?,?)";
-    private static final String SQL_EDIT_TOPIC_BY_ID
-            = "UPDATE topics SET topic_name=?, topic_description=? WHERE id=?";
-    private static final String SQL_REMOVE_TOPIC_BY_ID
-            = "DELETE FROM topics WHERE id=?";
+    private static final String SQL_FIND_ALL_TOPICS = "SELECT id, name, description FROM topics";
+    private static final String SQL_FIND_TOPIC_BY_ID = "SELECT id, name, description FROM topics WHERE id=?";
+    private static final String SQL_ADD_TOPIC = "INSERT INTO topics (name, description) values(?,?)";
+    private static final String SQL_EDIT_TOPIC_BY_ID = "UPDATE topics SET name=?, description=? WHERE id=?";
+    private static final String SQL_REMOVE_TOPIC_BY_ID = "DELETE FROM topics WHERE id=?";
 
     @Override
     public List<Topic> findAll() throws DaoException {
@@ -136,11 +133,18 @@ public class TopicDaoImpl implements TopicDao {
         return isRemoved;
     }
 
+    /**
+     * This method creates an object from ResultSet.
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+
     private Topic retrieve(ResultSet resultSet) throws SQLException {
         return new Topic.Builder()
                 .setId(resultSet.getInt("id"))
-                .setName(resultSet.getString("topic_name"))
-                .setDescription(resultSet.getString("topic_description"))
+                .setName(resultSet.getString("name"))
+                .setDescription(resultSet.getString("description"))
                 .build();
     }
 }

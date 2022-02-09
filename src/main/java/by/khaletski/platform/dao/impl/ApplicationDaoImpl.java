@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "ApplicationDao"
+ * Dao class "ApplicationDao".
+ * The methods in this class are used for creating a PreparedStatement, executing the query
+ * and processing the ResultSet object.
  *
  * @author Anton Khaletski
  */
@@ -27,51 +29,59 @@ import java.util.Optional;
 public class ApplicationDaoImpl implements ApplicationDao {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String SQL_FIND_ALL_APPLICATIONS
-            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
-            "applications.application_description, applications.application_status, \n" +
-            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
-            "conferences.conference_status, conferences.date, \n" +
-            "topics.topic_name, topics.topic_description,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
-            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
-            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            = "SELECT applications.id, applications.user_id, applications.conference_id, " +
+            "applications.description, applications.status, " +
+            "conferences.topic_id, conferences.name AS conference_name, " +
+            "conferences.description AS conference_description, " +
+            "conferences.status AS conference_status, conferences.date AS conference_date, " +
+            "topics.name AS topic_name, topics.description AS topic_description, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM applications " +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id " +
+            "INNER JOIN topics ON conferences.topic_id = topics.id " +
             "INNER JOIN users ON applications.user_id = users.id";
     private static final String SQL_FIND_APPLICATION_BY_ID
-            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
-            "applications.application_description, applications.application_status, \n" +
-            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
-            "conferences.conference_status, conferences.date, \n" +
-            "topics.topic_name, topics.topic_description,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
-            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
-            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            = "SELECT applications.id, applications.user_id, applications.conference_id, " +
+            "applications.description, applications.status, " +
+            "conferences.topic_id, conferences.name AS conference_name, " +
+            "conferences.description AS conference_description, " +
+            "conferences.status AS conference_status, conferences.date AS conference_date, " +
+            "topics.name AS topic_name, topics.description AS topic_description, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM applications " +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id " +
+            "INNER JOIN topics ON conferences.topic_id = topics.id " +
             "INNER JOIN users ON applications.user_id = users.id WHERE applications.id=?";
     private static final String SQL_FIND_APPLICATIONS_BY_USER_ID
-            = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
-            "applications.application_description, applications.application_status, \n" +
-            "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
-            "conferences.conference_status, conferences.date, \n" +
-            "topics.topic_name, topics.topic_description,\n" +
-            "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
-            "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
-            "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
+            = "SELECT applications.id, applications.user_id, applications.conference_id, " +
+            "applications.description, applications.status, " +
+            "conferences.topic_id, conferences.name AS conference_name, " +
+            "conferences.description AS conference_description, " +
+            "conferences.status AS conference_status, conferences.date AS conference_date, " +
+            "topics.name AS topic_name, topics.description AS topic_description, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM applications " +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id " +
+            "INNER JOIN topics ON conferences.topic_id = topics.id " +
             "INNER JOIN users ON applications.user_id = users.id WHERE applications.user_id=?";
     private static final String SQL_FIND_USERS_BY_CONFERENCE_ID
-                = "SELECT applications.id, applications.user_id, applications.conference_id, \n" +
-                        "applications.application_description, applications.application_status, \n" +
-                        "conferences.topic_id, conferences.conference_name, conferences.conference_description, \n" +
-                        "conferences.conference_status, conferences.date, \n" +
-                        "topics.topic_name, topics.topic_description,\n" +
-                        "users.email, users.name, users.patronymic, users.surname, users.role FROM applications\n" +
-                        "INNER JOIN conferences ON applications.conference_id = conferences.id\n" +
-                        "INNER JOIN topics ON conferences.topic_id = topics.id\n" +
-                        "INNER JOIN users ON applications.user_id = users.id WHERE applications.conference_id=?";
+            = "SELECT applications.id, applications.user_id, applications.conference_id, " +
+            "applications.description, applications.status, " +
+            "conferences.topic_id, conferences.name AS conference_name, " +
+            "conferences.description AS conference_description, " +
+            "conferences.status AS conference_status, conferences.date AS conference_date, " +
+            "topics.name AS topic_name, topics.description AS topic_description, " +
+            "users.email AS user_email, users.name AS user_name, users.patronymic AS user_patronymic, " +
+            "users.surname AS user_surname, users.role AS user_role FROM applications " +
+            "INNER JOIN conferences ON applications.conference_id = conferences.id " +
+            "INNER JOIN topics ON conferences.topic_id = topics.id " +
+            "INNER JOIN users ON applications.user_id = users.id WHERE applications.conference_id=?";
     private static final String SQL_ADD_APPLICATION
-            = "INSERT INTO applications (user_id, conference_id, application_description, application_status) values(?,?,?,?)";
+            = "INSERT INTO applications (user_id, conference_id, description, status) values(?,?,?,?)";
     private static final String SQL_CHANGE_APPLICATION_STATUS
-            = "UPDATE applications set application_status=? WHERE id=?";
+            = "UPDATE applications set status=? WHERE id=?";
     private static final String SQL_EDIT_APPLICATION
-            = "UPDATE applications SET user_id=?, conference_id=?, application_description=?, status=? WHERE id=?";
+            = "UPDATE applications SET user_id=?, conference_id=?, description=?, status=? WHERE id=?";
     private static final String SQL_REMOVE_APPLICATION_BY_ID
             = "DELETE FROM applications WHERE id=?";
 
@@ -240,16 +250,23 @@ public class ApplicationDaoImpl implements ApplicationDao {
         return ifRemoved;
     }
 
+    /**
+     * This method creates an object from ResultSet.
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+
     private Application retrieve(ResultSet resultSet) throws SQLException {
         return new Application.Builder()
                 .setId(resultSet.getInt("id"))
                 .setUser(new User.Builder()
                         .setId(resultSet.getInt("user_id"))
-                        .setEmail(resultSet.getString("email"))
-                        .setName(resultSet.getString("name"))
-                        .setPatronymic(resultSet.getString("patronymic"))
-                        .setSurname(resultSet.getString("surname"))
-                        .setRole(User.Role.valueOf(resultSet.getString("role")))
+                        .setEmail(resultSet.getString("user_email"))
+                        .setName(resultSet.getString("user_name"))
+                        .setPatronymic(resultSet.getString("user_patronymic"))
+                        .setSurname(resultSet.getString("user_surname"))
+                        .setRole(User.Role.valueOf(resultSet.getString("user_role")))
                         .build())
                 .setConference(new Conference.Builder()
                         .setId(resultSet.getInt("conference_id"))
@@ -260,11 +277,11 @@ public class ApplicationDaoImpl implements ApplicationDao {
                                 .build())
                         .setName(resultSet.getString("conference_name"))
                         .setDescription(resultSet.getString("conference_description"))
-                        .setDate(resultSet.getDate("date"))
+                        .setDate(resultSet.getDate("conference_date"))
                         .setStatus(Conference.Status.valueOf(resultSet.getString("conference_status")))
                         .build())
-                .setDescription(resultSet.getString("application_description"))
-                .setStatus(Application.Status.valueOf(resultSet.getString("application_status")))
+                .setDescription(resultSet.getString("description"))
+                .setStatus(Application.Status.valueOf(resultSet.getString("status")))
                 .build();
     }
 }

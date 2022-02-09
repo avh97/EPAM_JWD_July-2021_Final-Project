@@ -22,18 +22,18 @@ CREATE TABLE `users` (
 
 CREATE TABLE `topics` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `topic_name` varchar(255) NOT NULL,
-  `topic_description` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `conferences` (
   `id` int NOT NULL AUTO_INCREMENT,
   `topic_id` int NOT NULL,
-  `conference_name` varchar(255) NOT NULL,
-  `conference_description` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `date` date NOT NULL,
-  `conference_status` enum('PENDING','CANCELED','ENDED') NOT NULL DEFAULT 'PENDING',
+  `status` enum('PENDING','CANCELED','ENDED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`id`),
   CONSTRAINT `topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -42,8 +42,8 @@ CREATE TABLE `applications` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `conference_id` INT NOT NULL,
-  `application_description` varchar(255) NOT NULL,
-  `application_status` ENUM('CLAIMED', 'CONFIRMED', 'REJECTED') NOT NULL DEFAULT 'CLAIMED',
+  `description` varchar(255) NOT NULL,
+  `status` ENUM('CLAIMED', 'CONFIRMED', 'REJECTED') NOT NULL DEFAULT 'CLAIMED',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `conference_id` FOREIGN KEY (`conference_id`) REFERENCES `conferences` (`id`)

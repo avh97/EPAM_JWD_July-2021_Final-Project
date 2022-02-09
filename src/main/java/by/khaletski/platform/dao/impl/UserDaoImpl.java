@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "UserDao"
+ * Dao class "UserDao".
+ * The methods in this class are used for creating a PreparedStatement, executing the query
+ * and processing the ResultSet object.
  *
  * @author Anton Khaletski
  */
@@ -211,6 +213,13 @@ public class UserDaoImpl implements UserDao {
         }
         return optional;
     }
+
+    /**
+     * This method creates an object from ResultSet.
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
 
     private User retrieve(ResultSet resultSet) throws SQLException {
         return new User.Builder()

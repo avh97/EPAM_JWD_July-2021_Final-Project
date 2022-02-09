@@ -18,30 +18,30 @@ import java.util.Optional;
 
 /**
  * Dao class "ConferenceDao"
+ * The methods in this class are used for creating a PreparedStatement, executing the query
+ * and processing the ResultSet object.
  *
  * @author Anton Khaletski
  */
 
 public class ConferenceDaoImpl implements ConferenceDao {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final String SQL_FIND_ALL_CONFERENCES =
-            "SELECT conferences.id, conferences.topic_id, conferences.conference_name, " +
-                    "conferences.conference_description, conferences.date, conferences.conference_status, " +
-                    "topics.topic_name, topics.topic_description " +
-                    "FROM conferences INNER JOIN topics ON topics.id = conferences.topic_id";
+    private static final String SQL_FIND_ALL_CONFERENCES
+            = "SELECT conferences.id, conferences.topic_id, conferences.name, " +
+            "conferences.description, conferences.date, conferences.status, " +
+            "topics.name AS topic_name, topics.description AS topic_description " +
+            "FROM conferences INNER JOIN topics ON topics.id = conferences.topic_id";
     private static final String SQL_FIND_CONFERENCE_BY_ID
-            = "SELECT conferences.id, conferences.topic_id, conferences.conference_name, " +
-            "conferences.conference_description, conferences.date, conferences.conference_status, " +
-            "topics.topic_name, topics.topic_description " +
+            = "SELECT conferences.id, conferences.topic_id, conferences.name, " +
+            "conferences.description, conferences.date, conferences.status, " +
+            "topics.name AS topic_name, topics.description AS topic_description " +
             "FROM conferences INNER JOIN topics ON topics.id = conferences.topic_id WHERE conferences.id=?";
     private static final String SQL_ADD_CONFERENCE
-            = "INSERT INTO conferences"
-            + " (topic_id, conference_name, conference_description, date, conference_status) values(?,?,?,?,?)";
+            = "INSERT INTO conferences (topic_id, name, description, date, status) values(?,?,?,?,?)";
     private static final String SQL_EDIT_CONFERENCE_BY_ID
-            = "UPDATE conferences "
-            + "SET topic_id=?, conference_name=?, conference_description=?, date=? WHERE id=?";
+            = "UPDATE conferences SET topic_id=?, name=?, description=?, date=? WHERE id=?";
     private static final String SQL_CHANGE_CONFERENCE_STATUS_BY_ID
-            = "UPDATE conferences SET conference_status=? WHERE id=?";
+            = "UPDATE conferences SET status=? WHERE id=?";
     private static final String SQL_REMOVE_CONFERENCE_BY_ID
             = "DELETE FROM conferences WHERE id=?";
 
@@ -174,6 +174,13 @@ public class ConferenceDaoImpl implements ConferenceDao {
         return isRemoved;
     }
 
+    /**
+     * This method creates an object from ResultSet.
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
+
     private Conference retrieve(ResultSet resultSet) throws SQLException {
         return new Conference.Builder()
                 .setId(resultSet.getInt("id"))
@@ -182,11 +189,10 @@ public class ConferenceDaoImpl implements ConferenceDao {
                         .setName(resultSet.getString("topic_name"))
                         .setDescription(resultSet.getString("topic_description"))
                         .build())
-                .setName(resultSet.getString("conference_name"))
-                .setDescription(resultSet.getString("conference_description"))
+                .setName(resultSet.getString("name"))
+                .setDescription(resultSet.getString("description"))
                 .setDate(resultSet.getDate("date"))
-                .setStatus(Conference
-                        .Status.valueOf(resultSet.getString("conference_status")))
+                .setStatus(Conference.Status.valueOf(resultSet.getString("status")))
                 .build();
     }
 }
