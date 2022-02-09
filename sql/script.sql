@@ -35,7 +35,7 @@ CREATE TABLE `conferences` (
   `date` date NOT NULL,
   `status` enum('PENDING','CANCELED','ENDED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`id`),
-  CONSTRAINT `topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`)
+  CONSTRAINT `topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `applications` (
@@ -46,7 +46,7 @@ CREATE TABLE `applications` (
   `status` ENUM('CLAIMED', 'CONFIRMED', 'REJECTED') NOT NULL DEFAULT 'CLAIMED',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `conference_id` FOREIGN KEY (`conference_id`) REFERENCES `conferences` (`id`)
+  CONSTRAINT `conference_id` FOREIGN KEY (`conference_id`) REFERENCES `conferences` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `messages` (
@@ -56,7 +56,7 @@ CREATE TABLE `messages` (
   `question` varchar(255) NOT NULL,
   `answer` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
-  CONSTRAINT `user_id_idxx` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  CONSTRAINT `user_id_idxx` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -85,9 +85,9 @@ INSERT INTO `topics` VALUES (1,'Tech','Конференции на тему со
 INSERT INTO `topics` VALUES (2,'Economics','Конференции на тему экономики');
 INSERT INTO `topics` VALUES (3,'History','Конференции на тему истории');
 
-INSERT INTO `conferences` VALUES (1,1,'Дефицит полупроводников 2020-н.в.','Описание','2022-02-28','PENDING');
-INSERT INTO `conferences` VALUES (2,2,'Проблемы экономического роста','Описание','2022-02-28','PENDING');
-INSERT INTO `conferences` VALUES (3,3,'Кризис III века','Описание','2022-02-28','PENDING');
+INSERT INTO `conferences` VALUES (1,1,'Дефицит полупроводников 2020-н.в.','Описание конференции','2022-02-28','PENDING');
+INSERT INTO `conferences` VALUES (2,2,'Проблемы экономического роста','Описание конференции','2022-02-28','PENDING');
+INSERT INTO `conferences` VALUES (3,3,'Кризис III века','Описание конференции','2022-02-28','PENDING');
 
 INSERT INTO `applications` VALUES (1, 3, 1,'Текст заявки','CLAIMED');
 INSERT INTO `applications` VALUES (2, 3, 2,'Текст заявки','CLAIMED');
