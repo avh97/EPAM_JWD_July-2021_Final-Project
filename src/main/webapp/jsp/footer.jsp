@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="${locale}" scope="session"/>
 <fmt:setBundle basename="pagecontent"/>
-<%@ taglib uri="customtag" prefix="custom"%>
+<%@ taglib uri="customtag" prefix="custom" %>
 
 <!doctype html>
 <html>

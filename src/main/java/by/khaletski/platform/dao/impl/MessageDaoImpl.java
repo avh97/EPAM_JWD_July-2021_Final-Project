@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "MessageDao".
  * The methods in this class are used for creating a PreparedStatement, executing the query
  * and processing the ResultSet object.
  *
@@ -53,7 +52,7 @@ public class MessageDaoImpl implements MessageDao {
         LOGGER.info("Attempt to find all messages in the database");
         List<Message> messages = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_MESSAGES)){
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_ALL_MESSAGES)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 messages.add(retrieve(resultSet));
@@ -70,7 +69,7 @@ public class MessageDaoImpl implements MessageDao {
         LOGGER.info("Attempt to find message by message ID in the database");
         Optional<Message> optional = Optional.empty();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_MESSAGE_BY_ID)){
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_MESSAGE_BY_ID)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -89,7 +88,7 @@ public class MessageDaoImpl implements MessageDao {
         LOGGER.info("Attempt to find all messages in the database");
         List<Message> messages = new ArrayList<>();
         try (Connection connection = ConnectionPool.INSTANCE.getConnection();
-             PreparedStatement statement = connection.prepareStatement(SQL_FIND_MESSAGES_BY_USER_ID)){
+             PreparedStatement statement = connection.prepareStatement(SQL_FIND_MESSAGES_BY_USER_ID)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -169,9 +168,6 @@ public class MessageDaoImpl implements MessageDao {
 
     /**
      * This method creates an object from ResultSet.
-     * @param resultSet
-     * @return
-     * @throws SQLException
      */
 
     private Message retrieve(ResultSet resultSet) throws SQLException {

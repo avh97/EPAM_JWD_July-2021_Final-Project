@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Connection pool class via Enum Singleton
+ * Connection pool class via Enum Singleton.
  *
  * @author Anton Khaletski
  */
@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 public enum ConnectionPool {
 	INSTANCE;
 
-	static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
+	private static final Logger LOGGER = LogManager.getLogger(ConnectionPool.class);
 	private BlockingQueue<ProxyConnection> freeConnections;
 	private Queue<ProxyConnection> givenAwayConnections;
 	private static final int DEFAULT_POOL_SIZE = 8;

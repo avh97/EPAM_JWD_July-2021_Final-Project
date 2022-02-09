@@ -12,14 +12,14 @@
 <c:import url="header.jsp"/>
 <div class="container-fluid">
     <h4>Final project for EPAM Java Web Development online course</h4>
-    <h5>Topic №20</h5>
-    <h6>Conference organization system</h6>
+    <h4>Topic №20</h4>
+    <h4>Conference organization system</h4>
     <p>The administrator creates topics, conferences. A participant registers and submits an application to one or more
         conferences.
         The administrator checks the application for compliance with the conference topic and confirms/rejects the
         application.
         The participant can withdraw the application, ask the Administrator a question.</p>
-    <h6>Система организации конференций</h6>
+    <h4>Система организации конференций</h4>
     <p>Администратор создает темы, конференции. Участник регистрируется и подает заявку в одну или несколько
         конференций.
         Администратор проверяет заявку на соответствие тематике конференции и подтверждает\отклоняет заявку.

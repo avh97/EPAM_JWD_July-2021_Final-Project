@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "ConferenceDao"
  * The methods in this class are used for creating a PreparedStatement, executing the query
  * and processing the ResultSet object.
  *
@@ -176,9 +175,6 @@ public class ConferenceDaoImpl implements ConferenceDao {
 
     /**
      * This method creates an object from ResultSet.
-     * @param resultSet
-     * @return
-     * @throws SQLException
      */
 
     private Conference retrieve(ResultSet resultSet) throws SQLException {

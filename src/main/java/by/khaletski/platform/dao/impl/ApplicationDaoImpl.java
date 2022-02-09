@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "ApplicationDao".
  * The methods in this class are used for creating a PreparedStatement, executing the query
  * and processing the ResultSet object.
  *
@@ -252,9 +251,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 
     /**
      * This method creates an object from ResultSet.
-     * @param resultSet
-     * @return
-     * @throws SQLException
      */
 
     private Application retrieve(ResultSet resultSet) throws SQLException {

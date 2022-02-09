@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Dao class "TopicDao"
  * The methods in this class are used for creating a PreparedStatement, executing the query
  * and processing the ResultSet object.
  *
@@ -135,9 +134,6 @@ public class TopicDaoImpl implements TopicDao {
 
     /**
      * This method creates an object from ResultSet.
-     * @param resultSet
-     * @return
-     * @throws SQLException
      */
 
     private Topic retrieve(ResultSet resultSet) throws SQLException {

@@ -371,7 +371,7 @@
             <c:forEach var="message" items="${message_list}">
                 <tr>
                     <td><c:out value="${message.id}"/></td>
-                    <td><c:out value="${message.timestamp}"/></td>
+                    <td><c:out value="${fn:substring(message.timestamp, 0, 19)}"/></td>
                     <td><c:out value="${message.user.surname}"/><br>
                         <c:out value="${fn:substring(message.user.name, 0, 1)}. "/>
                         <c:out value="${fn:substring(message.user.patronymic, 0, 1)}."/></td>

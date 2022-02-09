@@ -31,7 +31,7 @@
                        class="form-control"
                        placeholder=<fmt:message key="label.description"/>>
             </div>
-            <div class="form-group col-md-5">
+            <div class="form-group col-md-3">
                 <input type="date" name="date" value="${selected.date}" pattern=".*[^<>]"
                        class="form-control"
                        placeholder=<fmt:message key="label.date"/>>

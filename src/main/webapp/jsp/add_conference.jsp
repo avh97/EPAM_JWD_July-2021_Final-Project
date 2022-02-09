@@ -26,7 +26,7 @@
                 <input type="text" name="description" value="" required pattern=".*[^<>]" class="form-control"
                        placeholder=<fmt:message key="label.description"/>>
             </div>
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <input type="date" min="2021-01-12" name="date" value="" required class="form-control"
                        placeholder=<fmt:message key="label.date"/>>
             </div>

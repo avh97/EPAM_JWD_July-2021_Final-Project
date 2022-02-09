@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * Connection factory class
+ * Connection factory class.
  *
  * @author Anton Khaletski
  */

@@ -6,12 +6,12 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_1.xsd"
         version="2.1">
 
-    <tlib-version> 1.0 </tlib-version>
-    <short-name> custom </short-name>
-    <uri> customtag </uri>
+    <tlib-version>1.0</tlib-version>
+    <short-name>custom</short-name>
+    <uri>customtag</uri>
     <tag>
-        <name> copyright </name>
+        <name>copyright</name>
         <tag-class>by.khaletski.platform.service.util.CopyrightTag</tag-class>
-        <body-content> empty </body-content>
+        <body-content>empty</body-content>
     </tag>
 </taglib>

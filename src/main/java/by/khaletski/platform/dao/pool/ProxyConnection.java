@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- * This class serves as a wrapper for the Connection class
+ * This class serves as a wrapper for the Connection class.
  *
  * @author Anton Khaletski
  */

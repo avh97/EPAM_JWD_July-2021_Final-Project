@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service class "UserService".
  * The methods in this class validate the received string values and pass them to the DAO methods.
  *
  * @author Anton Khaletski
